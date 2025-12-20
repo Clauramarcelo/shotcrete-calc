@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -21,39 +22,18 @@
     h1 { font-size: 1.6rem; margin-bottom: 6px; }
     p.desc { color: #666; margin-top: 0; }
 
-    /* Contenedor de la imagen */
-    .diagram {
-      margin: 12px 0 16px 0;
-      text-align: center;
-    }
+    /* Imagen responsiva y pequeña para móvil */
+    .diagram { margin: 12px 0 16px 0; text-align: center; }
     .diagram img {
-      /* Responsivo y más pequeño por defecto */
-      width: 100%;
-      height: auto;
-      max-width: 360px;        /* límite de ancho en móviles */
-      aspect-ratio: auto;
-      border: 1px solid #c7d2fe;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      width: 100%; height: auto;
+      max-width: 360px;        /* móvil */
+      border: 1px solid #c7d2fe; border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
-    .diagram figcaption {
-      font-size: 0.85rem;
-      color: #555;
-      margin-top: 6px;
-      line-height: 1.35;
-      padding: 0 8px;
-    }
+    .diagram figcaption { font-size: 0.85rem; color: #555; margin-top: 6px; }
 
-    /* A partir de 480px (muchos móviles en horizontal) permitimos un poco más */
-    @media (min-width: 480px) {
-      .diagram img { max-width: 420px; }
-      .diagram figcaption { font-size: 0.9rem; }
-    }
-
-    /* En tablets/escritorio podemos ampliar un poco más */
-    @media (min-width: 768px) {
-      .diagram img { max-width: 520px; }
-    }
+    @media (min-width: 480px) { .diagram img { max-width: 420px; } }
+    @media (min-width: 768px) { .diagram img { max-width: 520px; } }
 
     label { display: block; margin-top: 12px; font-weight: 600; }
     input {
@@ -61,9 +41,7 @@
       border: 1px solid #ccc; border-radius: 8px;
     }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 560px) {
-      .row { grid-template-columns: 1fr; } /* una columna en móviles */
-    }
+    @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
 
     .actions { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
     button {
@@ -78,13 +56,8 @@
       background: #f8f9fb;
     }
     .result-title { font-size: 0.95rem; color: #666; }
-    .result-value {
-      font-size: 1.8rem;        /* un poco menor para móvil */
-      font-weight: 800; margin: 6px 0; color: #0a2cff;
-    }
-    @media (min-width: 480px) {
-      .result-value { font-size: 2rem; }
-    }
+    .result-value { font-size: 1.8rem; font-weight: 800; margin: 6px 0; color: #0a2cff; }
+    @media (min-width: 480px) { .result-value { font-size: 2rem; } }
     .summary { color: #444; font-size: 0.95rem; }
     .error { color: #b00020; font-size: 0.95rem; margin-top: 10px; }
     .footer { margin-top: 24px; color: #666; font-size: 0.9rem; }
@@ -94,11 +67,12 @@
   <h1>Shotcrete Calc</h1>
   <p class="desc">Calculadora de m³ de concreto lanzado según tu fórmula.</p>
 
-  <!-- Imagen ilustrativa (usa tu imagen1.png o imagen.png en la misma carpeta) -->
+  <!-- Imagen ilustrativa: asegúrate que el archivo en el repo se llama exactamente imagen1.png -->
   <figure class="diagram">
-    <img src="imagen1.png"
-         alt="Diagrama de sección con parámetros A (ancho), H (altura) y L (lng>H</strong> = Altura, <strong>L</strong> = Largo.
-      La calculadora aplica: <code>m³ = ((((H × 2) + A) × 0.9) × L) / factor</code>.
+    imagen1.png
+    <figcaption>
+      Representación: <strong>A</strong> = Ancho, <strong>H</strong> = Altura, <strong>L</strong> = Largo.
+      Fórmula: <code>m³ = ((((H × 2) + A) × 0.9) × L) / factor</code>.
     </figcaption>
   </figure>
 
@@ -157,7 +131,7 @@
   </div>
 
   <script>
-    // Registrar Service Worker (PWA en HTTPS)
+    // Registrar Service Worker (solo funciona en HTTPS / GitHub Pages)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').catch(console.error);
