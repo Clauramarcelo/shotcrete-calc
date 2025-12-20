@@ -107,16 +107,15 @@
   <div class="footer">
     Fórmula: <code>m³ = ((((H × 2) + A) × 0.9) × L) / factor</code>
   </div>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker
+        .register('/shotcrete-calc/sw.js', { scope: '/shotcrete-calc/' })
+        .catch(console.error);
+    });
+  }
 
-  <script>
-    // Registrar Service Worker con scope del repo (GitHub Pages sub-path)
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker
-          .register('/shotcrete-calc/sw.js', { scope: '/shotcrete-calc/' })
-          .catch(console.error);
-      });
-    }
 
     // Elementos
     const els = {
