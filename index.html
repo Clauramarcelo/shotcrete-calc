@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,7 +8,7 @@
 
   <!-- PWA correcto para GitHub Pages (sub-path del repo) -->
   <link rel="manifest" href="/shotcrete-calc/manifest.json">
-  <!-- Si ya tienes icono, descomenta: -->
+  <!-- Si ya tienes icono, añade: -->
   <!-- <link rel="apple-touch-icon" href="/shotcrete-calc/icon-192.png"> -->
   <meta name="theme-color" content="#0a84ff">
 
@@ -208,33 +209,42 @@
     }
   </script>
 
-  <!-- Lógica: tabs (Dashboard 4ª), cálculo rápido, cálculo completo (bar), registros, dashboard y gráfico -->
+  <!-- Lógica: pestañas, cálculo rápido, cálculo, registros, dashboard, gráfico y CSV -->
   <script>
     const STORAGE_FORM = 'sc_form';
     const STORAGE_REGS = 'sc_registros';
     const STORAGE_TAB  = 'sc_tab_activa';
     const FACTOR_DEF   = 11.5;
+    let registros = [];
 
-    let registros = []; // {id, fecha, labor, nivel, guardia, uso, observaciones, A, L, H, factor, frente, presionBar, m3Base, m3Total}
-
-    // Utilidades
     function ordenarPorFechaDesc(){ registros.sort((a,b) => new Date(b.fecha) - new Date(a.fecha)); }
     function formatearFecha(yyyy_mm_dd){ const [y,m,d] = yyyy_mm_dd.split('-'); return `${d}/${m}/${y}`; }
     function num(n, dec=2){ return (typeof n === 'number' && isFinite(n)) ? n.toFixed(dec) : '—'; }
     function esc(s){ return (s || '—').replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])); }
 
     window.addEventListener('DOMContentLoaded', () => {
-      // Elementos
+      // ---------- PESTAÑAS ----------
+      const tabs = {
+        rapido:   { btn: document.getElementById('tab-rapido-btn'),   panel: document.getElementById('tab-rapido') },
+        ingreso:  { btn: document.getElementById('tab-ingreso-btn'),  panel: document.getElementById('tab-ingreso') },
+        registros:{ btn: document.getElementById('tab-registros-btn'),panel: document.getElementById('tab-registros') },
+        dashboard:{ btn: document.getElementById('tab-dashboard-btn'),panel: document.getElementById('tab-dashboard') }
+      };
+      function switchTab(name){
+        Object.values(tabs).forEach(({btn,panel}) => { btn.setAttribute('aria-selected','false'); panel.classList.remove('active'); });
+        tabs[name].btn.setAttribute('aria-selected','true');
+        tabs[name].panel.classList.add('active');
+        localStorage.setItem(STORAGE_TAB, name);
+        if (name === 'dashboard') { renderDashboard(); renderLaborChart(); }
+      }
+      tabs.rapido.btn.addEventListener('click',   () => switchTab('rapido'));
+      tabs.ingreso.btn.addEventListener('click',  () => switchTab('ingreso'));
+      tabs.registros.btn.addEventListener('click',() => switchTab('registros'));
+      tabs.dashboard.btn.addEventListener('click',() => switchTab('dashboard'));
+      switchTab(localStorage.getItem(STORAGE_TAB) || 'rapido');
+
+      // ---------- ELEMENTOS ----------
       const els = {
-        // tabs
-        tabRapidoBtn: document.getElementById('tab-rapido-btn'),
-        tabIngresoBtn: document.getElementById('tab-ingreso-btn'),
-        tabRegistrosBtn: document.getElementById('tab-registros-btn'),
-        tabDashboardBtn: document.getElementById('tab-dashboard-btn'),
-        tabRapido: document.getElementById('tab-rapido'),
-        tabIngreso: document.getElementById('tab-ingreso'),
-        tabRegistros: document.getElementById('tab-registros'),
-        tabDashboard: document.getElementById('tab-dashboard'),
         // rápido
         rA: document.getElementById('r-ancho'),
         rH: document.getElementById('r-altura'),
@@ -274,44 +284,18 @@
         chartLaborCanvas: document.getElementById('chart-presion-labor')
       };
 
-      // Tabs
-      function switchTab(name) {
-        const mapa = {
-          rapido: [els.tabRapido, els.tabRapidoBtn],
-          ingreso: [els.tabIngreso, els.tabIngresoBtn],
-          registros: [els.tabRegistros, els.tabRegistrosBtn],
-          dashboard: [els.tabDashboard, els.tabDashboardBtn]
-        };
-        // ocultar todas
-        [els.tabRapido,els.tabIngreso,els.tabRegistros,els.tabDashboard].forEach(el => el.classList.remove('active'));
-        [els.tabRapidoBtn,els.tabIngresoBtn,els.tabRegistrosBtn,els.tabDashboardBtn].forEach(btn => btn.setAttribute('aria-selected','false'));
-        // activar
-        (mapa[name][0]).classList.add('active');
-        (mapa[name][1]).setAttribute('aria-selected','true');
-        localStorage.setItem(STORAGE_TAB, name);
-        if (name === 'dashboard') { renderDashboard(); renderLaborChart(); }
-      }
-      els.tabRapidoBtn.addEventListener('click', () => switchTab('rapido'));
-      els.tabIngresoBtn.addEventListener('click', () => switchTab('ingreso'));
-      els.tabRegistrosBtn.addEventListener('click', () => switchTab('registros'));
-      els.tabDashboardBtn.addEventListener('click', () => switchTab('dashboard'));
-
-      // Restaurar formulario
+      // ---------- RESTAURAR FORM ----------
       const last = JSON.parse(localStorage.getItem(STORAGE_FORM) || '{}');
       Object.entries(last).forEach(([k,v]) => { if (els[k] !== undefined) els[k].value = v; });
 
-      // Cargar registros
+      // ---------- CARGAR REGISTROS ----------
       registros = JSON.parse(localStorage.getItem(STORAGE_REGS) || '[]');
       ordenarPorFechaDesc();
       renderRegistros();
       renderDashboard();
       renderLaborChart();
 
-      // Tab previa (por defecto: rápido)
-      const t = localStorage.getItem(STORAGE_TAB) || 'rapido';
-      switchTab(t);
-
-      // Guardar últimos valores del formulario
+      // ---------- GUARDAR FORM ----------
       ['fecha','labor','nivel','ancho','largo','altura','factor','frente','presion_bar','guardia','uso','observaciones'].forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -327,7 +311,7 @@
         });
       });
 
-      // Cálculo rápido
+      // ---------- CÁLCULO RÁPIDO ----------
       function calcularRapido(){
         els.rMsg.textContent = '';
         const A = parseFloat(els.rA.value), H = parseFloat(els.rH.value), L = parseFloat(els.rL.value);
@@ -344,7 +328,7 @@
       els.rBtnCalc.addEventListener('click', calcularRapido);
       els.rBtnLimpiar.addEventListener('click', limpiarRapido);
 
-      // Cálculo completo
+      // ---------- CÁLCULO COMPLETO ----------
       function calcular(){
         els.msg.textContent = '';
         const labor = els.labor.value.trim(), nivel = els.nivel.value.trim();
@@ -381,6 +365,7 @@
         switchTab('registros');
       }
 
+      // ---------- RENDER REGISTROS ----------
       function renderRegistros(){
         const tbody = els.tbodyReg; tbody.innerHTML='';
         if(!registros.length){ const tr=document.createElement('tr'); tr.className='no-data'; const td=document.createElement('td'); td.colSpan=15; td.textContent='Sin registros guardados'; tr.appendChild(td); tbody.appendChild(tr); return;}
@@ -397,6 +382,7 @@
         });
       }
 
+      // ---------- RENDER DASHBOARD ----------
       function renderDashboard(){
         const tbody = els.tbodyDash; tbody.innerHTML='';
         if(!registros.length){ const tr=document.createElement('tr'); tr.className='no-data'; const td=document.createElement('td'); td.colSpan=7; td.textContent='Sin registros guardados'; tr.appendChild(td); tbody.appendChild(tr); return;}
@@ -410,6 +396,7 @@
         });
       }
 
+      // ---------- GRÁFICO LABOR vs BAR ----------
       function renderLaborChart(){
         const canvas = els.chartLaborCanvas; if(!canvas) return;
         const ctx = canvas.getContext('2d');
@@ -417,41 +404,36 @@
         canvas.width = Math.floor(rect.width*dpr); canvas.height=Math.floor(260*dpr); ctx.setTransform(dpr,0,0,dpr,0,0);
         const panelBg = getComputedStyle(document.documentElement).getPropertyValue('--panel').trim()||'#fff';
         ctx.fillStyle=panelBg; ctx.fillRect(0,0,rect.width,260);
+
         const map = new Map();
         registros.forEach(r=>{ if(!isFinite(r.presionBar)) return; const key=(r.labor||'—').trim(); const cur=map.get(key)||{sum:0,count:0}; cur.sum+=Number(r.presionBar); cur.count+=1; map.set(key,cur); });
         const labels = Array.from(map.keys()); const values = labels.map(l=>map.get(l).sum/map.get(l).count);
         if(!values.length){ const muted=getComputedStyle(document.documentElement).getPropertyValue('--muted').trim()||'#666'; ctx.fillStyle=muted; ctx.font='14px system-ui'; ctx.fillText('No hay presiones (bar) registradas',12,24); return;}
+
         const margin={l:48,r:20,t:26,b:64}, w=rect.width-margin.l-margin.r, h=260-margin.t-margin.b;
         const axisColor=getComputedStyle(document.documentElement).getPropertyValue('--border').trim()||'#e1e5ee';
-        ctx.strokeStyle=axisColor; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(margin.l,margin.t); ctx.lineTo(margin.l,margin.t+h); ctx.stroke();
+        ctx.strokeStyle=axisColor; ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(margin.l,margin.t); ctx.lineTo(margin.l,margin.t+h); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(margin.l,margin.t+h); ctx.lineTo(margin.l+w,margin.t+h); ctx.stroke();
+
         const maxVal=Math.max(...values,1), ticks=4, textColor=getComputedStyle(document.documentElement).getPropertyValue('--muted').trim()||'#5c6170';
         ctx.fillStyle=textColor; ctx.font='12px system-ui';
-        for(let i=0;i<=ticks;i++){ const y=margin.t+h-(h*i/ticks), val=(maxVal*i/ticks); ctx.fillText(`${val.toFixed(2)} bar`,6,y+4); ctx.beginPath(); ctx.moveTo(margin.l,y); ctx.lineTo(margin.l+w,y); ctx.stroke(); }
+        for(let i=0;i<=ticks;i++){
+          const y=margin.t+h-(h*i/ticks), val=(maxVal*i/ticks);
+          ctx.fillText(`${val.toFixed(2)} bar`,6,y+4);
+          ctx.beginPath(); ctx.moveTo(margin.l,y); ctx.lineTo(margin.l+w,y); ctx.stroke();
+        }
+
         const barColor=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#0a84ff', gap=12, barW=Math.max(20,(w-gap*(labels.length+1))/labels.length);
-        values.forEach((v,i)=>{ const x=margin.l+gap+i*(barW+gap), y=margin.t+h-(v/(maxVal||1))*h; ctx.fillStyle=barColor; ctx.fillRect(x,y,barW,(v/(maxVal||1))*h);
+        values.forEach((v,i)=>{
+          const x=margin.l+gap+i*(barW+gap), y=margin.t+h-(v/(maxVal||1))*h;
+          ctx.fillStyle=barColor; ctx.fillRect(x,y,barW,(v/(maxVal||1))*h);
           const lbl=labels[i]; ctx.save(); ctx.translate(x+barW/2,margin.t+h+4); ctx.rotate(-Math.PI/6); ctx.fillStyle=textColor; ctx.fillText(lbl,-ctx.measureText(lbl).width/2,24); ctx.restore();
           const valTxt=v.toFixed(2); ctx.fillStyle=textColor; ctx.fillText(valTxt,x+barW/2-ctx.measureText(valTxt).width/2,y-4);
         });
       }
 
-      // acciones
-      els.btnCalcular.addEventListener('click', calcular);
-      els.btnGuardar.addEventListener('click', guardarRegistro);
-      els.btnCSV.addEventListener('click', exportarCSV);
-      els.btnBorrarTodo.addEventListener('click', () => {
-        if(!registros.length) return;
-        if(confirm('¿Eliminar TODOS los registros? Esta acción no se puede deshacer.')){
-          registros=[]; localStorage.setItem(STORAGE_REGS, JSON.stringify(registros));
-          renderRegistros(); renderDashboard(); renderLaborChart();
-        }
-      });
-      els.tbodyReg.addEventListener('click', (e)=>{
-        const btn = e.target.closest('.btn-del'); if(!btn) return;
-        const id = Number(btn.dataset.id); if(!id) return;
-        if(confirm('¿Eliminar este registro?')){ registros = registros.filter(r=>r.id!==id); localStorage.setItem(STORAGE_REGS, JSON.stringify(registros)); renderRegistros(); renderDashboard(); renderLaborChart(); }
-      });
-
+      // ---------- CSV ----------
       function exportarCSV(){
         const hdr=['Fecha','Labor','Nivel','Guardia','USO','A(m)','L(m)','H(m)','Factor','m3_base','Frente','m3_total','Presion(bar)','Observaciones'];
         const filas = registros.map(r=>[
@@ -465,6 +447,27 @@
         const a=document.createElement('a'); a.href=url; const fecha=new Date().toISOString().slice(0,10); a.download=`inspeccion_shotcrete_${fecha}.csv`; document.body.appendChild(a); a.click();
         setTimeout(()=>{URL.revokeObjectURL(url); document.body.removeChild(a);},500);
       }
+
+      // ---------- ACCIONES ----------
+      document.getElementById('btn-calcular').addEventListener('click', calcular);
+      document.getElementById('btn-guardar').addEventListener('click', guardarRegistro);
+      document.getElementById('btn-csv').addEventListener('click', exportarCSV);
+      document.getElementById('btn-borrar-todo').addEventListener('click', () => {
+        if(!registros.length) return;
+        if(confirm('¿Eliminar TODOS los registros? Esta acción no se puede deshacer.')){
+          registros=[]; localStorage.setItem(STORAGE_REGS, JSON.stringify(registros));
+          renderRegistros(); renderDashboard(); renderLaborChart();
+        }
+      });
+      document.getElementById('tbody-registros').addEventListener('click', (e)=>{
+        const btn = e.target.closest('.btn-del'); if(!btn) return;
+        const id = Number(btn.dataset.id); if(!id) return;
+        if(confirm('¿Eliminar este registro?')){
+          registros = registros.filter(r=>r.id!==id);
+          localStorage.setItem(STORAGE_REGS, JSON.stringify(registros));
+          renderRegistros(); renderDashboard(); renderLaborChart();
+        }
+      });
     });
   </script>
 </body>
