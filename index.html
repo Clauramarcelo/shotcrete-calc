@@ -1,475 +1,65 @@
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <title>Inspección de lanzado de Shotcrete</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- PWA correcto para GitHub Pages (sub-path del repo) -->
-  <link rel="manifest" href="/shotcrete-calc/manifest.json">
-  <!-- Si ya tienes icono, añade: -->
-  <!-- <link rel="apple-touch-icon" href="/shotcrete-calc/icon-192.png"> -->
-  <meta name="theme-color" content="#0a84ff">
-
-  <!-- Estilos: tema automático claro/oscuro + UI compacta + tabs lineales -->
-  <style>
-    :root {
-      --bg:#fff; --text:#0f0f10; --muted:#5c6170;
-      --primary:#0a2cff; --primary-2:#4f7cff; --accent:#0a84ff; --warn:#ff5a5f;
-      --panel:#f8f9fb; --border:#e1e5ee; --tab-hover:#f5f7ff;
-      --font-size:15px; --font-size-small:13px; --radius:8px;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg:#0f1320; --text:#f2f4fb; --muted:#c0c6d8;
-        --primary:#8ab4ff; --primary-2:#517abf; --accent:#8ab4ff; --warn:#ff6b6b;
-        --panel:#1a2035; --border:#2a3353; --tab-hover:#1d2540;
+<script>
+  // --- Utilidad: eliminar nodos de texto específicos dentro de un contenedor ---
+  function removeAccidentalText(container, exactText) {
+    if (!container) return;
+    // Recorremos hijos directos (y netos) para eliminar textos accidentales
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null);
+    const toRemove = [];
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      if (node.nodeValue && node.nodeValue.trim() === exactText) {
+        toRemove.push(node);
       }
     }
-    *{box-sizing:border-box}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;background:var(--bg);color:var(--text);font-size:var(--font-size)}
-    .container{margin:16px;max-width:980px}
-    .brand-header{background:linear-gradient(90deg,var(--primary) 0%,var(--primary-2) 100%);color:#fff;padding:16px;border-bottom:3px solid var(--accent);text-align:center}
-    .brand-title{margin:0;font-size:1.4rem;font-weight:800}
-    .brand-sub{margin:4px 0 0;font-size:.85rem;opacity:.9;font-style:italic}
+    toRemove.forEach(n => n.parentNode && n.parentNode.removeChild(n));
+  }
 
-    .tabs{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5;background:var(--bg)}
-    .tab-btn{appearance:none;border:none;background:transparent;color:var(--muted);padding:10px 14px;cursor:pointer;border-bottom:2px solid transparent;font-weight:600;font-size:14px}
-    .tab-btn:hover{background:var(--tab-hover)}
-    .tab-btn[aria-selected="true"]{color:var(--primary);border-bottom-color:var(--primary)}
-    .tab-content{display:none;padding-top:12px}
-    .tab-content.active{display:block}
-
-    label{display:block;margin-top:10px;font-weight:600;font-size:14px;color:var(--text)}
-    input,select,textarea{width:100%;padding:8px;font-size:14px;border:1px solid var(--border);border-radius:6px;background:#fff;color:#000}
-    @media(prefers-color-scheme:dark){input,select,textarea{background:#12172b;color:#e8eaf1;border-color:#2a3353} option{background:#12172b;color:#e8eaf1}}
-    textarea{min-height:60px;resize:vertical}
-    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-    @media(max-width:560px){.row2,.row3{grid-template-columns:1fr}}
-    .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-    button{padding:10px;font-size:14px;background:var(--accent);color:#fff;border:0;border-radius:6px;cursor:pointer}
-    button.secondary{background:#eef2ff;color:var(--primary);border:1px solid var(--border)}
-    .btn-danger{background:var(--warn)}
-    .panel{margin-top:14px;padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--panel)}
-    .result-title{font-size:.85rem;color:var(--muted)}
-    .result-value{font-size:1.4rem;font-weight:700;margin:6px 0;color:var(--accent)}
-    .summary{color:var(--text);font-size:.85rem;white-space:pre-line}
-    .error{color:var(--warn);font-size:.85rem;margin-top:8px}
-    .table-wrap{margin-top:8px;border:1px solid var(--border);border-radius:6px;overflow:auto}
-    table{width:100%;border-collapse:collapse;font-size:var(--font-size-small);background:var(--bg);color:var(--text)}
-    th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
-    th{background:#eef2ff;color:var(--primary);position:sticky;top:0}
-    @media(prefers-color-scheme:dark){th{background:#202a47}}
-    tr:hover{background:#f7f9ff}
-    @media(prefers-color-scheme:dark){tr:hover{background:#1d2540}}
-    .no-data{padding:12px;color:var(--muted)}
-    .chart-card{margin-top:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--panel);padding:10px}
-    .chart-title{font-size:.95rem;color:var(--muted);margin:0 0 6px}
-    canvas{width:100%;height:260px}
-  </style>
-</head>
-<body>
-  <header class="brand-header">
-    <h1 class="brand-title">Inspección de lanzado de Shotcrete</h1>
-    <p class="brand-sub">Área de Control de Calidad</p>
-  </header>
-
-  <main class="container">
-    <!-- Tabs (Dashboard en 4ª) -->
-    <div class="tabs" role="tablist" aria-label="Navegación de pestañas">
-      <button id="tab-rapido-btn"    class="tab-btn" role="tab" aria-controls="tab-rapido"    aria-selected="true">Cálculo rápido</button>
-      <button id="tab-ingreso-btn"   class="tab-btn" role="tab" aria-controls="tab-ingreso"   aria-selected="false">Ingreso / Calcular</button>
-      <button id="tab-registros-btn" class="tab-btn" role="tab" aria-controls="tab-registros" aria-selected="false">Registros</button>
-      <button id="tab-dashboard-btn" class="tab-btn" role="tab" aria-controls="tab-dashboard" aria-selected="false">Dashboard</button>
-    </div>
-
-    <!-- 1) Cálculo rápido -->
-    <section id="tab-rapido" class="tab-content active" role="tabpanel" aria-labelledby="tab-rapido-btn">
-      <p class="desc" style="color:var(--muted);font-size:var(--font-size-small);margin:0 0 6px">
-        Ingrese A, H, L y el Frente de sacrificio. Factor fijo: <strong>11.5</strong>. Total = m³ base + frente.
-      </p>
-      <div class="row3">
-        <div><label>Ancho (A) [m]  <input id="r-ancho"  type="number" step="0.01" placeholder="0.00" /></label></div>
-        <div><label>Altura (H) [m] <input id="r-altura"  type="number" step="0.01" placeholder="0.00" /></label></div>
-        <div><label>Largo (L) [m]  <input id="r-largo"   type="number" step="0.01" placeholder="0.00" /></label></div>
-      </div>
-      <label>Frente de sacrificio (m³) <input id="r-frente" type="number" step="0.001" value="0" placeholder="0.000" /></label>
-      <div class="actions">
-        <button id="r-btn-calcular">Calcular m³</button>
-        <button class="secondary" id="r-btn-limpiar">Limpiar</button>
-      </div>
-      <div id="r-msg" class="error" role="alert" aria-live="polite"></div>
-      <div class="panel" id="r-panel" style="display:none">
-        <div class="result-title">Resultado</div>
-        <div class="result-value" id="r-valor">0.000 m³</div>
-        <div class="summary" id="r-resumen">—</div>
-      </div>
-    </section>
-
-    <!-- 2) Ingreso / Calcular -->
-    <section id="tab-ingreso" class="tab-content" role="tabpanel" aria-labelledby="tab-ingreso-btn">
-      <label>Fecha <input id="fecha" type="date" /></label>
-      <div class="row2">
-        <div><label>Labor <input id="labor" placeholder="Nombre de la labor" /></label></div>
-        <div><label>Nivel (Nv.) <input id="nivel" placeholder="Nivel" /></label></div>
-      </div>
-      <div class="row3">
-        <div><label>Ancho (A) [m] <input id="ancho" type="number" step="0.01" placeholder="0.00" /></label></div>
-        <div><label>Largo (L) [m] <input id="largo" type="number" step="0.01" placeholder="0.00" /></label></div>
-        <div><label>Altura (H) [m] <input id="altura" type="number" step="0.01" placeholder="0.00" /></label></div>
-      </div>
-      <label>Factor (por defecto 11.5) <input id="factor" type="number" step="0.01" value="11.5" /></label>
-      <label>Frente de sacrificio (m³) <input id="frente" type="number" step="0.001" value="0" placeholder="0.000" /></label>
-      <div class="row2">
-        <div><label>Presión (bar) <input id="presion_bar" type="number" step="0.01" min="0" placeholder="0.00" /></label></div>
-        <div><label>Guardia <input id="guardia" placeholder="Ej.: A / B / C / Día / Noche" /></label></div>
-      </div>
-      <div class="row2">
-        <div><label>USO
-          <select id="uso">
-            <option value="REP">REP</option><option value="REO">REO</option>
-            <option value="REH">REH</option><option value="OPE">OPE</option>
-          </select>
-        </label></div>
-        <div><label>Observaciones <textarea id="observaciones" placeholder="Notas u observaciones"></textarea></label></div>
-      </div>
-      <div class="actions">
-        <button id="btn-calcular">Calcular m³</button>
-        <button class="secondary" id="btn-guardar">Guardar registro</button>
-        <button class="secondary" id="btn-limpiar">Limpiar</button>
-      </div>
-      <div id="msg" class="error" role="alert" aria-live="polite"></div>
-      <div class="panel" id="panel-resultado" style="display:none">
-        <div class="result-title">Resultado</div>
-        <div class="result-value" id="valor-m3">0.000 m³</div>
-        <div class="summary" id="resumen">—</div>
-      </div>
-    </section>
-
-    <!-- 3) Registros -->
-    <section id="tab-registros" class="tab-content" role="tabpanel" aria-labelledby="tab-registros-btn">
-      <div class="actions" style="justify-content:flex-end">
-        <button class="secondary" id="btn-csv">Exportar CSV</button>
-        <button class="btn-danger" id="btn-borrar-todo" title="Borrar todos los registros">Borrar todo</button>
-      </div>
-      <div class="table-wrap">
-        <table aria-label="Registros guardados">
-          <thead>
-            <tr>
-              <th>Fecha</th><th>Labor</th><th>Nivel</th><th>Guardia</th><th>USO</th>
-              <th>A</th><th>L</th><th>H</th><th>Factor</th><th>m³ base</th><th>Frente</th><th>m³ total</th>
-              <th>Presión (bar)</th><th>Obs.</th><th>Acción</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-registros">
-            <tr class="no-data"><td colspan="15">Sin registros guardados</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- 4) Dashboard -->
-    <section id="tab-dashboard" class="tab-content" role="tabpanel" aria-labelledby="tab-dashboard-btn">
-      <p class="desc" style="color:var(--muted);font-size:var(--font-size-small);margin:0 0 6px">
-        Vista rápida: Labor, Nivel, m³ total, USO, Presión (bar), Observaciones.
-      </p>
-      <div class="table-wrap">
-        <table aria-label="Dashboard de registros">
-          <thead>
-            <tr>
-              <th>Fecha</th><th>Labor</th><th>Nivel</th><th>m³ total</th><th>USO</th><th>Presión (bar)</th><th>Observaciones</th>
-            </tr>
-          </thead>
-          <tbody id="tbody-dashboard">
-            <tr class="no-data"><td colspan="7">Sin registros guardados</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Labor vs Presión (bar) — promedio por labor</div>
-        <canvas id="chart-presion-labor"></canvas>
-      </div>
-    </section>
-
-    <div class="footer">
-      Fórmula base: <code>m³ = ((((H × 2) + A) × 0.9) × L) / factor</code> — Total: <code>m³ base + frente</code><br>
-      © <span id="year"></span> — By Cesar Laura
-    </div>
-  </main>
-
-  <!-- Registro del Service Worker -->
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/shotcrete-calc/sw.js', { scope: '/shotcrete-calc/' }).catch(console.error);
-      });
-    }
-  </script>
-
-  <!-- Lógica: pestañas, cálculo rápido, cálculo, registros, dashboard, gráfico y CSV -->
-  <script>
-    const STORAGE_FORM = 'sc_form';
-    const STORAGE_REGS = 'sc_registros';
-    const STORAGE_TAB  = 'sc_tab_activa';
-    const FACTOR_DEF   = 11.5;
-    let registros = [];
-
-    function ordenarPorFechaDesc(){ registros.sort((a,b) => new Date(b.fecha) - new Date(a.fecha)); }
-    function formatearFecha(yyyy_mm_dd){ const [y,m,d] = yyyy_mm_dd.split('-'); return `${d}/${m}/${y}`; }
-    function num(n, dec=2){ return (typeof n === 'number' && isFinite(n)) ? n.toFixed(dec) : '—'; }
-    function esc(s){ return (s || '—').replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])); }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      // ---------- PESTAÑAS ----------
-      const tabs = {
-        rapido:   { btn: document.getElementById('tab-rapido-btn'),   panel: document.getElementById('tab-rapido') },
-        ingreso:  { btn: document.getElementById('tab-ingreso-btn'),  panel: document.getElementById('tab-ingreso') },
-        registros:{ btn: document.getElementById('tab-registros-btn'),panel: document.getElementById('tab-registros') },
-        dashboard:{ btn: document.getElementById('tab-dashboard-btn'),panel: document.getElementById('tab-dashboard') }
-      };
-      function switchTab(name){
-        Object.values(tabs).forEach(({btn,panel}) => { btn.setAttribute('aria-selected','false'); panel.classList.remove('active'); });
-        tabs[name].btn.setAttribute('aria-selected','true');
-        tabs[name].panel.classList.add('active');
-        localStorage.setItem(STORAGE_TAB, name);
-        if (name === 'dashboard') { renderDashboard(); renderLaborChart(); }
-      }
-      tabs.rapido.btn.addEventListener('click',   () => switchTab('rapido'));
-      tabs.ingreso.btn.addEventListener('click',  () => switchTab('ingreso'));
-      tabs.registros.btn.addEventListener('click',() => switchTab('registros'));
-      tabs.dashboard.btn.addEventListener('click',() => switchTab('dashboard'));
-      switchTab(localStorage.getItem(STORAGE_TAB) || 'rapido');
-
-      // ---------- ELEMENTOS ----------
-      const els = {
-        // rápido
-        rA: document.getElementById('r-ancho'),
-        rH: document.getElementById('r-altura'),
-        rL: document.getElementById('r-largo'),
-        rFrente: document.getElementById('r-frente'),
-        rMsg: document.getElementById('r-msg'),
-        rPanel: document.getElementById('r-panel'),
-        rValor: document.getElementById('r-valor'),
-        rResumen: document.getElementById('r-resumen'),
-        rBtnCalc: document.getElementById('r-btn-calcular'),
-        rBtnLimpiar: document.getElementById('r-btn-limpiar'),
-        // ingreso
-        fecha: document.getElementById('fecha'),
-        labor: document.getElementById('labor'),
-        nivel: document.getElementById('nivel'),
-        ancho: document.getElementById('ancho'),
-        largo: document.getElementById('largo'),
-        altura: document.getElementById('altura'),
-        factor: document.getElementById('factor'),
-        frente: document.getElementById('frente'),
-        presionBar: document.getElementById('presion_bar'),
-        guardia: document.getElementById('guardia'),
-        uso: document.getElementById('uso'),
-        observaciones: document.getElementById('observaciones'),
-        msg: document.getElementById('msg'),
-        panel: document.getElementById('panel-resultado'),
-        valor: document.getElementById('valor-m3'),
-        resumen: document.getElementById('resumen'),
-        btnCalcular: document.getElementById('btn-calcular'),
-        btnGuardar: document.getElementById('btn-guardar'),
-        btnLimpiar: document.getElementById('btn-limpiar'),
-        // registros & dashboard
-        tbodyReg: document.getElementById('tbody-registros'),
-        btnCSV: document.getElementById('btn-csv'),
-        btnBorrarTodo: document.getElementById('btn-borrar-todo'),
-        tbodyDash: document.getElementById('tbody-dashboard'),
-        chartLaborCanvas: document.getElementById('chart-presion-labor')
-      };
-
-      // ---------- RESTAURAR FORM ----------
-      const last = JSON.parse(localStorage.getItem(STORAGE_FORM) || '{}');
-      Object.entries(last).forEach(([k,v]) => { if (els[k] !== undefined) els[k].value = v; });
-
-      // ---------- CARGAR REGISTROS ----------
-      registros = JSON.parse(localStorage.getItem(STORAGE_REGS) || '[]');
-      ordenarPorFechaDesc();
-      renderRegistros();
-      renderDashboard();
-      renderLaborChart();
-
-      // ---------- GUARDAR FORM ----------
-      ['fecha','labor','nivel','ancho','largo','altura','factor','frente','presion_bar','guardia','uso','observaciones'].forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.addEventListener('input', () => {
-          const data = {
-            fecha: els.fecha.value, labor: els.labor.value, nivel: els.nivel.value,
-            ancho: els.ancho.value, largo: els.largo.value, altura: els.altura.value,
-            factor: els.factor.value, frente: els.frente.value,
-            presion_bar: els.presionBar.value, guardia: els.guardia.value,
-            uso: els.uso.value, observaciones: els.observaciones.value
-          };
-          localStorage.setItem(STORAGE_FORM, JSON.stringify(data));
-        });
-      });
-
-      // ---------- CÁLCULO RÁPIDO ----------
-      function calcularRapido(){
-        els.rMsg.textContent = '';
-        const A = parseFloat(els.rA.value), H = parseFloat(els.rH.value), L = parseFloat(els.rL.value);
-        const fr = parseFloat(els.rFrente.value || '0');
-        if ([A,H,L].some(v => isNaN(v))) { els.rPanel.style.display='none'; els.rMsg.textContent='Verifica A, H y L.'; return; }
-        if (A<0 || H<0 || L<=0 || isNaN(fr) || fr<0){ els.rPanel.style.display='none'; els.rMsg.textContent='Valores inválidos.'; return;}
-        const m3Base = ((((H*2)+A)*0.9)*L)/FACTOR_DEF;
-        const m3Total = m3Base + fr;
-        els.rPanel.style.display='block';
-        els.rValor.textContent = `${m3Total.toFixed(3)} m³`;
-        els.rResumen.textContent = `m³ base: ${m3Base.toFixed(3)} | Frente: ${fr.toFixed(3)} | Total: ${m3Total.toFixed(3)}\nA=${A.toFixed(2)} m, H=${H.toFixed(2)} m, L=${L.toFixed(2)} m • Factor(fijo)=${FACTOR_DEF.toFixed(2)}`;
-      }
-      function limpiarRapido(){ ['r-ancho','r-altura','r-largo'].forEach(id=>document.getElementById(id).value=''); els.rFrente.value='0'; els.rMsg.textContent=''; els.rPanel.style.display='none'; }
-      els.rBtnCalc.addEventListener('click', calcularRapido);
-      els.rBtnLimpiar.addEventListener('click', limpiarRapido);
-
-      // ---------- CÁLCULO COMPLETO ----------
-      function calcular(){
-        els.msg.textContent = '';
-        const labor = els.labor.value.trim(), nivel = els.nivel.value.trim();
-        const A = parseFloat(els.ancho.value), L = parseFloat(els.largo.value), H = parseFloat(els.altura.value);
-        const f = parseFloat(els.factor.value), fr = parseFloat(els.frente.value || '0'), prBar = parseFloat(els.presionBar.value || '0');
-        if ([A,L,H,f].some(v => isNaN(v))) { els.panel.style.display='none'; els.msg.textContent='Verifica A, L, H y factor.'; return; }
-        if (A<0 || H<0 || L<=0 || f<=0 || isNaN(fr) || fr<0 || isNaN(prBar) || prBar<0){ els.panel.style.display='none'; els.msg.textContent='Valores inválidos.'; return;}
-        const m3Base = ((((H*2)+A)*0.9)*L)/f;
-        const m3Total = m3Base + fr;
-        els.panel.style.display='block';
-        els.valor.textContent = `${m3Total.toFixed(3)} m³`;
-        els.resumen.textContent = `m³ base: ${m3Base.toFixed(3)} | Frente: ${fr.toFixed(3)} | Total: ${m3Total.toFixed(3)}\nPresión: ${prBar.toFixed(2)} bar\nLabor: ${labor||'—'} • Nivel: ${nivel||'—'} • A=${A.toFixed(2)} m, L=${L.toFixed(2)} m, H=${H.toFixed(2)} m • Factor=${f.toFixed(2)}`;
-        return { m3Base, m3Total, frente: fr, presionBar: prBar };
-      }
-
-      function guardarRegistro(){
-        els.msg.textContent='';
-        const fecha = els.fecha.value; if(!fecha){els.msg.textContent='La fecha es obligatoria.'; return;}
-        const calc = calcular(); if(!calc || typeof calc.m3Base !== 'number') return;
-        const reg = {
-          id: Date.now(), fecha,
-          labor: els.labor.value.trim(), nivel: els.nivel.value.trim(), guardia: els.guardia.value.trim(),
-          uso: els.uso.value, observaciones: els.observaciones.value.trim(),
-          ancho: parseFloat(els.ancho.value), largo: parseFloat(els.largo.value), altura: parseFloat(els.altura.value),
-          factor: parseFloat(els.factor.value), frente: parseFloat(calc.frente.toFixed(3)),
-          presionBar: parseFloat(calc.presionBar.toFixed(2)),
-          m3Base: parseFloat(calc.m3Base.toFixed(3)), m3Total: parseFloat(calc.m3Total.toFixed(3))
-        };
-        registros.push(reg); ordenarPorFechaDesc();
-        localStorage.setItem(STORAGE_REGS, JSON.stringify(registros));
-        renderRegistros(); renderDashboard(); renderLaborChart();
-        els.msg.style.color='#00c28a'; els.msg.textContent='Registro guardado correctamente.';
-        setTimeout(()=>{els.msg.style.color='var(--warn)'; els.msg.textContent='';},1200);
-        switchTab('registros');
-      }
-
-      // ---------- RENDER REGISTROS ----------
-      function renderRegistros(){
-        const tbody = els.tbodyReg; tbody.innerHTML='';
-        if(!registros.length){ const tr=document.createElement('tr'); tr.className='no-data'; const td=document.createElement('td'); td.colSpan=15; td.textContent='Sin registros guardados'; tr.appendChild(td); tbody.appendChild(tr); return;}
-        registros.forEach(r=>{
-          const tr=document.createElement('tr');
-          tr.innerHTML = `
-            <td>${formatearFecha(r.fecha)}</td><td>${esc(r.labor)}</td><td>${esc(r.nivel)}</td>
-            <td>${esc(r.guardia)}</td><td>${esc(r.uso)}</td>
-            <td>${num(r.ancho)}</td><td>${num(r.largo)}</td><td>${num(r.altura)}</td><td>${num(r.factor)}</td>
-            <td>${num(r.m3Base,3)}</td><td>${num(r.frente,3)}</td><td>${num(r.m3Total,3)}</td>
-            <td>${isFinite(r.presionBar)?r.presionBar.toFixed(2)+' bar':'—'}</td><td>${esc(r.observaciones)}</td>
-            <td><button class="btn-danger btn-del" data-id="${r.id}" title="Eliminar">Eliminar</button></td>`;
-          tbody.appendChild(tr);
-        });
-      }
-
-      // ---------- RENDER DASHBOARD ----------
-      function renderDashboard(){
-        const tbody = els.tbodyDash; tbody.innerHTML='';
-        if(!registros.length){ const tr=document.createElement('tr'); tr.className='no-data'; const td=document.createElement('td'); td.colSpan=7; td.textContent='Sin registros guardados'; tr.appendChild(td); tbody.appendChild(tr); return;}
-        registros.forEach(r=>{
-          const tr=document.createElement('tr');
-          tr.innerHTML = `
-            <td>${formatearFecha(r.fecha)}</td><td>${esc(r.labor)}</td><td>${esc(r.nivel)}</td>
-            <td>${num(r.m3Total,3)}</td><td>${esc(r.uso)}</td>
-            <td>${isFinite(r.presionBar)?r.presionBar.toFixed(2)+' bar':'—'}</td><td>${esc(r.observaciones)}</td>`;
-          tbody.appendChild(tr);
-        });
-      }
-
-      // ---------- GRÁFICO LABOR vs BAR ----------
-      function renderLaborChart(){
-        const canvas = els.chartLaborCanvas; if(!canvas) return;
-        const ctx = canvas.getContext('2d');
-        const rect = canvas.parentElement.getBoundingClientRect(), dpr = window.devicePixelRatio||1;
-        canvas.width = Math.floor(rect.width*dpr); canvas.height=Math.floor(260*dpr); ctx.setTransform(dpr,0,0,dpr,0,0);
-        const panelBg = getComputedStyle(document.documentElement).getPropertyValue('--panel').trim()||'#fff';
-        ctx.fillStyle=panelBg; ctx.fillRect(0,0,rect.width,260);
-
-        const map = new Map();
-        registros.forEach(r=>{ if(!isFinite(r.presionBar)) return; const key=(r.labor||'—').trim(); const cur=map.get(key)||{sum:0,count:0}; cur.sum+=Number(r.presionBar); cur.count+=1; map.set(key,cur); });
-        const labels = Array.from(map.keys()); const values = labels.map(l=>map.get(l).sum/map.get(l).count);
-        if(!values.length){ const muted=getComputedStyle(document.documentElement).getPropertyValue('--muted').trim()||'#666'; ctx.fillStyle=muted; ctx.font='14px system-ui'; ctx.fillText('No hay presiones (bar) registradas',12,24); return;}
-
-        const margin={l:48,r:20,t:26,b:64}, w=rect.width-margin.l-margin.r, h=260-margin.t-margin.b;
-        const axisColor=getComputedStyle(document.documentElement).getPropertyValue('--border').trim()||'#e1e5ee';
-        ctx.strokeStyle=axisColor; ctx.lineWidth=1;
-        ctx.beginPath(); ctx.moveTo(margin.l,margin.t); ctx.lineTo(margin.l,margin.t+h); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(margin.l,margin.t+h); ctx.lineTo(margin.l+w,margin.t+h); ctx.stroke();
-
-        const maxVal=Math.max(...values,1), ticks=4, textColor=getComputedStyle(document.documentElement).getPropertyValue('--muted').trim()||'#5c6170';
-        ctx.fillStyle=textColor; ctx.font='12px system-ui';
-        for(let i=0;i<=ticks;i++){
-          const y=margin.t+h-(h*i/ticks), val=(maxVal*i/ticks);
-          ctx.fillText(`${val.toFixed(2)} bar`,6,y+4);
-          ctx.beginPath(); ctx.moveTo(margin.l,y); ctx.lineTo(margin.l+w,y); ctx.stroke();
-        }
-
-        const barColor=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#0a84ff', gap=12, barW=Math.max(20,(w-gap*(labels.length+1))/labels.length);
-        values.forEach((v,i)=>{
-          const x=margin.l+gap+i*(barW+gap), y=margin.t+h-(v/(maxVal||1))*h;
-          ctx.fillStyle=barColor; ctx.fillRect(x,y,barW,(v/(maxVal||1))*h);
-          const lbl=labels[i]; ctx.save(); ctx.translate(x+barW/2,margin.t+h+4); ctx.rotate(-Math.PI/6); ctx.fillStyle=textColor; ctx.fillText(lbl,-ctx.measureText(lbl).width/2,24); ctx.restore();
-          const valTxt=v.toFixed(2); ctx.fillStyle=textColor; ctx.fillText(valTxt,x+barW/2-ctx.measureText(valTxt).width/2,y-4);
-        });
-      }
-
-      // ---------- CSV ----------
-      function exportarCSV(){
-        const hdr=['Fecha','Labor','Nivel','Guardia','USO','A(m)','L(m)','H(m)','Factor','m3_base','Frente','m3_total','Presion(bar)','Observaciones'];
-        const filas = registros.map(r=>[
-          r.fecha,r.labor,r.nivel,r.guardia,r.uso,
-          (isFinite(r.ancho)?r.ancho:''),(isFinite(r.largo)?r.largo:''),(isFinite(r.altura)?r.altura:''),
-          (isFinite(r.factor)?r.factor:''),(isFinite(r.m3Base)?r.m3Base:''),(isFinite(r.frente)?r.frente:''),(isFinite(r.m3Total)?r.m3Total:''),
-          (isFinite(r.presionBar)?r.presionBar:''),r.observaciones
-        ]);
-        let csv = hdr.join(',')+'\n'+filas.map(f=>f.map(x=>typeof x==='string'&&x.includes(',')?`"${x.replace(/"/g,'""')}"`:x).join(',')).join('\n')+'\n';
-        const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'}), url=URL.createObjectURL(blob);
-        const a=document.createElement('a'); a.href=url; const fecha=new Date().toISOString().slice(0,10); a.download=`inspeccion_shotcrete_${fecha}.csv`; document.body.appendChild(a); a.click();
-        setTimeout(()=>{URL.revokeObjectURL(url); document.body.removeChild(a);},500);
-      }
-
-      // ---------- ACCIONES ----------
-      document.getElementById('btn-calcular').addEventListener('click', calcular);
-      document.getElementById('btn-guardar').addEventListener('click', guardarRegistro);
-      document.getElementById('btn-csv').addEventListener('click', exportarCSV);
-      document.getElementById('btn-borrar-todo').addEventListener('click', () => {
-        if(!registros.length) return;
-        if(confirm('¿Eliminar TODOS los registros? Esta acción no se puede deshacer.')){
-          registros=[]; localStorage.setItem(STORAGE_REGS, JSON.stringify(registros));
-          renderRegistros(); renderDashboard(); renderLaborChart();
-        }
-      });
-      document.getElementById('tbody-registros').addEventListener('click', (e)=>{
-        const btn = e.target.closest('.btn-del'); if(!btn) return;
-        const id = Number(btn.dataset.id); if(!id) return;
-        if(confirm('¿Eliminar este registro?')){
-          registros = registros.filter(r=>r.id!==id);
-          localStorage.setItem(STORAGE_REGS, JSON.stringify(registros));
-          renderRegistros(); renderDashboard(); renderLaborChart();
-        }
-      });
+  // --- Limpiar la pestaña INGRESO/Calcular ---
+  function limpiarIngreso() {
+    // Campos que se deben vaciar
+    const camposVacios = [
+      'fecha','labor','nivel','ancho','largo','altura','guardia','observaciones','presion_bar'
+    ];
+    camposVacios.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
     });
-  </script>
-</body>
-</html>
+
+    // Campos con valor por defecto
+    const factor = document.getElementById('factor');
+    const frente = document.getElementById('frente');
+    if (factor) factor.value = '11.5';
+    if (frente) frente.value = '0';
+
+    // Select USO por defecto
+    const uso = document.getElementById('uso');
+    if (uso) uso.value = 'REP';
+
+    // Ocultar panel de resultado y mensajes
+    const panel = document.getElementById('panel-resultado');
+    const msg   = document.getElementById('msg');
+    if (panel) panel.style.display = 'none';
+    if (msg)   msg.textContent = '';
+
+    // Limpiar almacenamiento del formulario
+    localStorage.removeItem('sc_form');
+
+    // Eliminar cualquier texto accidental dentro de la pestaña Ingreso
+    const tabIngreso = document.getElementById('tab-ingreso');
+    removeAccidentalText(tabIngreso, 'Para revisión de reportes ROBOCON shotcrete 1.xlsx');
+  }
+
+  // --- Conecta el botón Limpiar (garantizado tras DOM listo) ---
+  window.addEventListener('DOMContentLoaded', () => {
+    const btnLimpiar = document.getElementById('btn-limpiar');
+    if (btnLimpiar) {
+      btnLimpiar.addEventListener('click', limpiarIngreso);
+    }
+
+    // También hacemos una limpieza de textos sueltos al cargar (por si venías con caché)
+    const tabIngreso = document.getElementById('tab-ingreso');
+    removeAccidentalText(tabIngreso, 'Para revisión de reportes ROBOCON shotcrete 1.xlsx');
+  });
+</script>
 
