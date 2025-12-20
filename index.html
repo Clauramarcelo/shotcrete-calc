@@ -6,9 +6,10 @@
   <title>Inspección de lanzado de Shotcrete</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- PWA (ajustado al sub-path del repo en GitHub Pages) -->
+  <!-- PWA (ajustado al sub-path de GitHub Pages) -->
   <link rel="manifest" href="/shotcrete-calc/manifest.json">
-  <link rel="apple-touch-icon" href="/shotcrete-calc/icon-192.png">
+  <!-- Si ya tienes icono, descomenta la línea siguiente -->
+  <!-- <link rel="apple-touch-icon" href="/shotcrete-calc/icon-192.png"> -->
   <meta name="theme-color" content="#0a84ff">
 
   <!-- Estilos: tema claro/oscuro con alto contraste + UI compacta -->
@@ -44,9 +45,7 @@
       --table-head-bg: #202a47;
       --table-row-hover: #1d2540;
     }
-    [data-theme="light"] {
-      /* reutiliza los valores de :root (modo claro) */
-    }
+    [data-theme="light"] { /* usa valores de :root */ }
 
     /* Tema automático (si NO hay data-theme) */
     @media (prefers-color-scheme: dark) {
@@ -85,7 +84,7 @@
     .brand-title { margin: 0; font-size: 1.4rem; font-weight: 800; }
     .brand-sub   { margin: 4px 0 0 0; font-size: 0.85rem; opacity: 0.9; font-style: italic; }
 
-    /* Selector de tema (pequeño en el header) */
+    /* Selector de tema en header */
     .theme-row {
       display: flex; justify-content: center; gap: 8px; margin-top: 8px;
       font-size: var(--font-size-small);
@@ -96,7 +95,6 @@
       background: #ffffff; color: #0f0f10; border: 1px solid var(--border);
       border-radius: 6px; padding: 4px 6px;
     }
-
     [data-theme="dark"] .theme-row select,
     :root:not([data-theme]) @media (prefers-color-scheme: dark) .theme-row select {
       background: #12172b; color: #e8eaf1; border-color: #2a3353;
@@ -139,6 +137,7 @@
       background: var(--accent); color: #fff; border: 0; border-radius: 6px; cursor: pointer;
     }
     button.secondary { background: var(--table-head-bg); color: var(--primary); border: 1px solid var(--border); }
+    .btn-danger { background: #ff5a5f; }
 
     .panel {
       margin-top: 14px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius);
@@ -152,7 +151,7 @@
     /* Tabla */
     .table-wrap { margin-top: 8px; border: 1px solid var(--border); border-radius: 6px; overflow: auto; }
     table { width: 100%; border-collapse: collapse; font-size: var(--font-size-small); background: var(--bg); color: var(--text); }
-    th, td { padding: 8px; border-bottom: 1px solid var(--border); text-align: left; }
+    th, td { padding: 8px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
     th { background: var(--table-head-bg); color: var(--primary); position: sticky; top: 0; }
     tr:hover { background: var(--table-row-hover); }
     .no-data { padding: 12px; color: var(--muted); }
@@ -227,6 +226,11 @@
         <input id="factor" type="number" step="0.01" value="11.5" />
       </label>
 
+      <!-- Frente de sacrificio (se suma al final) -->
+      <label>Frente de sacrificio (m³)
+        <input id="frente" type="number" step="0.001" value="0" placeholder="0.000" />
+      </label>
+
       <!-- Guardia y USO -->
       <div class="row2">
         <div>
@@ -272,24 +276,25 @@
     <section id="tab-registros" class="tab-content" role="tabpanel" aria-labelledby="tab-registros-btn">
       <div class="actions" style="justify-content:flex-end;">
         <button class="secondary" id="btn-csv">Exportar CSV</button>
+        <button class="btn-danger" id="btn-borrar-todo" title="Borrar todos los registros">Borrar todo</button>
       </div>
       <div class="table-wrap">
         <table aria-label="Registros guardados">
           <thead>
             <tr>
               <th>Fecha</th><th>Labor</th><th>Nivel</th><th>Guardia</th><th>USO</th>
-              <th>A</th><th>L</th><th>H</th><th>Factor</th><th>m³</th><th>Obs.</th>
+              <th>A</th><th>L</th><th>H</th><th>Factor</th><th>m³ base</th><th>Frente</th><th>m³ total</th><th>Obs.</th><th>Acción</th>
             </tr>
           </thead>
           <tbody id="tbody-registros">
-            <tr class="no-data"><td colspan="11">Sin registros guardados</td></tr>
+            <tr class="no-data"><td colspan="14">Sin registros guardados</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
     <div class="footer">
-      Fórmula: <code>m³ = ((((H × 2) + A) × 0.9) × L) / factor</code><br>
+      Fórmula base: <code>m³ = ((((H × 2) + A) × 0.9) × L) / factor</code> — Total: <code>m³ base + frente</code><br>
       © <span id="year"></span> — By Cesar Laura
     </div>
   </main>
@@ -307,7 +312,7 @@
     }
   </script>
 
-  <!-- Lógica: tema, tabs, cálculo, guardado, tabla y CSV -->
+  <!-- Lógica: tema, tabs, cálculo (con frente), guardado, borrado, tabla y CSV -->
   <script>
     /* ====== Tema (Auto / Claro / Oscuro) ====== */
     (function initTheme(){
@@ -343,6 +348,7 @@
       largo: document.getElementById('largo'),
       altura: document.getElementById('altura'),
       factor: document.getElementById('factor'),
+      frente: document.getElementById('frente'),
       guardia: document.getElementById('guardia'),
       uso: document.getElementById('uso'),
       observaciones: document.getElementById('observaciones'),
@@ -354,6 +360,7 @@
       btnGuardar: document.getElementById('btn-guardar'),
       btnLimpiar: document.getElementById('btn-limpiar'),
       btnCSV: document.getElementById('btn-csv'),
+      btnBorrarTodo: document.getElementById('btn-borrar-todo'),
       tabIngresoBtn: document.getElementById('tab-ingreso-btn'),
       tabRegistrosBtn: document.getElementById('tab-registros-btn'),
       tabIngreso: document.getElementById('tab-ingreso'),
@@ -361,7 +368,7 @@
       tbody: document.getElementById('tbody-registros')
     };
 
-    let registros = [];
+    let registros = []; // {id, fecha, labor, nivel, guardia, uso, observaciones, A, L, H, factor, frente, m3Base, m3Total}
 
     /* ====== Tabs ====== */
     function switchTab(name) {
@@ -392,19 +399,19 @@
     });
 
     // Guardar últimos valores
-    ['fecha','labor','nivel','ancho','largo','altura','factor','guardia','uso','observaciones'].forEach(id => {
+    ['fecha','labor','nivel','ancho','largo','altura','factor','frente','guardia','uso','observaciones'].forEach(id => {
       document.getElementById(id).addEventListener('input', () => {
         const data = {
           fecha: els.fecha.value, labor: els.labor.value, nivel: els.nivel.value,
           ancho: els.ancho.value, largo: els.largo.value, altura: els.altura.value,
-          factor: els.factor.value, guardia: els.guardia.value, uso: els.uso.value,
-          observaciones: els.observaciones.value
+          factor: els.factor.value, frente: els.frente.value,
+          guardia: els.guardia.value, uso: els.uso.value, observaciones: els.observaciones.value
         };
         localStorage.setItem(STORAGE_FORM, JSON.stringify(data));
       });
     });
 
-    /* ====== Cálculo ====== */
+    /* ====== Cálculo (incluye frente) ====== */
     function calcular(){
       els.msg.textContent = '';
       const labor = els.labor.value.trim();
@@ -413,26 +420,30 @@
       const L = parseFloat(els.largo.value);
       const H = parseFloat(els.altura.value);
       const f = parseFloat(els.factor.value);
+      const fr = parseFloat(els.frente.value || '0');
 
       if ([A,L,H,f].some(v => isNaN(v))) {
         els.panel.style.display = 'none';
         els.msg.textContent = 'Verifica que A, L, H y el factor sean números válidos.';
         return;
       }
-      if (A < 0 || H < 0 || L <= 0 || f <= 0) {
+      if (A < 0 || H < 0 || L <= 0 || f <= 0 || (isNaN(fr) || fr < 0)) {
         els.panel.style.display = 'none';
-        els.msg.textContent = 'Los valores deben ser positivos y L/factor mayores a 0.';
+        els.msg.textContent = 'Valores deben ser positivos; frente puede ser 0 o mayor.';
         return;
       }
 
-      const m3 = ((((H * 2) + A) * 0.9) * L) / f;
+      const m3Base = ((((H * 2) + A) * 0.9) * L) / f;
+      const m3Total = m3Base + fr;
 
       els.panel.style.display = 'block';
-      els.valor.textContent = `${m3.toFixed(3)} m³`;
-      const resumenTxt = `Labor: ${labor || '—'} • Nivel: ${nivel || '—'} • A=${isFinite(A)?A.toFixed(2):'—'} m, L=${isFinite(L)?L.toFixed(2):'—'} m, H=${isFinite(H)?H.toFixed(2):'—'} m • Factor=${isFinite(f)?f.toFixed(2):'—'}`;
+      els.valor.textContent = `${m3Total.toFixed(3)} m³`;
+      const resumenTxt =
+        `m³ base: ${m3Base.toFixed(3)} | Frente: ${fr.toFixed(3)} | Total: ${m3Total.toFixed(3)}\n` +
+        `Labor: ${labor || '—'} • Nivel: ${nivel || '—'} • A=${A.toFixed(2)} m, L=${L.toFixed(2)} m, H=${H.toFixed(2)} m • Factor=${f.toFixed(2)}`;
       els.resumen.textContent = resumenTxt;
 
-      return m3;
+      return { m3Base, m3Total, frente: fr };
     }
 
     /* ====== Guardar registro ====== */
@@ -442,17 +453,11 @@
       const fecha = els.fecha.value;
       if (!fecha) { els.msg.textContent = 'La fecha es obligatoria.'; return; }
 
-      let m3 = calcular();
-      if (typeof m3 !== 'number') {
-        const A = parseFloat(els.ancho.value);
-        const L = parseFloat(els.largo.value);
-        const H = parseFloat(els.altura.value);
-        const f = parseFloat(els.factor.value);
-        if ([A,L,H,f].some(v => isNaN(v)) || A < 0 || H < 0 || L <= 0 || f <= 0) return;
-        m3 = ((((H * 2) + A) * 0.9) * L) / f;
-      }
+      const calc = calcular();
+      if (!calc || typeof calc.m3Base !== 'number') return;
 
       const reg = {
+        id: Date.now(), // id único
         fecha,
         labor: els.labor.value.trim(),
         nivel: els.nivel.value.trim(),
@@ -463,7 +468,9 @@
         largo: parseFloat(els.largo.value),
         altura: parseFloat(els.altura.value),
         factor: parseFloat(els.factor.value),
-        m3: parseFloat(m3.toFixed(3))
+        frente: parseFloat(calc.frente.toFixed(3)),
+        m3Base: parseFloat(calc.m3Base.toFixed(3)),
+        m3Total: parseFloat(calc.m3Total.toFixed(3))
       };
 
       registros.push(reg);
@@ -478,6 +485,28 @@
       switchTab('registros');
     }
 
+    /* ====== Borrado de registros ====== */
+    function borrarRegistro(id){
+      registros = registros.filter(r => r.id !== id);
+      localStorage.setItem(STORAGE_REGS, JSON.stringify(registros));
+      renderTabla();
+    }
+    els.tbody.addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn-del');
+      if (!btn) return;
+      const id = Number(btn.dataset.id);
+      if (!id) return;
+      if (confirm('¿Eliminar este registro?')) borrarRegistro(id);
+    });
+    els.btnBorrarTodo.addEventListener('click', () => {
+      if (!registros.length) return;
+      if (confirm('¿Eliminar TODOS los registros? Esta acción no se puede deshacer.')) {
+        registros = [];
+        localStorage.setItem(STORAGE_REGS, JSON.stringify(registros));
+        renderTabla();
+      }
+    });
+
     /* ====== Tabla ====== */
     function ordenarPorFechaDesc(){ registros.sort((a,b) => new Date(b.fecha) - new Date(a.fecha)); }
     function formatearFecha(yyyy_mm_dd){ const [y,m,d] = yyyy_mm_dd.split('-'); return `${d}/${m}/${y}`; }
@@ -491,13 +520,12 @@
         const tr = document.createElement('tr');
         tr.className = 'no-data';
         const td = document.createElement('td');
-        td.colSpan = 11;
+        td.colSpan = 14;
         td.textContent = 'Sin registros guardados';
         tr.appendChild(td);
         tbody.appendChild(tr);
         return;
       }
-
       registros.forEach(r => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -510,8 +538,13 @@
           <td>${num(r.largo)}</td>
           <td>${num(r.altura)}</td>
           <td>${num(r.factor)}</td>
-          <td>${num(r.m3, 3)}</td>
+          <td>${num(r.m3Base, 3)}</td>
+          <td>${num(r.frente, 3)}</td>
+          <td>${num(r.m3Total, 3)}</td>
           <td>${esc(r.observaciones)}</td>
+          <td>
+            <button class="btn-danger btn-del" data-id="${r.id}" title="Eliminar">Eliminar</button>
+          </td>
         `;
         tbody.appendChild(tr);
       });
@@ -519,13 +552,15 @@
 
     /* ====== CSV ====== */
     function exportarCSV(){
-      const hdr = ['Fecha','Labor','Nivel','Guardia','USO','A(m)','L(m)','H(m)','Factor','m3','Observaciones'];
+      const hdr = ['Fecha','Labor','Nivel','Guardia','USO','A(m)','L(m)','H(m)','Factor','m3_base','Frente','m3_total','Observaciones'];
       const filas = registros.map(r => [
         r.fecha, r.labor, r.nivel, r.guardia, r.uso,
         (isFinite(r.ancho)?r.ancho:''), (isFinite(r.largo)?r.largo:''), (isFinite(r.altura)?r.altura:''),
-        (isFinite(r.factor)?r.factor:''), (isFinite(r.m3)?r.m3:''), r.observaciones
+        (isFinite(r.factor)?r.factor:''), (isFinite(r.m3Base)?r.m3Base:''), (isFinite(r.frente)?r.frente:''), (isFinite(r.m3Total)?r.m3Total:''), r.observaciones
       ]);
-      let csv = hdr.join(',') + '\n' + filas.map(f => f.map(x => typeof x === 'string' && x.includes(',') ? `"${x.replace(/"/g,'""')}"` : x).join(',')).join('\n') + '\n';
+      let csv = hdr.join(',') + '\n' + filas
+        .map(f => f.map(x => typeof x === 'string' && x.includes(',') ? `"${x.replace(/"/g,'""')}"` : x).join(','))
+        .join('\n') + '\n';
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -540,17 +575,17 @@
     /* ====== Eventos ====== */
     els.btnCalcular.addEventListener('click', calcular);
     els.btnGuardar.addEventListener('click', guardarRegistro);
+    els.btnCSV.addEventListener('click', exportarCSV);
     els.btnLimpiar.addEventListener('click', () => {
-      ['fecha','labor','nivel','ancho','largo','altura','factor','guardia','uso','observaciones']
+      ['fecha','labor','nivel','ancho','largo','altura','factor','frente','guardia','uso','observaciones']
         .forEach(id => { if (id==='uso') els[id].value='REP'; else els[id].value = ''; });
       els.factor.value = '11.5';
+      els.frente.value = '0';
       els.panel.style.display = 'none';
       els.msg.textContent = '';
       localStorage.removeItem(STORAGE_FORM);
       switchTab('ingreso');
     });
-    els.btnCSV.addEventListener('click', exportarCSV);
   </script>
 </body>
 </html>
-
