@@ -132,11 +132,12 @@
 
   <script>
     // Registrar Service Worker (solo funciona en HTTPS / GitHub Pages)
+        
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(console.error);
-      });
-    }
+      navigator.serviceWorker.register('sw.js').catch(console.error);
+        });
+      }
 
     // Elementos
     const els = {
