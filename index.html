@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Shotcrete Calc</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- PWA -->
+  manifest.json
+  icon-192.png
+  <meta name="theme-color" content="#0a84ff">
+
+  <!-- Estilos -->
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      margin: 16px; max-width: 820px;
+    }
+    h1 { font-size: 1.6rem; margin-bottom: 6px; }
+    p.desc { color: #666; margin-top: 0; }
+
+    /* Contenedor de la imagen */
+    .diagram {
+      margin: 12px 0 16px 0;
+      text-align: center;
+    }
+    .diagram img {
+      /* Responsivo y más pequeño por defecto */
+      width: 100%;
+      height: auto;
+      max-width: 360px;        /* límite de ancho en móviles */
+      aspect-ratio: auto;
+      border: 1px solid #c7d2fe;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .diagram figcaption {
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 6px;
+      line-height: 1.35;
+      padding: 0 8px;
+    }
+
+    /* A partir de 480px (muchos móviles en horizontal) permitimos un poco más */
+    @media (min-width: 480px) {
+      .diagram img { max-width: 420px; }
+      .diagram figcaption { font-size: 0.9rem; }
+    }
+
+    /* En tablets/escritorio podemos ampliar un poco más */
+    @media (min-width: 768px) {
+      .diagram img { max-width: 520px; }
+    }
+
+    label { display: block; margin-top: 12px; font-weight: 600; }
+    input {
+      width: 100%; padding: 10px; font-size: 1rem;
+      border: 1px solid #ccc; border-radius: 8px;
+    }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 560px) {
+      .row { grid-template-columns: 1fr; } /* una columna en móviles */
+    }
+
+    .actions { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+    button {
+      padding: 12px; font-size: 1rem;
+      background: #0a84ff; color: white; border: 0; border-radius: 8px;
+      cursor: pointer;
+    }
+    button.secondary { background: #eef2ff; color: #0a2cff; }
+
+    .panel {
+      margin-top: 16px; padding: 14px; border: 1px solid #e3e3e3; border-radius: 10px;
+      background: #f8f9fb;
+    }
+    .result-title { font-size: 0.95rem; color: #666; }
+    .result-value {
+      font-size: 1.8rem;        /* un poco menor para móvil */
+      font-weight: 800; margin: 6px 0; color: #0a2cff;
+    }
+    @media (min-width: 480px) {
+      .result-value { font-size: 2rem; }
+    }
+    .summary { color: #444; font-size: 0.95rem; }
+    .error { color: #b00020; font-size: 0.95rem; margin-top: 10px; }
+    .footer { margin-top: 24px; color: #666; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>Shotcrete Calc</h1>
+  <p class="desc">Calculadora de m³ de concreto lanzado según tu fórmula.</p>
+
+  <!-- Imagen ilustrativa (usa tu imagen1.png o imagen.png en la misma carpeta) -->
+  <figure class="diagram">
+    <img src="imagen1.png"
+         alt="Diagrama de sección con parámetros A (ancho), H (altura) y L (lng>H</strong> = Altura, <strong>L</strong> = Largo.
+      La calculadora aplica: <code>m³ = ((((H × 2) + A) × 0.9) × L) / factor</code>.
+    </figcaption>
+  </figure>
+
+  <!-- Datos descriptivos -->
+  <label>Labor
+    <input id="labor" placeholder="Nombre de la labor" />
+  </label>
+  <label>Nivel (Nv.)
+    <input id="nivel" placeholder="Nivel" />
+  </label>
+
+  <!-- Dimensiones -->
+  <div class="row">
+    <div>
+      <label>Ancho (A) [m]
+        <input id="ancho" type="number" step="0.01" placeholder="0.00" />
+      </label>
+    </div>
+    <div>
+      <label>Largo (L) [m]
+        <input id="largo" type="number" step="0.01" placeholder="0.00" />
+      </label>
+    </div>
+  </div>
+  <label>Altura (H) [m]
+    <input id="altura" type="number" step="0.01" placeholder="0.00" />
+  </label>
+
+  <!-- Factor -->
+  <label>Factor (por defecto 11.5)
+    <input id="factor" type="number" step="0.01" value="11.5" />
+  </label>
+
+  <!-- Acciones -->
+  <div class="actions">
+    <button id="btn-calcular">Calcular m³</button>
+    <button class="secondary" id="btn-limpiar">Limpiar</button>
+    <label style="display:flex; align-items:center; gap:8px; font-weight:400;">
+      <input type="checkbox" id="autoCalc" />
+      Calcular automáticamente al escribir
+    </label>
+  </div>
+
+  <!-- Mensajes -->
+  <div id="msg" class="error"></div>
+
+  <!-- Panel de resultados -->
+  <div class="panel" id="panel-resultado" style="display:none;">
+    <div class="result-title">Resultado</div>
+    <div class="result-value" id="valor-m3">0.000 m³</div>
+    <div class="summary" id="resumen">—</div>
+  </div>
+
+  <div class="footer">
+    Fórmula: <code>m³ = ((((H × 2) + A) × 0.9) × L) / factor</code>
+  </div>
+
+  <script>
+    // Registrar Service Worker (PWA en HTTPS)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(console.error);
+      });
+    }
+
+    // Elementos
+    const els = {
+      labor: document.getElementById('labor'),
+      nivel: document.getElementById('nivel'),
+      ancho: document.getElementById('ancho'),
+      largo: document.getElementById('largo'),
+      altura: document.getElementById('altura'),
+      factor: document.getElementById('factor'),
+      msg: document.getElementById('msg'),
+      panel: document.getElementById('panel-resultado'),
+      valor: document.getElementById('valor-m3'),
+      resumen: document.getElementById('resumen'),
+      btnCalcular: document.getElementById('btn-calcular'),
+      btnLimpiar: document.getElementById('btn-limpiar'),
+      autoCalc: document.getElementById('autoCalc')
+    };
+
+    // Cargar últimos valores guardados
+    window.addEventListener('DOMContentLoaded', () => {
+      ['labor','nivel','ancho','largo','altura','factor'].forEach(id => {
+        const v = localStorage.getItem('sc_'+id);
+        if (v !== null) els[id].value = v;
+      });
+    });
+
+    // Calcular m³ con validaciones
+    function calcular(){
+      els.msg.textContent = '';
+      const labor = els.labor.value.trim();
+      const nivel = els.nivel.value.trim();
+      const A = parseFloat(els.ancho.value);
+      const L = parseFloat(els.largo.value);
+      const H = parseFloat(els.altura.value);
+      const f = parseFloat(els.factor.value);
+
+      // Validaciones
+      if ([A,L,H,f].some(v => isNaN(v))) {
+        els.panel.style.display = 'none';
+        els.msg.textContent = 'Verifica que A, L, H y el factor sean números válidos.';
+        return;
+      }
+      if (A < 0 || H < 0 || L <= 0 || f <= 0) {
+        els.panel.style.display = 'none';
+        els.msg.textContent = 'Los valores deben ser positivos y L/factor mayores a 0.';
+        return;
+      }
+
+      // Fórmula: ((((H * 2) + A) * 0.9) * L) / factor
+      const m3 = ((((H * 2) + A) * 0.9) * L) / f;
+
+      // Mostrar resultado en grande y resumen
+      els.panel.style.display = 'block';
+      els.valor.textContent = `${m3.toFixed(3)} m³`;
+      const resumenTxt = `Labor: ${labor || '—'} • Nivel: ${nivel || '—'} • A=${A.toFixed(2)} m, L=${L.toFixed(2)} m, H=${H.toFixed(2)} m • Factor=${f.toFixed(2)}`;
+      els.resumen.textContent = resumenTxt;
+
+      // Guardar últimos valores
+      [['labor',labor],['nivel',nivel],['ancho',A],['largo',L],['altura',H],['factor',f]]
+        .forEach(([k,v]) => localStorage.setItem('sc_'+k, v));
+    }
+
+    // Limpiar campos y ocultar resultado
+    function limpiar(){
+      ['labor','nivel','ancho','largo','altura'].forEach(id => els[id].value = '');
+      els.factor.value = '11.5';
+      els.msg.textContent = '';
+      els.panel.style.display = 'none';
+      ['labor','nivel','ancho','largo','altura','factor'].forEach(id => localStorage.removeItem('sc_'+id));
+    }
+
+    // Eventos
+    els.btnCalcular.addEventListener('click', calcular);
+    els.btnLimpiar.addEventListener('click', limpiar);
+
+    // Cálculo automático (opcional)
+    ['labor','nivel','ancho','largo','altura','factor'].forEach(id => {
+      els[id].addEventListener('input', () => {
+        if (els.autoCalc.checked) calcular();
+      });
+    });
+  </script>
+</body>
+</html>
