@@ -1,11 +1,11 @@
-// --- Service Worker (GitHub Pages sub-path) ---
-const GHPATH = '/shotcrete-calc';        // ← tu repo
-const CACHE_NAME = 'sc-v7';              // sube versión cuando cambies algo
+// --- Service Worker (completo) para GitHub Pages ---
+const REPO = '/shotcrete-calc';
+const CACHE_NAME = 'sc-v8';
 const ASSETS = [
-  `${GHPATH}/`,
-  `${GHPATH}/index.html`,
-  `${GHPATH}/manifest.json`,
-  `${GHPATH}/icon-192.png`
+  `${REPO}/`,
+  `${REPO}/index.html`,
+  `${REPO}/manifest.json`,
+  `${REPO}/icon-192.png`
 ];
 
 self.addEventListener('install', (event) => {
@@ -24,16 +24,15 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
-  // Navegación: devolver index.html del caché para evitar blanco al refrescar sin red
   if (req.mode === 'navigate') {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_NAME);
-      const cachedIndex = await cache.match(`${GHPATH}/index.html`);
+      const cachedIndex = await cache.match(`${REPO}/index.html`);
       if (cachedIndex) return cachedIndex;
       try { return await fetch(req); } 
       catch {
         return new Response(
-          '<!DOCTYPE html><meta charset="utf-8"><title>Offline</title><body><h2>Sin conexión</h2><p>Abre la app con internet al menos una vez.</p></body>',
+          '<!DOCTYPE html><meta charset="utf-8"><title>Offline</title><body><h2>Sin conexión</h2><p>Abre la app con internet al menos una vez para usarla offline.</p></body>',
           { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
         );
       }
@@ -41,8 +40,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Recursos: cache-first con fallback a red
-  event.respondWith(
-    caches.match(req).then(r => r || fetch(req).catch(() => r))
-  );
+  event.respondWith(caches.match(req).then(r => r || fetch(req).catch(() => r)));
 });
+
