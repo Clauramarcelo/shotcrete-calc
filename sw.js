@@ -1,7 +1,7 @@
 
 // --- Service Worker para GitHub Pages (sub-path /shotcrete-calc/) ---
 const REPO = '/shotcrete-calc';
-const CACHE_NAME = 'sc-v32'; // NUEVA versión para forzar actualización
+const CACHE_NAME = 'sc-v27'; // NUEVA versión
 
 const ASSETS = [
   `${REPO}/`,
@@ -27,7 +27,6 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
-  // Navegaciones: servir index.html del caché para modo offline
   if (req.mode === 'navigate') {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_NAME);
@@ -47,7 +46,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Recursos: cache-first con fallback a red + cacheo en runtime
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;
@@ -64,3 +62,4 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
