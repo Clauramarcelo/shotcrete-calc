@@ -1,31 +1,16 @@
+
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Shotcrete Calc</title>
-
   <style>
-    :root{
-      --brand:#0a84ff; --brand-2:#166ef2;
-      --bg:#ffffff; --fg:#0b0b0b; --muted:#667085; --card:#f6f8fa; --border:#d0d5dd;
-      color-scheme: light dark;
-    }
-    @media (prefers-color-scheme: dark){
-      :root{ --bg:#0b0b0b; --fg:#eee; --muted:#98a2b3; --card:#14171a; --border:#2a2e33; }
-    }
+    :root{ --brand:#0a84ff; --brand-2:#166ef2; --bg:#ffffff; --fg:#0b0b0b; --muted:#667085; --card:#f6f8fa; --border:#d0d5dd; color-scheme: light dark; }
+    @media (prefers-color-scheme: dark){ :root{ --bg:#0b0b0b; --fg:#eee; --muted:#98a2b3; --card:#14171a; --border:#2a2e33; } }
     *{box-sizing:border-box}
-    body{
-      margin:0;background:var(--bg);color:var(--fg);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      line-height:1.35;padding-bottom:env(safe-area-inset-bottom)
-    }
-    header{
-      position:sticky;top:0;z-index:50;
-      background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;
-      padding:calc(.6rem + env(safe-area-inset-top)) 1rem .6rem 1rem;
-      display:flex;align-items:center;gap:.75rem;box-shadow:0 2px 12px rgba(0,0,0,.12)
-    }
+    body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.35;padding-bottom:env(safe-area-inset-bottom)}
+    header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;padding:calc(.6rem + env(safe-area-inset-top)) 1rem .6rem 1rem;display:flex;align-items:center;gap:.75rem;box-shadow:0 2px 12px rgba(0,0,0,.12)}
     header .logo{width:28px;height:28px;border-radius:6px;background:#fff2;display:inline-block}
     header h1{margin:0;font-size:1.1rem}
     main{max-width:960px;margin:0 auto;padding:1rem;padding-bottom:4.5rem}
@@ -43,15 +28,18 @@
     .btn.primary{background:var(--brand);color:#fff}
     .btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
     /* Resultado grande */
-    .result{margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center}
+    .result{margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;text-align:center}
     @media (prefers-color-scheme: dark){ .result{background:#0e0e10} }
     .result h2{margin:0;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:#0a84ff}
-    /* Tab bar */
+    .result small{display:block;color:var(--muted);margin-top:.25rem}
+    /* Tab bar (si la usas) */
     .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--bg);border-top:1px solid var(--border);padding:.35rem calc(.6rem + env(safe-area-inset-bottom)) .35rem .6rem;display:grid;grid-template-columns:repeat(5,1fr);gap:.25rem}
     .tabbar button{appearance:none;border:none;background:transparent;color:#667085;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;padding:.5rem 0;border-radius:.5rem;cursor:pointer;font-size:.9rem}
     .tabbar button.active{color:#0a84ff;font-weight:700;background:var(--card)}
     section.tab{display:none}
     section.tab.active{display:block}
+    .mode{display:flex;gap:.5rem;align-items:center;margin:.2rem 0 .4rem}
+    .mode label{display:flex;align-items:center;gap:.4rem;margin:0}
   </style>
 </head>
 <body>
@@ -66,29 +54,34 @@
       <fieldset>
         <legend>Calculadora de cubicación</legend>
 
-        <div class="row3" style="margin-top:.6rem">
+        <!-- Modo de cálculo: Avance (túnel) o Resane (hastial) -->
+        <div class="mode" role="group" aria-label="Modo de cálculo">
+          <label><input type="radio" name="modo" value="tunnel" checked> Avance (túnel)</label>
+          <label><input type="radio" name="modo" value="wall"> Resane (hastial)</label>
+        </div>
+
+        <div class="row3">
           <div>
             <label for="inpA">Ancho (A) — m</label>
-            <input id="inpA" type="text" inputmode="decimal" placeholder="Ej. 4.00">
+            <input id="inpA" type="text" inputmode="decimal" placeholder="Ej. 4.0">
           </div>
           <div>
             <label for="inpH">Altura (H) — m</label>
-            <input id="inpH" type="text" inputmode="decimal" placeholder="Ej. 3.50">
+            <input id="inpH" type="text" inputmode="decimal" placeholder="Ej. 3.5">
           </div>
           <div>
             <label for="inpL">Largo (L) — m</label>
-            <input id="inpL" type="text" inputmode="decimal" placeholder="Ej. 20.00">
+            <input id="inpL" type="text" inputmode="decimal" placeholder="Ej. 20.0">
           </div>
         </div>
 
         <div class="row2" style="margin-top:.6rem">
           <div>
             <label for="inpSac">Frente de sacrificio — m³</label>
-            <input id="inpSac" type="text" inputmode="decimal" placeholder="Ej. 0.50">
+            <input id="inpSac" type="text" inputmode="decimal" placeholder="Ej. 0.5">
           </div>
           <div>
             <label for="inpConst">Constante (m²/m³)</label>
-            <!-- Por defecto 11.5, editable -->
             <input id="inpConst" type="text" inputmode="decimal" value="11.5" placeholder="Ej. 11.5">
           </div>
         </div>
@@ -98,14 +91,15 @@
           <button class="btn ghost" id="btnLimpiar">Limpiar</button>
         </div>
 
-        <!-- Solo el resultado (m³) en grande -->
+        <!-- Resultado en grande (1 decimal) con nombre del modo -->
         <div id="calcOut" class="result" aria-live="polite">
           <h2>—</h2>
+          <small id="calcMode">Selecciona modo y completa los datos.</small>
         </div>
       </fieldset>
     </section>
 
-    <!-- Tabs futuras (placeholders) -->
+    <!-- (Opcional) otras pestañas -->
     <section id="tab-registro" class="tab" aria-labelledby="btn-registro">
       <fieldset><legend>Registro</legend><p>Próximo: guardado offline, export/import.</p></fieldset>
     </section>
@@ -120,6 +114,7 @@
     </section>
   </main>
 
+  <!-- Tab bar (si la usas) -->
   <nav class="tabbar" role="tablist" aria-label="Navegación">
     <button id="btn-calculadora" class="active" role="tab" aria-controls="tab-calculadora" aria-selected="true">Calculadora</button>
     <button id="btn-registro" role="tab" aria-controls="tab-registro" aria-selected="false">Registro</button>
@@ -129,7 +124,7 @@
   </nav>
 
   <script>
-    /* ===== Tabs ===== */
+    /* ===== Tabs (si las usas) ===== */
     const mapTabs = [
       {btn:'btn-calculadora', tab:'tab-calculadora'},
       {btn:'btn-registro',    tab:'tab-registro'},
@@ -139,7 +134,7 @@
     ];
     mapTabs.forEach(({btn, tab})=>{
       const b = document.getElementById(btn);
-      b.addEventListener('click', ()=>{
+      b?.addEventListener('click', ()=>{
         document.querySelectorAll('.tabbar button').forEach(el=>{
           el.classList.toggle('active', el.id === btn);
           el.setAttribute('aria-selected', el.id === btn ? 'true' : 'false');
@@ -147,17 +142,19 @@
         document.querySelectorAll('section.tab').forEach(el=>{
           el.classList.toggle('active', el.id === tab);
         });
-        if (tab === 'tab-calculadora'){ document.getElementById('inpA').focus({preventScroll:true}); }
+        if (tab === 'tab-calculadora'){ document.getElementById('inpA')?.focus({preventScroll:true}); }
       });
     });
 
-    /* ===== Calculadora (resultado m³) ===== */
+    /* ===== Calculadora con modos ===== */
     const inpA = document.getElementById('inpA');
     const inpH = document.getElementById('inpH');
     const inpL = document.getElementById('inpL');
     const inpSac = document.getElementById('inpSac');
     const inpConst = document.getElementById('inpConst');
-    const outEl = document.querySelector('#calcOut h2');
+    const outH2 = document.querySelector('#calcOut h2');
+    const outMode = document.getElementById('calcMode');
+    const modeRadios = document.querySelectorAll('input[name="modo"]');
 
     function parseDec(txt){
       if (typeof txt !== 'string') return NaN;
@@ -165,7 +162,12 @@
       if (s === '') return NaN;
       return Number(s);
     }
-    const fmt = (n, d=3) => Number(n).toFixed(d);
+    const fmt1 = (n) => Number(n).toFixed(1); // 1 decimal
+
+    function nombreModo(){
+      const m = [...modeRadios].find(r => r.checked)?.value || 'tunnel';
+      return m === 'tunnel' ? 'Avance' : 'Resane';
+    }
 
     function calcular(){
       const A = parseDec(inpA.value);
@@ -173,38 +175,54 @@
       const L = parseDec(inpL.value);
       const Sac = parseDec(inpSac.value || '0');
       const C = parseDec(inpConst.value || '11.5');
+      const m = [...modeRadios].find(r => r.checked)?.value || 'tunnel';
 
-      if (!isFinite(A) || !isFinite(H) || !isFinite(L) || !isFinite(Sac) || !isFinite(C) || C<=0){
-        outEl.textContent = '—';
+      // Validaciones mínimas
+      if (!isFinite(L) || !isFinite(H) || !isFinite(Sac) || !isFinite(C) || C<=0){
+        outH2.textContent = '—'; outMode.textContent = 'Completa los campos.';
         return;
       }
+      if (m === 'tunnel' && !isFinite(A)){ outH2.textContent = '—'; outMode.textContent = 'Completa A, H y L.'; return; }
 
-      // Fórmula: ((((H*2)+A)*0.9)*L)/C + Sac
-      const perimetroParcial = (H * 2) + A;
-      const perimetroAjustado = perimetroParcial * 0.9;
-      const areaLineal = perimetroAjustado * L;   // m²
-      const m3_base = areaLineal / C;             // m³
-      const m3_total = m3_base + Sac;             // m³
+      let m3_base = 0;
+      if (m === 'tunnel'){
+        // Avance (túnel): ((((H*2)+A)*0.9)*L)/C
+        const perimetroParcial = (H * 2) + A;
+        const perimetroAjustado = perimetroParcial * 0.9;
+        const areaLineal = perimetroAjustado * L;   // m²
+        m3_base = areaLineal / C;
+      } else {
+        // Resane (hastial): (L * H)/C
+        m3_base = (L * H) / C;
+      }
 
-      outEl.textContent = `${fmt(m3_total)} m³`;
+      const m3_total = m3_base + (isFinite(Sac) ? Sac : 0);
+      outH2.textContent = `${nombreModo()}: ${fmt1(m3_total)} m³`;
+      outMode.textContent = ''; // no comentarios extra
     }
 
     document.getElementById('btnCalcular').addEventListener('click', calcular);
     document.getElementById('btnLimpiar').addEventListener('click', ()=>{
       [inpA, inpH, inpL, inpSac].forEach(i=>i.value='');
       inpConst.value = '11.5';
-      outEl.textContent = '—';
+      document.querySelector('input[name="modo"][value="tunnel"]').checked = true;
+      outH2.textContent = '—'; outMode.textContent = 'Selecciona modo y completa los datos.';
       inpA.focus();
     });
-    [inpA, inpH, inpL, inpSac, inpConst].forEach(el=>{
+
+    // Cálculo en tiempo real con datos mínimos
+    [inpA, inpH, inpL, inpSac, inpConst, ...modeRadios].forEach(el=>{
       el.addEventListener('input', ()=>{
-        const hasCore = inpA.value.trim() !== '' && inpH.value.trim() !== '' && inpL.value.trim() !== '';
-        if (hasCore) calcular(); else outEl.textContent = '—';
+        const m = [...modeRadios].find(r => r.checked)?.value || 'tunnel';
+        const wallReady   = inpH.value.trim() !== '' && inpL.value.trim() !== '';
+        const tunnelReady = inpA.value.trim() !== '' && wallReady;
+        const ready = (m === 'wall') ? wallReady : tunnelReady;
+        if (ready) calcular(); else { outH2.textContent = '—'; outMode.textContent = 'Selecciona modo y completa los datos.'; }
       });
-      el.addEventListener('keydown', (ev)=>{ if (ev.key === 'Enter') calcular(); });
+      el.addEventListener?.('keydown', (ev)=>{ if (ev.key === 'Enter') calcular(); });
     });
 
-    /* ===== Service Worker (si lo tienes en el repo) ===== */
+    /* ===== Service Worker (si lo usas) ===== */
     (function(){
       if ('serviceWorker' in navigator){
         const swUrl = '/shotcrete-calc/sw.js';
@@ -216,6 +234,3 @@
   </script>
 </body>
 </html>
-
-
-
