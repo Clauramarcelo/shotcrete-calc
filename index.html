@@ -7,8 +7,8 @@
   <title>Shotcrete Calc</title>
 
   <!-- PWA (sub-path GitHub Pages) -->
-  <link rel="manifest" href="/shotcrete-calc/manifest.json">
-  <link rel="icon" href="/shotcrete-calc/icon-192.png" sizes="192x192">
+  /shotcrete-calc/manifest.json
+  /shotcrete-calc/icon-192.png
   <meta name="theme-color" content="#0a84ff">
 
   <!-- ======= Estilos (Mobile App + Responsive) ======= -->
@@ -293,17 +293,45 @@
         <p class="muted" style="margin-top:.35rem">Temperatura/Slump se gestionan en <strong>Registros</strong>; aquí no hace falta.</p>
       </fieldset>
 
-      <!-- A) Penetración -->
+      <!-- A) Penetración (método A) -->
       <fieldset>
-        <legend>Penetración (método A) — fuerzas por tiempo</legend>
+        <legend>Penetración (método A) — 10 fuerzas por tiempo</legend>
+
+        <!-- Hora inicial -->
         <div class="row2">
-          <div><label for="pHora">Hora de lectura (hh:mm)</label><input id="pHora" type="text" placeholder="ej. 01:00"></div>
-          <div><label for="pFuerzas">Fuerzas (N), separadas por coma</label><input id="pFuerzas" type="text" placeholder="ej. 145, 134, 175, 180, 210"></div>
+          <div>
+            <label for="pHoraIni">Hora inicial (hh:mm)</label>
+            <input id="pHoraIni" type="text" placeholder="ej. 23:00">
+          </div>
+          <div class="muted" style="display:flex;align-items:end">
+            Ejemplo: lectura 23:15 con hora inicial 23:00 → hora acumulada = 0.25 h
+          </div>
         </div>
+
+        <!-- Fila de lectura -->
         <div class="row2" style="margin-top:.6rem">
-          <div><label for="pKPen">K penetración (N→MPa)</label><input id="pKPen" type="text" inputmode="decimal" value="526"></div>
-          <div><label for="pFactorKg">MPa→kg/cm² (opcional)</label><input id="pFactorKg" type="text" inputmode="decimal" value="10.19716213"></div>
+          <div>
+            <label for="pHora">Hora de lectura (hh:mm)</label>
+            <input id="pHora" type="text" placeholder="ej. 23:15">
+          </div>
+          <div>
+            <label for="pFuerzas">10 Fuerzas (N), separadas por coma</label>
+            <input id="pFuerzas" type="text" placeholder="ej. 145,134,175,180,210,150,152,152,164,134">
+          </div>
         </div>
+
+        <!-- Parámetros -->
+        <div class="row2" style="margin-top:.6rem">
+          <div>
+            <label for="pRestar">Restar (N)</label>
+            <input id="pRestar" type="text" inputmode="decimal" value="37">
+          </div>
+          <div>
+            <label for="pKPen">Dividir entre (N→MPa)</label>
+            <input id="pKPen" type="text" inputmode="decimal" value="526">
+          </div>
+        </div>
+
         <div class="actions">
           <button class="btn primary" id="pAdd">Añadir fila</button>
           <button class="btn ghost" id="pClear">Limpiar</button>
@@ -313,12 +341,16 @@
         <table id="tblPen">
           <thead>
             <tr>
-              <th>#</th><th>Hora</th><th>h acumulada</th><th>Fuerzas (N)</th>
-              <th>Promedio (N)</th><th>MPa</th><th>kg/cm²</th><th>Acciones</th>
+              <th>#</th><th>Hora lectura</th><th>Hora acumulada (h)</th>
+              <th>Fuerzas (10)</th><th>Promedio (N)</th><th>MPa = (Prom−37)/526</th><th>Acciones</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
+
+        <p class="muted" style="margin-top:.35rem">
+          Tiempos típicos: 0:15, 0:30, 0:45, 1:00 respecto a la <strong>hora inicial</strong>. Si cruza medianoche, se corrige sumando 24 h.
+        </p>
       </fieldset>
 
       <!-- B) Pull‑out (Hilti B) -->
@@ -398,9 +430,9 @@
         });
         if (tab === 'tab-calculo'){ document.getElementById('qA')?.focus({preventScroll:true}); }
         if (tab === 'tab-registros'){ document.getElementById('rA')?.focus({preventScroll:true}); }
-        if (tab === 'tab-tablas'){ renderTbl3(); }          // refrescar tabla de registros
-        if (tab === 'tab-dashboard'){ renderDashboard(); }  // gráficos
-        if (tab === 'tab-ensayos'){ renderEnsRes(); }       // resumen ensayos
+        if (tab === 'tab-tablas'){ renderTbl3(); }
+        if (tab === 'tab-dashboard'){ renderDashboard(); }
+        if (tab === 'tab-ensayos'){ renderEnsRes(); }
       });
     });
 
@@ -625,7 +657,6 @@
     document.getElementById('btnRenderProduccion')?.addEventListener('click', renderProduccionChart);
 
     /* =================== Pestaña 4: Dashboard (Ensayo log‑log) =================== */
-    // Storage Ensayos (versión simplificada)
     const LS_ENSAYOS = 'sc_ensayos2';
     function getEnsayos(){ try{ return JSON.parse(localStorage.getItem(LS_ENSAYOS)) ?? []; }catch{ return []; } }
     function setEnsayos(arr){ localStorage.setItem(LS_ENSAYOS, JSON.stringify(arr)); }
@@ -635,7 +666,7 @@
       const ens=getEnsayos(); sel.innerHTML='';
       if(!ens.length){ sel.innerHTML='<option value="" disabled selected>Sin ensayos</option>'; meta.textContent=''; return; }
       ens.forEach((e,i)=>{ const opt=document.createElement('option'); opt.value=String(i); opt.textContent=`${e.meta?.labor||'—'} | ${e.meta?.nivel||'—'} | ${e.meta?.robot||'—'}`; sel.appendChild(opt); });
-      sel.value='0'; const e0=ens[0]; meta.textContent='';
+      sel.value='0'; meta.textContent='';
     }
     const logMap = (v, vmin, vmax, p0, p1) => { const lv=Math.log10(Math.max(v,1e-12)), lmin=Math.log10(vmin), lmax=Math.log10(vmax); return p0 + (lv-lmin)*(p1-p0)/(lmax-lmin); };
     function renderEnsayoChart(){
@@ -689,39 +720,97 @@
     }
 
     /* =================== Pestaña 5: Ensayos (lógica) =================== */
-    const hhmmToHours = (hhmm) => (/^\d{1,2}:\d{2}$/.test(hhmm) ? ((h=Number(hhmm.split(':')[0])), (m=Number(hhmm.split(':')[1])), h + m/60) : NaN);
-    const parseList = (txt) => (txt||'').split(/[,\s]+/).map(Number).filter(v => isFinite(v) && v>0);
+    const LS_ENSAYOS = 'sc_ensayos2';
+    function getEnsayos(){ try{ return JSON.parse(localStorage.getItem(LS_ENSAYOS)) ?? []; }catch{ return []; } }
+    function setEnsayos(arr){ localStorage.setItem(LS_ENSAYOS, JSON.stringify(arr)); }
+
+    const hhmmToHours = (hhmm) =>
+      (/^\d{1,2}:\d{2}$/.test(hhmm)
+        ? ((h=Number(hhmm.split(':')[0])), (m=Number(hhmm.split(':')[1])), h + m/60)
+        : NaN);
     function renum(tbody){ [...tbody.querySelectorAll('tr')].forEach((tr,i)=>tr.children[0].textContent=i+1); }
     function metaEns(){ return { labor: document.getElementById('eLabor').value.trim(), nivel: document.getElementById('eNivel').value.trim(), robot: document.getElementById('eRobot').value.trim() }; }
 
     /* --- Penetración --- */
     const tblPenBody = document.querySelector('#tblPen tbody');
     document.getElementById('pAdd')?.addEventListener('click', ()=>{
-      const hora = document.getElementById('pHora').value.trim();
-      const h = hhmmToHours(hora);
-      const fuerzas = parseList(document.getElementById('pFuerzas').value);
-      const K = Number(document.getElementById('pKPen').value||'526');        // por defecto 526
-      const KG = Number(document.getElementById('pFactorKg').value||'10.19716213'); // MPa→kg/cm² (opcional)
-      if (!isFinite(h) || !fuerzas.length || !isFinite(K) || !isFinite(KG)){ alert('Completa hora, fuerzas y parámetros.'); return; }
+      const horaIni = document.getElementById('pHoraIni').value.trim();
+      const hora    = document.getElementById('pHora').value.trim();
+      const restar  = Number(document.getElementById('pRestar').value || '37');
+      const K       = Number(document.getElementById('pKPen').value || '526');
+
+      const h0 = hhmmToHours(horaIni);
+      const hR = hhmmToHours(hora);
+
+      const fuerzasTxt = document.getElementById('pFuerzas').value;
+      const fuerzas = (fuerzasTxt||'').split(/[,\s]+/).map(Number).filter(v=>isFinite(v));
+
+      if (!isFinite(h0) || !isFinite(hR)){
+        alert('Revisa hora inicial y hora de lectura (formato hh:mm).'); return;
+      }
+      if (fuerzas.length !== 10){
+        alert('El método exige exactamente 10 fuerzas por tiempo.'); return;
+      }
+      if (!isFinite(restar) || !isFinite(K) || K<=0){
+        alert('Parámetros inválidos (Restar y Dividir entre).'); return;
+      }
+
+      // Hora acumulada (corrige cruce de medianoche)
+      let hAcum = hR - h0;
+      if (hAcum < 0) hAcum += 24;
+
+      // Promedio y MPa = (Prom − 37)/526
       const prom = fuerzas.reduce((s,v)=>s+v,0)/fuerzas.length;
-      const mpa = prom / K;
-      const kgcm2 = mpa * KG;
+      const mpa  = (prom - restar) / K;
+
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td></td><td>${hora}</td><td>${h.toFixed(3)}</td><td>${fuerzas.join(', ')}</td><td>${prom.toFixed(1)}</td><td>${mpa.toFixed(3)}</td><td>${kgcm2.toFixed(2)}</td><td><button class="btn ghost del">Eliminar</button></td>`;
-      tblPenBody.appendChild(tr); renum(tblPenBody);
-      tr.querySelector('.del')?.addEventListener('click', ()=>{ tr.remove(); renum(tblPenBody); });
+      tr.innerHTML = `
+        <td></td>
+        <td>${hora}</td>
+        <td>${hAcum.toFixed(3)}</td>
+        <td>${fuerzas.join(', ')}</td>
+        <td>${prom.toFixed(1)}</td>
+        <td>${mpa.toFixed(3)}</td>
+        <td><button class="btn ghost del">Eliminar</button></td>
+      `;
+      tblPenBody.appendChild(tr);
+      renum(tblPenBody);
+
+      tr.querySelector('.del')?.addEventListener('click', ()=>{
+        tr.remove();
+        renum(tblPenBody);
+      });
     });
-    document.getElementById('pClear')?.addEventListener('click', ()=>{ tblPenBody.innerHTML=''; });
+
+    document.getElementById('pClear')?.addEventListener('click', ()=>{
+      tblPenBody.innerHTML='';
+    });
 
     document.getElementById('pSave')?.addEventListener('click', ()=>{
       const filas = [...tblPenBody.querySelectorAll('tr')].map(tr => {
         const td = tr.querySelectorAll('td');
-        return { tipo:'penetracion', hora:td[1].textContent, h_acum:Number(td[2].textContent), promN:Number(td[4].textContent), mpa:Number(td[5].textContent) };
+        return {
+          tipo     : 'penetracion',
+          hora     : td[1].textContent,
+          h_acum   : Number(td[2].textContent),
+          fuerzas  : td[3].textContent,     // trazabilidad
+          promN    : Number(td[4].textContent),
+          mpa      : Number(td[5].textContent)
+        };
       });
-      if (!filas.length){ alert('Añade filas de penetración.'); return; }
+      if (!filas.length){
+        alert('Añade al menos una fila de penetración.'); return;
+      }
+
       const arr = getEnsayos(); arr.push({ meta: metaEns(), penetracion: filas });
-      setEnsayos(arr); renderEnsRes(); alert('Ensayo (Penetración) guardado.');
-      populateEnsayoSelect(); renderEnsayoChart();
+      setEnsayos(arr);
+
+      // Actualiza resumen y dashboard
+      renderEnsRes?.();
+      populateEnsayoSelect?.();
+      renderEnsayoChart?.();
+
+      alert('Ensayo (Penetración) guardado con MPa = (Prom − 37)/526 y hora acumulada desde la hora inicial.');
     });
 
     /* --- Hilti B --- */
@@ -785,3 +874,4 @@
   </script>
 </body>
 </html>
+
