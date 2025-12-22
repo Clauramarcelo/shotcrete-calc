@@ -1,7 +1,7 @@
 
 // --- Service Worker para GitHub Pages (sub-path /shotcrete-calc/) ---
 const REPO = '/shotcrete-calc';
-const CACHE_NAME = 'sc-v21'; // incrementa cuando cambies assets
+const CACHE_NAME = 'sc-v20'; // incrementa cuando cambies assets precacheados
 
 // Precache mínimo para funcionar offline
 const ASSETS = [
@@ -50,7 +50,8 @@ self.addEventListener('fetch', (event) => {
             <title>Offline</title>
             <style>
               body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;padding:2rem}
-              h1{margin:0 0 .5rem} p{color:#444}
+              h1{margin:0 0 .5rem}
+              p{color:#444}
             </style>
             <h1>Sin conexión</h1>
             <p>Abre la app con Internet al menos una vez para usarla sin conexión.</p>
@@ -62,7 +63,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Recursos: cache-first con fallback a red, con cacheo en runtime de respuestas válidas
+  // Recursos: cache-first con fallback a red; cacheo en runtime de respuestas OK
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;
