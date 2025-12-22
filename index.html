@@ -8,7 +8,7 @@
 
   <!-- PWA (sub-path GitHub Pages) -->
   <link rel="manifest" href="/shotcrete-calc/manifest.json">
-  <link rel="icon" href="/shotcrete-calc/icon-192.png" type="image/png">
+  <link rel="icon" href="/shotcrete-calc/icon-192.png" sizes="192x192">
   <meta name="theme-color" content="#0a84ff">
 
   <!-- ======= Estilos (Mobile App + Responsive) ======= -->
@@ -92,12 +92,9 @@
     section.tab{ display:none }
     section.tab.active{ display:block }
 
-    /* Modo de cálculo */
-    .mode{ display:flex; gap:.5rem; align-items:center; margin:.2rem 0 .4rem }
-    .mode label{ display:flex; align-items:center; gap:.4rem; margin:0 }
-
     /* Utilidad */
     .hidden{ display:none !important }
+    .muted{ color:var(--muted); font-size:.95rem }
   </style>
 </head>
 <body>
@@ -112,9 +109,14 @@
       <fieldset>
         <legend>Calculo m3</legend>
 
-        <div class="mode" role="group" aria-label="Modo de cálculo">
-          <label><input type="radio" name="modoQuick" value="tunnel" checked> Avance (túnel)</label>
-          <label><input type="radio" name="modoQuick" value="wall"> Resane (hastial)</label>
+        <div class="actions" style="margin-bottom:.4rem">
+          <span class="muted">Modo:</span>
+          <label style="display:inline-flex;align-items:center;gap:.35rem;margin-left:.5rem">
+            <input type="radio" name="modoQuick" value="tunnel" checked> Avance (túnel)
+          </label>
+          <label style="display:inline-flex;align-items:center;gap:.35rem;margin-left:.5rem">
+            <input type="radio" name="modoQuick" value="wall"> Resane (hastial)
+          </label>
         </div>
 
         <div class="row3">
@@ -122,7 +124,6 @@
           <div><label for="qH">Altura (H) — m</label><input id="qH" type="text" inputmode="decimal"></div>
           <div><label for="qL">Largo (L) — m</label><input id="qL" type="text" inputmode="decimal"></div>
         </div>
-
         <div class="row2" style="margin-top:.6rem">
           <div><label for="qSac">Frente de sacrificio — m³</label><input id="qSac" type="text" inputmode="decimal"></div>
           <div><label for="qConst">Constante (m²/m³)</label><input id="qConst" type="text" inputmode="decimal" value="11.5"></div>
@@ -134,21 +135,25 @@
         </div>
 
         <div id="qOut" class="result" aria-live="polite">
-          <h2>—</h2>
-          <small id="qMode">Selecciona modo y completa los datos.</small>
+          <h2>—</h2><small id="qMode">Selecciona modo y completa los datos.</small>
         </div>
       </fieldset>
     </section>
 
-    <!-- ====== 2) REGISTROS (Calcular → Registrar; sin tabla aquí) ====== -->
+    <!-- ====== 2) REGISTROS (Calcular → Registrar; SIN tabla aquí) ====== -->
     <section id="tab-registros" class="tab" aria-labelledby="btn-registros">
       <!-- Calculadora de Registros -->
       <fieldset>
         <legend>Calculadora de Registros</legend>
 
-        <div class="mode" role="group" aria-label="Modo de cálculo">
-          <label><input type="radio" name="modoRegCalc" value="tunnel" checked> Avance (túnel)</label>
-          <label><input type="radio" name="modoRegCalc" value="wall"> Resane (hastial)</label>
+        <div class="actions" style="margin-bottom:.4rem">
+          <span class="muted">Modo:</span>
+          <label style="display:inline-flex;align-items:center;gap:.35rem;margin-left:.5rem">
+            <input type="radio" name="modoRegCalc" value="tunnel" checked> Avance (túnel)
+          </label>
+          <label style="display:inline-flex;align-items:center;gap:.35rem;margin-left:.5rem">
+            <input type="radio" name="modoRegCalc" value="wall"> Resane (hastial)
+          </label>
         </div>
 
         <div class="row3">
@@ -156,34 +161,28 @@
           <div><label for="rH">Altura (H) — m</label><input id="rH" type="text" inputmode="decimal"></div>
           <div><label for="rL">Largo (L) — m</label><input id="rL" type="text" inputmode="decimal"></div>
         </div>
-
         <div class="row2" style="margin-top:.6rem">
           <div><label for="rSac">Frente de sacrificio — m³</label><input id="rSac" type="text" inputmode="decimal"></div>
           <div><label for="rConst">Constante (m²/m³)</label><input id="rConst" type="text" inputmode="decimal" value="11.5"></div>
         </div>
 
-        <!-- Acciones: SOLO “Calcular” -->
         <div class="actions">
           <button class="btn primary" id="rCalcBtn">Calcular</button>
         </div>
 
-        <!-- Resultado -->
         <div id="rOut" class="result" aria-live="polite">
-          <h2>—</h2>
-          <small id="rMode">Primero calcula; luego podrás registrar la actividad.</small>
+          <h2>—</h2><small id="rMode">Primero calcula; luego podrás registrar la actividad.</small>
         </div>
       </fieldset>
 
-      <!-- Formulario de registro (se muestra SOLO tras cálculo válido) -->
+      <!-- Formulario de registro (solo tras cálculo válido) -->
       <fieldset id="regForm" class="hidden">
         <legend>Registro de actividad</legend>
-
         <div class="row3">
           <div><label for="regFecha">Fecha</label><input id="regFecha" type="date" /></div>
           <div><label for="regNivel">Nivel</label><input id="regNivel" type="text" /></div>
           <div><label for="regLabor">Labor</label><input id="regLabor" type="text" /></div>
         </div>
-
         <div class="row3" style="margin-top:.6rem">
           <div><label for="regRobot">N° Robot</label><input id="regRobot" type="text" /></div>
           <div><label for="regPresion">Presión de aire (bar)</label><input id="regPresion" type="text" inputmode="decimal" placeholder="Ej. xx bar" /></div>
@@ -197,7 +196,6 @@
             </select>
           </div>
         </div>
-
         <div class="row2" style="margin-top:.6rem">
           <div>
             <label for="regTurno">Turno</label>
@@ -212,15 +210,12 @@
             <input id="regObs" type="text" />
           </div>
         </div>
-
-        <!-- Acciones: SOLO “Registrar” + ir a Tablas -->
         <div class="actions" style="align-items:end; justify-content:flex-end;">
           <button class="btn primary" id="regGuardarBtn">Registrar</button>
           <button class="btn secondary" id="goTablasBtn">Ir a Tablas</button>
         </div>
         <p id="regMsg" class="muted" style="margin-top:.4rem"></p>
       </fieldset>
-      <!-- No hay tabla aquí -->
     </section>
 
     <!-- ====== 3) TABLAS (gestión y CSV) ====== -->
@@ -245,34 +240,141 @@
       </fieldset>
     </section>
 
-    <!-- ====== 4) DASHBOARD (Gráfico Producción) ====== -->
+    <!-- ====== 4) DASHBOARD ====== -->
     <section id="tab-dashboard" class="tab" aria-labelledby="btn-dashboard">
+      <!-- Producción (Labor vs m³) -->
       <fieldset>
-        <legend>Producción</legend>
+        <legend>Producción (Labor vs m³)</legend>
         <div class="actions">
           <button class="btn primary" id="btnRenderProduccion">Actualizar gráfico</button>
         </div>
         <canvas id="chartProduccion" width="900" height="360"
                 style="max-width:100%; background:var(--card); border:1px solid var(--border); border-radius:.6rem;"></canvas>
+        <p class="muted" style="margin-top:.5rem">Suma de m³ por <strong>Labor</strong> usando los registros guardados.</p>
+      </fieldset>
+
+      <!-- Ensayos: MPa vs Tiempo (log-log) -->
+      <fieldset>
+        <legend>Ensayos — Resistencia (MPa) vs Tiempo (h)</legend>
+
+        <div class="row2" style="align-items:end;">
+          <div>
+            <label for="ensayoSelect">Selecciona un ensayo</label>
+            <select id="ensayoSelect"></select>
+            <p class="muted" id="ensayoMeta" style="margin:.35rem 0 0;"></p>
+          </div>
+          <div class="actions" style="justify-content:flex-end;">
+            <button class="btn primary" id="btnRenderEnsayo">Dibujar curva</button>
+            <label style="display:flex; align-items:center; gap:.35rem; margin-left:.5rem;">
+              <input type="checkbox" id="chkGuias" checked>
+              <span>Guías de referencia</span>
+            </label>
+          </div>
+        </div>
+
+        <canvas id="chartEnsayo" width="900" height="420"
+                style="max-width:100%; background:#fff; border:1px solid var(--border); border-radius:.6rem; margin-top:.6rem;"></canvas>
         <p class="muted" style="margin-top:.5rem">
-          Suma de m³ por <strong>Labor</strong> usando los registros guardados.
+          Ejes logarítmicos — etiquetas en cada punto (MPa). Datos: 1h, 2h, 3h del ensayo seleccionado.
         </p>
       </fieldset>
     </section>
 
-    <!-- ====== 5) ENSAYOS ====== -->
+    <!-- ====== 5) ENSAYOS (simplificado) ====== -->
     <section id="tab-ensayos" class="tab" aria-labelledby="btn-ensayos">
-      <fieldset><legend>Ensayos de Resistencias</legend><p class="muted">Próximo: cálculo y registro de f’c.</p></fieldset>
+      <!-- Datos generales -->
+      <fieldset>
+        <legend>Datos del ensayo</legend>
+        <div class="row3">
+          <div><label for="eLabor">Labor</label><input id="eLabor" type="text"></div>
+          <div><label for="eNivel">Nivel</label><input id="eNivel" type="text"></div>
+          <div><label for="eRobot">Robot</label><input id="eRobot" type="text"></div>
+        </div>
+        <p class="muted" style="margin-top:.35rem">Temperatura/Slump se gestionan en <strong>Registros</strong>; aquí no hace falta.</p>
+      </fieldset>
+
+      <!-- A) Penetración -->
+      <fieldset>
+        <legend>Penetración (método A) — fuerzas por tiempo</legend>
+        <div class="row2">
+          <div><label for="pHora">Hora de lectura (hh:mm)</label><input id="pHora" type="text" placeholder="ej. 01:00"></div>
+          <div><label for="pFuerzas">Fuerzas (N), separadas por coma</label><input id="pFuerzas" type="text" placeholder="ej. 145, 134, 175, 180, 210"></div>
+        </div>
+        <div class="row2" style="margin-top:.6rem">
+          <div><label for="pKPen">K penetración (N→MPa)</label><input id="pKPen" type="text" inputmode="decimal" value="526"></div>
+          <div><label for="pFactorKg">MPa→kg/cm² (opcional)</label><input id="pFactorKg" type="text" inputmode="decimal" value="10.19716213"></div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" id="pAdd">Añadir fila</button>
+          <button class="btn ghost" id="pClear">Limpiar</button>
+          <button class="btn secondary" id="pSave">Guardar ensayo (Penetración)</button>
+        </div>
+
+        <table id="tblPen">
+          <thead>
+            <tr>
+              <th>#</th><th>Hora</th><th>h acumulada</th><th>Fuerzas (N)</th>
+              <th>Promedio (N)</th><th>MPa</th><th>kg/cm²</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </fieldset>
+
+      <!-- B) Pull‑out (Hilti B) -->
+      <fieldset>
+        <legend>Pull‑out (método Hilti B)</legend>
+        <div class="row3">
+          <div><label for="hHora">Hora de lectura (hh:mm)</label><input id="hHora" type="text" placeholder="ej. 01:00"></div>
+          <div><label for="hHoraAc">Hora acumulada (h)</label><input id="hHoraAc" type="text" inputmode="decimal" placeholder="ej. 1.00"></div>
+          <div><label for="hPerforada">Parte perforada del clavo (mm)</label><input id="hPerforada" type="text" inputmode="decimal"></div>
+        </div>
+        <div class="row2" style="margin-top:.6rem">
+          <div><label for="hPullN">Lectura pull‑out (N)</label><input id="hPullN" type="text" inputmode="decimal"></div>
+          <div><label for="hOffset">Offset (+)</label><input id="hOffset" type="text" inputmode="decimal" value="2.7"></div>
+          <div><label for="hDivisor">Divisor (/) → MPa</label><input id="hDivisor" type="text" inputmode="decimal" value="7.69"></div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" id="hAdd">Añadir fila</button>
+          <button class="btn ghost" id="hClear">Limpiar</button>
+          <button class="btn secondary" id="hSave">Guardar ensayo (Hilti)</button>
+        </div>
+
+        <table id="tblHilti">
+          <thead>
+            <tr>
+              <th>#</th><th>Hora</th><th>h acumulada</th><th>Perforada (mm)</th><th>Pull‑out (N)</th>
+              <th>Relación (N/mm)</th><th>Grupo h</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <p class="muted" style="margin-top:.35rem">MPa (por grupo h) = (PROM(Relación N/mm) + 2.7) / 7.69 — según tu hoja Hilti B.</p>
+      </fieldset>
+
+      <!-- Resumen (para el Dashboard) -->
+      <fieldset>
+        <legend>Ensayos guardados (resumen)</legend>
+        <table id="tblEnsRes">
+          <thead>
+            <tr>
+              <th>#</th><th>Tipo</th><th>Labor | Nivel | Robot</th>
+              <th>MPa 1h</th><th>MPa 2h</th><th>MPa 3h</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </fieldset>
     </section>
   </main>
 
   <!-- Tab bar -->
   <nav class="tabbar" role="tablist" aria-label="Navegación">
-    <button id="btn-calculo"  class="active" role="tab" aria-controls="tab-calculo"  aria-selected="true">Calculo m3</button>
-    <button id="btn-registros"role="tab" aria-controls="tab-registros" aria-selected="false">Registros</button>
-    <button id="btn-tablas"   role="tab" aria-controls="tab-tablas"   aria-selected="false">Tablas</button>
-    <button id="btn-dashboard"role="tab" aria-controls="tab-dashboard"aria-selected="false">Dashboard</button>
-    <button id="btn-ensayos"  role="tab" aria-controls="tab-ensayos"  aria-selected="false">Ensayos</button>
+    <button id="btn-calculo"   class="active" role="tab" aria-controls="tab-calculo"   aria-selected="true">Calculo m3</button>
+    <button id="btn-registros" role="tab" aria-controls="tab-registros" aria-selected="false">Registros</button>
+    <button id="btn-tablas"    role="tab" aria-controls="tab-tablas"    aria-selected="false">Tablas</button>
+    <button id="btn-dashboard" role="tab" aria-controls="tab-dashboard" aria-selected="false">Dashboard</button>
+    <button id="btn-ensayos"   role="tab" aria-controls="tab-ensayos"   aria-selected="false">Ensayos</button>
   </nav>
 
   <!-- ======= JavaScript ======= -->
@@ -296,8 +398,9 @@
         });
         if (tab === 'tab-calculo'){ document.getElementById('qA')?.focus({preventScroll:true}); }
         if (tab === 'tab-registros'){ document.getElementById('rA')?.focus({preventScroll:true}); }
-        if (tab === 'tab-tablas'){ renderTbl3(); }          // refrescar tabla
-        if (tab === 'tab-dashboard'){ renderDashboard(); }  // dibujar gráfico
+        if (tab === 'tab-tablas'){ renderTbl3(); }          // refrescar tabla de registros
+        if (tab === 'tab-dashboard'){ renderDashboard(); }  // gráficos
+        if (tab === 'tab-ensayos'){ renderEnsRes(); }       // resumen ensayos
       });
     });
 
@@ -400,8 +503,7 @@
       });
       setRegs(regs);
       regMsg.textContent='Registro guardado. Revisa la pestaña “Tablas”.';
-      // Mantener el dashboard sincronizado
-      renderProduccionChart();
+      renderProduccionChart(); // sincroniza el dashboard
     });
     goTablasBtn?.addEventListener('click', ()=>{ document.getElementById('btn-tablas')?.click(); });
 
@@ -422,7 +524,7 @@
         tbl3Body.appendChild(tr);
         tr.querySelector('button')?.addEventListener('click', ()=>{
           const arr=getRegs(); arr.splice(i,1); setRegs(arr);
-          renderTbl3(); renderProduccionChart(); // sincroniza el gráfico
+          renderTbl3(); renderProduccionChart();
         });
       });
     }
@@ -521,17 +623,165 @@
       ctx.fillText('Labor', L+plotW/2, H-20);
     }
     document.getElementById('btnRenderProduccion')?.addEventListener('click', renderProduccionChart);
-    function renderDashboard(){ renderProduccionChart(); }
 
-    /* =================== Service Worker =================== */
-    (function(){
-      if('serviceWorker' in navigator){
-        const swUrl='/shotcrete-calc/sw.js';
-        window.addEventListener('load', ()=>{
-          navigator.serviceWorker.register(swUrl).catch(()=>{});
-        });
+    /* =================== Pestaña 4: Dashboard (Ensayo log‑log) =================== */
+    // Storage Ensayos (versión simplificada)
+    const LS_ENSAYOS = 'sc_ensayos2';
+    function getEnsayos(){ try{ return JSON.parse(localStorage.getItem(LS_ENSAYOS)) ?? []; }catch{ return []; } }
+    function setEnsayos(arr){ localStorage.setItem(LS_ENSAYOS, JSON.stringify(arr)); }
+
+    function populateEnsayoSelect(){
+      const sel=document.getElementById('ensayoSelect'); const meta=document.getElementById('ensayoMeta'); if(!sel) return;
+      const ens=getEnsayos(); sel.innerHTML='';
+      if(!ens.length){ sel.innerHTML='<option value="" disabled selected>Sin ensayos</option>'; meta.textContent=''; return; }
+      ens.forEach((e,i)=>{ const opt=document.createElement('option'); opt.value=String(i); opt.textContent=`${e.meta?.labor||'—'} | ${e.meta?.nivel||'—'} | ${e.meta?.robot||'—'}`; sel.appendChild(opt); });
+      sel.value='0'; const e0=ens[0]; meta.textContent='';
+    }
+    const logMap = (v, vmin, vmax, p0, p1) => { const lv=Math.log10(Math.max(v,1e-12)), lmin=Math.log10(vmin), lmax=Math.log10(vmax); return p0 + (lv-lmin)*(p1-p0)/(lmax-lmin); };
+    function renderEnsayoChart(){
+      const canvas=document.getElementById('chartEnsayo'); if(!canvas) return;
+      const showGuides=document.getElementById('chkGuias')?.checked ?? true;
+      const sel=document.getElementById('ensayoSelect'); const ens=getEnsayos(); const i=Number(sel?.value||'-1'); const e=ens[i];
+      const ctx=canvas.getContext('2d'); const W=canvas.width,H=canvas.height; ctx.clearRect(0,0,W,H);
+      const L=80,R=20,T=50,B=60, plotW=W-L-R, plotH=H-T-B; const XMIN=0.1,XMAX=100, YMIN=0.01,YMAX=100;
+
+      if(!e){ ctx.fillStyle='#666'; ctx.font='16px system-ui'; ctx.fillText('Selecciona un ensayo.', 20, 40); return; }
+
+      // Datos (Penetración prioritaria; si no, Hilti)
+      let pts=[]; if(e.penetracion){ pts=e.penetracion.map(r=>({x:r.h_acum,y:r.mpa})); } else if(e.hilti_mpa){ pts=e.hilti_mpa.map(r=>({x:r.h,y:r.mpa})); }
+      pts = pts.filter(p=>isFinite(p.y)&&p.y>0).sort((a,b)=>a.x-b.x);
+
+      // Grid mayor/menor
+      ctx.strokeStyle='#ddd'; ctx.lineWidth=1;
+      [0.1,1,10,100].forEach(xv=>{ const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); });
+      [0.01,0.1,1,10,100].forEach(yv=>{ const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+plotW,y); ctx.stroke(); });
+      ctx.strokeStyle='#eee'; for(let d=-1; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const xv=base*m; if(xv<XMIN||xv>XMAX) continue; const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); } }
+      for(let d=-2; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const yv=base*m; if(yv<YMIN||yv>YMAX) continue; const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+plotW,y); ctx.stroke(); } }
+
+      // Ejes + etiquetas
+      ctx.strokeStyle='#888'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(L,T+plotH); ctx.lineTo(L+plotW,T+plotH); ctx.moveTo(L,T+plotH); ctx.lineTo(L,T); ctx.stroke();
+      ctx.fillStyle='#111'; ctx.font='bold 14px system-ui'; ctx.fillText('Resistencia (MPa) vs Tiempo (h) — log‑log', L, T-20);
+      ctx.font='12px system-ui'; [0.1,1,10,100].forEach(xv=>{ const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.fillText(String(xv), x-10, T+plotH+18); });
+      [0.01,0.1,1,10,100].forEach(yv=>{ const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.fillText(String(yv), L-50, y+4); });
+      ctx.save(); ctx.translate(L-65, T+plotH/2); ctx.rotate(-Math.PI/2); ctx.font='13px system-ui'; ctx.fillText('RESISTENCIA (MPa)', 0, 0); ctx.restore();
+      ctx.font='13px system-ui'; ctx.textAlign='center'; ctx.fillText('TIEMPO (h)', L+plotW/2, H-20);
+
+      // Guías (opcional)
+      if (showGuides){
+        const guides=[{c:0.12,k:0.8},{c:0.35,k:0.8},{c:0.90,k:0.8}];
+        ctx.strokeStyle='#000'; ctx.lineWidth=2;
+        guides.forEach(g=>{ ctx.beginPath(); let first=true; for(let xv=XMIN; xv<=XMAX; xv*=1.06){ const yv=g.c*Math.pow(xv,g.k); const x=logMap(xv,XMIN,XMAX,L,L+plotW), y=logMap(yv,YMIN,YMAX,T+plotH,T); if(first){ ctx.moveTo(x,y); first=false; } else { ctx.lineTo(x,y); } } ctx.stroke(); });
       }
-    })();
+
+      // Curva azul + etiquetas
+      if(!pts.length){ ctx.fillStyle='#666'; ctx.font='16px system-ui'; ctx.fillText('Sin puntos > 0.', L+20, T+40); return; }
+      ctx.strokeStyle='#136BFB'; ctx.lineWidth=3; ctx.fillStyle='#136BFB';
+      ctx.beginPath(); pts.forEach((p,i)=>{ const x=logMap(p.x,XMIN,XMAX,L,L+plotW), y=logMap(p.y,YMIN,YMAX,T+plotH,T); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke();
+      ctx.font='bold 13px system-ui'; pts.forEach(p=>{ const x=logMap(p.x,XMIN,XMAX,L,L+plotW), y=logMap(p.y,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.arc(x,y,3.5,0,Math.PI*2); ctx.fill(); ctx.fillText(p.y.toFixed(2), x+6, y-6); });
+    }
+    document.getElementById('btnRenderEnsayo')?.addEventListener('click', renderEnsayoChart);
+    document.getElementById('chkGuias')?.addEventListener('change', renderEnsayoChart);
+
+    function renderDashboard(){
+      renderProduccionChart?.();
+      populateEnsayoSelect();
+      renderEnsayoChart();
+    }
+
+    /* =================== Pestaña 5: Ensayos (lógica) =================== */
+    const hhmmToHours = (hhmm) => (/^\d{1,2}:\d{2}$/.test(hhmm) ? ((h=Number(hhmm.split(':')[0])), (m=Number(hhmm.split(':')[1])), h + m/60) : NaN);
+    const parseList = (txt) => (txt||'').split(/[,\s]+/).map(Number).filter(v => isFinite(v) && v>0);
+    function renum(tbody){ [...tbody.querySelectorAll('tr')].forEach((tr,i)=>tr.children[0].textContent=i+1); }
+    function metaEns(){ return { labor: document.getElementById('eLabor').value.trim(), nivel: document.getElementById('eNivel').value.trim(), robot: document.getElementById('eRobot').value.trim() }; }
+
+    /* --- Penetración --- */
+    const tblPenBody = document.querySelector('#tblPen tbody');
+    document.getElementById('pAdd')?.addEventListener('click', ()=>{
+      const hora = document.getElementById('pHora').value.trim();
+      const h = hhmmToHours(hora);
+      const fuerzas = parseList(document.getElementById('pFuerzas').value);
+      const K = Number(document.getElementById('pKPen').value||'526');        // por defecto 526
+      const KG = Number(document.getElementById('pFactorKg').value||'10.19716213'); // MPa→kg/cm² (opcional)
+      if (!isFinite(h) || !fuerzas.length || !isFinite(K) || !isFinite(KG)){ alert('Completa hora, fuerzas y parámetros.'); return; }
+      const prom = fuerzas.reduce((s,v)=>s+v,0)/fuerzas.length;
+      const mpa = prom / K;
+      const kgcm2 = mpa * KG;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td></td><td>${hora}</td><td>${h.toFixed(3)}</td><td>${fuerzas.join(', ')}</td><td>${prom.toFixed(1)}</td><td>${mpa.toFixed(3)}</td><td>${kgcm2.toFixed(2)}</td><td><button class="btn ghost del">Eliminar</button></td>`;
+      tblPenBody.appendChild(tr); renum(tblPenBody);
+      tr.querySelector('.del')?.addEventListener('click', ()=>{ tr.remove(); renum(tblPenBody); });
+    });
+    document.getElementById('pClear')?.addEventListener('click', ()=>{ tblPenBody.innerHTML=''; });
+
+    document.getElementById('pSave')?.addEventListener('click', ()=>{
+      const filas = [...tblPenBody.querySelectorAll('tr')].map(tr => {
+        const td = tr.querySelectorAll('td');
+        return { tipo:'penetracion', hora:td[1].textContent, h_acum:Number(td[2].textContent), promN:Number(td[4].textContent), mpa:Number(td[5].textContent) };
+      });
+      if (!filas.length){ alert('Añade filas de penetración.'); return; }
+      const arr = getEnsayos(); arr.push({ meta: metaEns(), penetracion: filas });
+      setEnsayos(arr); renderEnsRes(); alert('Ensayo (Penetración) guardado.');
+      populateEnsayoSelect(); renderEnsayoChart();
+    });
+
+    /* --- Hilti B --- */
+    const tblHiltiBody = document.querySelector('#tblHilti tbody');
+    document.getElementById('hAdd')?.addEventListener('click', ()=>{
+      const hora = document.getElementById('hHora').value.trim();
+      const h = Number(document.getElementById('hHoraAc').value||'');
+      const perforada = Number(document.getElementById('hPerforada').value||'');
+      const pullN = Number(document.getElementById('hPullN').value||'');
+      if (!/^\d{1,2}:\d{2}$/.test(hora) || !isFinite(h) || !isFinite(perforada) || !isFinite(pullN)){ alert('Completa hora, h acumulada, perforada y N.'); return; }
+      const rel = perforada>0 ? (pullN/perforada) : NaN; if (!isFinite(rel)){ alert('Perforada debe ser > 0.'); return; }
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td></td><td>${hora}</td><td>${h.toFixed(3)}</td><td>${perforada.toFixed(1)}</td><td>${pullN.toFixed(1)}</td><td>${rel.toFixed(3)}</td><td>${h.toFixed(2)} h</td><td><button class="btn ghost del">Eliminar</button></td>`;
+      tblHiltiBody.appendChild(tr); renum(tblHiltiBody);
+      tr.querySelector('.del')?.addEventListener('click', ()=>{ tr.remove(); renum(tblHiltiBody); });
+    });
+    document.getElementById('hClear')?.addEventListener('click', ()=>{ tblHiltiBody.innerHTML=''; });
+
+    document.getElementById('hSave')?.addEventListener('click', ()=>{
+      const off = Number(document.getElementById('hOffset').value || '2.7');    // Offset fijo
+      const div = Number(document.getElementById('hDivisor').value || '7.69');  // Divisor fijo
+      const filas = [...tblHiltiBody.querySelectorAll('tr')].map(tr => {
+        const td = tr.querySelectorAll('td');
+        return { tipo:'hilti', hora:td[1].textContent, h_acum:Number(td[2].textContent), perforada_mm:Number(td[3].textContent), pullN:Number(td[4].textContent), rel_Nmm:Number(td[5].textContent) };
+      });
+      if (!filas.length){ alert('Añade filas Hilti.'); return; }
+
+      // Promedio por hora
+      const byH = {}; filas.forEach(f=>{ const key = f.h_acum.toFixed(2); (byH[key] ||= []).push(f.rel_Nmm); });
+      const mpaByH = Object.entries(byH).map(([h, arr])=>{
+        const promRel = arr.reduce((s,v)=>s+v,0)/arr.length;
+        const mpa = (promRel + off) / div; // MPa = (PROM + 2.7) / 7.69
+        return { h:Number(h), mpa:Number(mpa.toFixed(3)) };
+      });
+
+      const arr = getEnsayos(); arr.push({ meta:metaEns(), hilti:filas, hilti_mpa: mpaByH, hilti_params:{offset:off, divisor:div} });
+      setEnsayos(arr); renderEnsRes(); alert('Ensayo (Hilti) guardado.');
+      populateEnsayoSelect(); renderEnsayoChart();
+    });
+
+    /* --- Resumen (para el Dashboard) --- */
+    const tblEnsResBody = document.querySelector('#tblEnsRes tbody');
+    function renderEnsRes(){
+      const ens = getEnsayos(); tblEnsResBody.innerHTML='';
+      ens.forEach((e,i)=>{
+        const pickPen = (h) => e.penetracion?.find(r => Math.abs(r.h_acum - h) < 0.01)?.mpa;
+        const pickHil = (h) => e.hilti_mpa?.find(r => Math.abs(r.h - h) < 0.01)?.mpa;
+        const m1 = pickPen(1.0) ?? pickHil(1.0);
+        const m2 = pickPen(2.0) ?? pickHil(2.0);
+        const m3 = pickPen(3.0) ?? pickHil(3.0);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td><td>${e.penetracion?'Penetración':'Hilti B'}</td><td>${e.meta?.labor||'—'} | ${e.meta?.nivel||'—'} | ${e.meta?.robot||'—'}</td><td>${m1?.toFixed?.(3) ?? '—'}</td><td>${m2?.toFixed?.(3) ?? '—'}</td><td>${m3?.toFixed?.(3) ?? '—'}</td><td><button class="btn ghost del">Eliminar</button></td>`;
+        tblEnsResBody.appendChild(tr);
+        tr.querySelector('.del')?.addEventListener('click', ()=>{ const arr=getEnsayos(); arr.splice(i,1); setEnsayos(arr); renderEnsRes(); populateEnsayoSelect(); renderEnsayoChart(); });
+      });
+    }
+    renderEnsRes();
+
+    /* ===== Service Worker ===== */
+    (function(){ if('serviceWorker' in navigator){ const swUrl='/shotcrete-calc/sw.js'; window.addEventListener('load',()=>{ navigator.serviceWorker.register(swUrl).catch(()=>{}); }); } })();
   </script>
 </body>
 </html>
