@@ -93,7 +93,7 @@
       </fieldset>
     </section>
 
-    <!-- ====== 2) REGISTROS (primero calcula, luego registra; sin tabla aquí) ====== -->
+    <!-- ====== 2) REGISTROS (Calcular → Registrar; SIN tabla aquí) ====== -->
     <section id="tab-registros" class="tab" aria-labelledby="btn-registros">
       <!-- Calculadora de Registros -->
       <fieldset>
@@ -111,16 +111,17 @@
           <div><label for="rSac">Frente de sacrificio — m³</label><input id="rSac" type="text" inputmode="decimal" placeholder="Ej. 0.5"></div>
           <div><label for="rConst">Constante (m²/m³)</label><input id="rConst" type="text" inputmode="decimal" value="11.5" placeholder="Ej. 11.5"></div>
         </div>
+        <!-- ACCIONES: SOLO “Calcular” -->
         <div class="actions">
           <button class="btn primary" id="rCalcBtn">Calcular</button>
-          <button class="btn ghost" id="rCalcClear">Limpiar</button>
         </div>
+        <!-- Resultado -->
         <div id="rOut" class="result" aria-live="polite">
           <h2>—</h2><small id="rMode">Primero calcula; luego podrás registrar la actividad.</small>
         </div>
       </fieldset>
 
-      <!-- Formulario de registro (se muestra SOLO tras un cálculo válido) -->
+      <!-- Formulario de registro (se muestra SOLO tras cálculo válido) -->
       <fieldset id="regForm" class="hidden">
         <legend>Registro de actividad</legend>
         <div class="row3">
@@ -143,15 +144,15 @@
         </div>
         <div class="row2" style="margin-top:.6rem">
           <div><label for="regObs">Observaciones</label><input id="regObs" type="text" placeholder="Notas de operación..." /></div>
+          <!-- ACCIONES: SOLO “Registrar” (y un atajo para ir a Tablas) -->
           <div class="actions" style="align-items:end; justify-content:flex-end;">
-            <button class="btn primary" id="regGuardarBtn">Guardar</button>
-            <button class="btn ghost" id="regLimpiarBtn">Limpiar</button>
+            <button class="btn primary" id="regGuardarBtn">Registrar</button>
             <button class="btn secondary" id="goTablasBtn">Ir a Tablas</button>
           </div>
         </div>
         <p id="regMsg" class="muted" style="margin-top:.4rem"></p>
       </fieldset>
-      <!-- No hay tabla aquí; la tabla está en la pestaña 3 -->
+      <!-- No hay tabla aquí -->
     </section>
 
     <!-- ====== 3) TABLAS (gestión y CSV) ====== -->
@@ -244,16 +245,16 @@
     document.getElementById('qLimpiar')?.addEventListener('click', ()=>{ [qA,qH,qL,qSac].forEach(i=>i.value=''); qConst.value='11.5'; document.querySelector('input[name="modoQuick"][value="tunnel"]').checked=true; qOutH2.textContent='—'; qOutMode.textContent='Selecciona modo y completa los datos.'; qA?.focus(); });
     [qA,qH,qL,qSac,qConst,...qRadios].forEach(el=>{ el?.addEventListener('input',()=>{ const m=[...qRadios].find(r=>r.checked)?.value||'tunnel'; const wallReady=qH?.value.trim()&&qL?.value.trim(); const tunnelReady=qA?.value.trim()&&wallReady; const ready=(m==='wall')?wallReady:tunnelReady; if(ready) calcularQuick(); else { qOutH2.textContent='—'; qOutMode.textContent='Selecciona modo y completa los datos.'; } }); el?.addEventListener('keydown',ev=>{ if(ev.key==='Enter') calcularQuick(); }); });
 
-    /* ===== Pestaña 2: Registros (cálculo -> formulario -> guardar) ===== */
+    /* ===== Pestaña 2: Registros (Calcular → Registrar; sin tabla) ===== */
     const rA=document.getElementById('rA'), rH=document.getElementById('rH'), rL=document.getElementById('rL');
     const rSac=document.getElementById('rSac'), rConst=document.getElementById('rConst');
     const rOutH2=document.querySelector('#rOut h2'), rOutMode=document.getElementById('rMode');
     const rRadios=document.querySelectorAll('input[name="modoRegCalc"]');
-    const rCalcBtn=document.getElementById('rCalcBtn'), rCalcClear=document.getElementById('rCalcClear');
+    const rCalcBtn=document.getElementById('rCalcBtn');
     const regForm=document.getElementById('regForm'), regMsg=document.getElementById('regMsg');
 
     function nombreModoReg(){ const m=[...rRadios].find(r=>r.checked)?.value||'tunnel'; return m==='tunnel'?'Avance':'Resane'; }
-    let lastRegCalc=null; // almacena el cálculo válido para registrar
+    let lastRegCalc=null;
 
     function calcularReg(){
       const A=parseDec(rA?.value??''), H=parseDec(rH?.value??''), L=parseDec(rL?.value??''), Sac=parseDec(rSac?.value??'0'), C=parseDec(rConst?.value??'11.5');
@@ -264,22 +265,20 @@
       const m3_total=m3_base+(isFinite(Sac)?Sac:0);
       rOutH2.textContent=`${nombreModoReg()}: ${fmt1(m3_total)} m³`; rOutMode.textContent='';
       lastRegCalc={modo:nombreModoReg(), m3:Number(fmt1(m3_total)), A:isFinite(A)?A:null, H, L, C, Sac:isFinite(Sac)?Sac:0};
-      regForm.classList.remove('hidden'); // muestra formulario tras cálculo válido
+      regForm.classList.remove('hidden'); // muestra el formulario “Registrar”
       return true;
     }
 
     rCalcBtn?.addEventListener('click', calcularReg);
-    rCalcClear?.addEventListener('click', ()=>{ [rA,rH,rL,rSac].forEach(i=>i.value=''); rConst.value='11.5'; document.querySelector('input[name="modoRegCalc"][value="tunnel"]').checked=true; rOutH2.textContent='—'; rOutMode.textContent='Primero calcula; luego podrás registrar la actividad.'; regForm.classList.add('hidden'); lastRegCalc=null; rA?.focus(); });
-    [rA,rH,rL,rSac,rConst,...rRadios].forEach(el=>{ el?.addEventListener('input',()=>{ const m=[...rRadios].find(r=>r.checked)?.value||'tunnel'; const wallReady=rH?.value.trim()&&rL?.value.trim(); const tunnelReady=rA?.value.trim()&&wallReady; const ready=(m==='wall')?wallReady:tunnelReady; if(ready) calcularReg(); else { rOutH2.textContent='—'; rOutMode.textContent='Primero calcula; luego podrás registrar la actividad.'; regForm.classList.add('hidden'); lastRegCalc=null; } }); el?.addEventListener('keydown',ev=>{ if(ev.key==='Enter') calcularReg(); }); });
 
-    /* ===== Storage y guardado (solo se visualiza en pestaña 3) ===== */
+    /* ===== Storage y guardado (se visualiza SOLO en pestaña 3) ===== */
     const LS_REGS='sc_registros';
     function getRegs(){ try{ return JSON.parse(localStorage.getItem(LS_REGS)) ?? []; }catch{ return []; } }
     function setRegs(arr){ localStorage.setItem(LS_REGS, JSON.stringify(arr)); }
 
     const regFecha=document.getElementById('regFecha'), regNivel=document.getElementById('regNivel'), regLabor=document.getElementById('regLabor');
     const regRobot=document.getElementById('regRobot'), regPresion=document.getElementById('regPresion'), regUso=document.getElementById('regUso'), regObs=document.getElementById('regObs');
-    const regGuardarBtn=document.getElementById('regGuardarBtn'), regLimpiarBtn=document.getElementById('regLimpiarBtn'), goTablasBtn=document.getElementById('goTablasBtn');
+    const regGuardarBtn=document.getElementById('regGuardarBtn'), goTablasBtn=document.getElementById('goTablasBtn');
 
     function limpiarFormularioRegistro(){
       regFecha.value=todayStr(); regNivel.value=''; regLabor.value=''; regRobot.value=''; regPresion.value=''; regUso.value=''; regObs.value='';
@@ -303,10 +302,7 @@
       regMsg.textContent='Registro guardado. Revisa la pestaña “Tablas”.';
     });
 
-    regLimpiarBtn?.addEventListener('click', limpiarFormularioRegistro);
-    goTablasBtn?.addEventListener('click', ()=>{
-      document.getElementById('btn-tablas')?.click();
-    });
+    goTablasBtn?.addEventListener('click', ()=>{ document.getElementById('btn-tablas')?.click(); });
 
     /* ===== Pestaña 3: Tabla y CSV ===== */
     const tbl3Body=document.querySelector('#tbl3 tbody');
