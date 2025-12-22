@@ -5,97 +5,66 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Shotcrete Calc</title>
 
-  <!-- Manifest PWA (sub-path de GitHub Pages) -->
-  <link rel="manifest" href="/shotcrete-calc/manifest.json">
-
-  <!-- Íconos -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/shotcrete-calc/icon-192.png">
-  <link rel="apple-touch-icon" href="/shotcrete-calc/icon-192.png">
-
-  <!-- Color de la UI móvil -->
-  <meta name="theme-color" content="#0a84ff">
-
-  <!-- ======= Estilos (Mobile App + Responsive) ======= -->
   <style>
     :root{
-      --brand: #0a84ff;
-      --brand-2: #166ef2;
-      --bg: #ffffff;
-      --fg: #0b0b0b;
-      --muted: #667085;
-      --card: #f6f8fa;
-      --border: #d0d5dd;
+      --brand:#0a84ff; --brand-2:#166ef2;
+      --bg:#ffffff; --fg:#0b0b0b; --muted:#667085; --card:#f6f8fa; --border:#d0d5dd;
       color-scheme: light dark;
     }
-    @media (prefers-color-scheme: dark) {
+    @media (prefers-color-scheme: dark){
       :root{ --bg:#0b0b0b; --fg:#eee; --muted:#98a2b3; --card:#14171a; --border:#2a2e33; }
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
-      margin:0; background:var(--bg); color:var(--fg);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      line-height:1.35; padding-bottom:env(safe-area-inset-bottom);
+      margin:0;background:var(--bg);color:var(--fg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      line-height:1.35;padding-bottom:env(safe-area-inset-bottom)
     }
     header{
-      position:sticky; top:0; z-index:50;
-      background:linear-gradient(180deg, var(--brand), var(--brand-2));
-      color:#fff; padding:calc(0.6rem + env(safe-area-inset-top)) 1rem .6rem 1rem;
-      display:flex; align-items:center; gap:.75rem; box-shadow:0 2px 12px rgba(0,0,0,.12);
+      position:sticky;top:0;z-index:50;
+      background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;
+      padding:calc(.6rem + env(safe-area-inset-top)) 1rem .6rem 1rem;
+      display:flex;align-items:center;gap:.75rem;box-shadow:0 2px 12px rgba(0,0,0,.12)
     }
-    header .logo{ width:28px; height:28px; border-radius:6px; background:#fff2; display:inline-block; }
-    header h1{ margin:0; font-size:1.1rem }
-    main{ max-width:960px; margin:0 auto; padding:1rem; padding-bottom:4.5rem; }
-    fieldset{ border:1px solid var(--border); border-radius:.8rem; background:var(--card); padding:1rem; margin:0 0 1rem; }
-    legend{ font-weight:700; padding:0 .5rem }
-    label{ display:block; margin:.55rem 0 .25rem }
-    input,select,textarea{
-      width:100%; padding:.65rem .75rem; font-size:1rem; border:1px solid var(--border);
-      border-radius:.6rem; background:#fff; outline:none;
-    }
-    @media (prefers-color-scheme: dark){ input,select,textarea{background:#0e0e10; color:var(--fg)} }
-    .muted{ color:var(--muted); font-size:.9rem }
-    .row2{ display:grid; grid-template-columns:1fr 1fr; gap:1rem }
-    .row3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem }
+    header .logo{width:28px;height:28px;border-radius:6px;background:#fff2;display:inline-block}
+    header h1{margin:0;font-size:1.1rem}
+    main{max-width:960px;margin:0 auto;padding:1rem;padding-bottom:4.5rem}
+    fieldset{border:1px solid var(--border);border-radius:.8rem;background:var(--card);padding:1rem;margin:0 0 1rem}
+    legend{font-weight:700;padding:0 .5rem}
+    label{display:block;margin:.55rem 0 .25rem}
+    input,select{width:100%;padding:.65rem .75rem;font-size:1rem;border:1px solid var(--border);border-radius:.6rem;background:#fff;outline:none}
+    @media (prefers-color-scheme: dark){ input,select{background:#0e0e10;color:var(--fg)} }
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
     @media (max-width:820px){ .row3{grid-template-columns:1fr 1fr} }
     @media (max-width:560px){ .row3{grid-template-columns:1fr} .row2{grid-template-columns:1fr} }
-    .actions{ display:flex; flex-wrap:wrap; gap:.6rem; margin-top:.8rem }
-    .btn{ border:none; border-radius:.6rem; padding:.7rem 1rem; font-size:1rem; display:inline-flex; align-items:center; gap:.5rem; cursor:pointer; }
-    .btn.primary{ background:var(--brand); color:#fff }
-    .btn.secondary{ background:#2f3b48; color:#fff }
-    .btn.ghost{ background:transparent; color:var(--brand); border:1px solid var(--brand) }
-    .result{ margin-top:.9rem; padding:.9rem 1rem; border-radius:.6rem; background:#fff; border:1px dashed var(--border); white-space:pre-line; }
-    @media (prefers-color-scheme: dark){ .result{ background:#0e0e10 } }
-    .badge{ display:inline-block; padding:.25rem .5rem; border-radius:.5rem; background:#eef3ff; color:#003e9e; font-size:.8rem; border:1px solid #cfe0ff; }
-    @media (prefers-color-scheme: dark){ .badge{ background:#0f203a; color:#cfe0ff; border-color:#263a59 } }
-    .tabbar{
-      position:fixed; left:0; right:0; bottom:0; z-index:60; background:var(--bg); border-top:1px solid var(--border);
-      padding:.35rem calc(.6rem + env(safe-area-inset-bottom)) .35rem .6rem; display:grid; grid-template-columns:repeat(5,1fr); gap:.25rem;
-    }
-    .tabbar button{
-      appearance:none; border:none; background:transparent; color:var(--muted);
-      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.25rem;
-      padding:.5rem 0; border-radius:.5rem; cursor:pointer; font-size:.9rem;
-    }
-    .tabbar button.active{ color:var(--brand); font-weight:700; background:var(--card) }
-    section.tab{ display:none; }
-    section.tab.active{ display:block; }
+    .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
+    .btn{border:none;border-radius:.6rem;padding:.7rem 1rem;font-size:1rem;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer}
+    .btn.primary{background:var(--brand);color:#fff}
+    .btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+    /* Resultado grande */
+    .result{margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center}
+    @media (prefers-color-scheme: dark){ .result{background:#0e0e10} }
+    .result h2{margin:0;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:#0a84ff}
+    /* Tab bar */
+    .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--bg);border-top:1px solid var(--border);padding:.35rem calc(.6rem + env(safe-area-inset-bottom)) .35rem .6rem;display:grid;grid-template-columns:repeat(5,1fr);gap:.25rem}
+    .tabbar button{appearance:none;border:none;background:transparent;color:#667085;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;padding:.5rem 0;border-radius:.5rem;cursor:pointer;font-size:.9rem}
+    .tabbar button.active{color:#0a84ff;font-weight:700;background:var(--card)}
+    section.tab{display:none}
+    section.tab.active{display:block}
   </style>
 </head>
 <body>
-  <!-- App Bar -->
   <header>
     <span class="logo" aria-hidden="true"></span>
     <h1>Shotcrete Calc</h1>
   </header>
 
-  <!-- Contenido -->
   <main>
-    <!-- ====== 1) CALCULADORA ====== -->
+    <!-- ====== Calculadora ====== -->
     <section id="tab-calculadora" class="tab active" aria-labelledby="btn-calculadora">
       <fieldset>
         <legend>Calculadora de cubicación</legend>
-        <div class="badge">Fórmula: ((((H×2)+A)×0.9)×L)/11.5 + sacrificio</div>
 
         <div class="row3" style="margin-top:.6rem">
           <div>
@@ -116,12 +85,11 @@
           <div>
             <label for="inpSac">Frente de sacrificio — m³</label>
             <input id="inpSac" type="text" inputmode="decimal" placeholder="Ej. 0.50">
-            <span class="muted">Se suma al volumen calculado.</span>
           </div>
           <div>
             <label for="inpConst">Constante (m²/m³)</label>
-            <input id="inpConst" type="text" inputmode="decimal" value="11.5">
-            <span class="muted">Por defecto 11.5: 11.5 m² se lanzan con 1 m³.</span>
+            <!-- Por defecto 11.5, editable -->
+            <input id="inpConst" type="text" inputmode="decimal" value="11.5" placeholder="Ej. 11.5">
           </div>
         </div>
 
@@ -130,46 +98,28 @@
           <button class="btn ghost" id="btnLimpiar">Limpiar</button>
         </div>
 
+        <!-- Solo el resultado (m³) en grande -->
         <div id="calcOut" class="result" aria-live="polite">
-          Ingresa A, H, L y el frente de sacrificio, luego presiona <strong>Calcular</strong>.
+          <h2>—</h2>
         </div>
       </fieldset>
     </section>
 
-    <!-- ====== 2) REGISTRO ====== -->
+    <!-- Tabs futuras (placeholders) -->
     <section id="tab-registro" class="tab" aria-labelledby="btn-registro">
-      <fieldset>
-        <legend>Registro</legend>
-        <p class="muted">Aquí integraremos el guardado offline (localStorage), exportación/importación JSON y listado de cálculos.</p>
-      </fieldset>
+      <fieldset><legend>Registro</legend><p>Próximo: guardado offline, export/import.</p></fieldset>
     </section>
-
-    <!-- ====== 3) TABLAS ====== -->
     <section id="tab-tablas" class="tab" aria-labelledby="btn-tablas">
-      <fieldset>
-        <legend>Tablas</legend>
-        <p class="muted">Tablas de referencia editables (rebote, espesores, consumos); se guardarán offline.</p>
-      </fieldset>
+      <fieldset><legend>Tablas</legend><p>Próximo: tablas editables.</p></fieldset>
     </section>
-
-    <!-- ====== 4) DASHBOARD ====== -->
     <section id="tab-dashboard" class="tab" aria-labelledby="btn-dashboard">
-      <fieldset>
-        <legend>Dashboard</legend>
-        <p class="muted">Gráficas y KPIs de volumen, espesores y ensayos (próximamente).</p>
-      </fieldset>
+      <fieldset><legend>Dashboard</legend><p>Próximo: KPIs y gráficas.</p></fieldset>
     </section>
-
-    <!-- ====== 5) ENSAYOS ====== -->
     <section id="tab-ensayos" class="tab" aria-labelledby="btn-ensayos">
-      <fieldset>
-        <legend>Ensayos de Resistencias</legend>
-        <p class="muted">Cálculo de f’c y registro de ensayos con tablas y gráficos (próximamente).</p>
-      </fieldset>
+      <fieldset><legend>Ensayos de Resistencias</legend><p>Próximo: cálculo y registro f’c.</p></fieldset>
     </section>
   </main>
 
-  <!-- Tab Bar (abajo) -->
   <nav class="tabbar" role="tablist" aria-label="Navegación">
     <button id="btn-calculadora" class="active" role="tab" aria-controls="tab-calculadora" aria-selected="true">Calculadora</button>
     <button id="btn-registro" role="tab" aria-controls="tab-registro" aria-selected="false">Registro</button>
@@ -178,9 +128,8 @@
     <button id="btn-ensayos" role="tab" aria-controls="tab-ensayos" aria-selected="false">Ensayos</button>
   </nav>
 
-  <!-- ======= JavaScript ======= -->
   <script>
-    /* =================== Tabs =================== */
+    /* ===== Tabs ===== */
     const mapTabs = [
       {btn:'btn-calculadora', tab:'tab-calculadora'},
       {btn:'btn-registro',    tab:'tab-registro'},
@@ -198,21 +147,18 @@
         document.querySelectorAll('section.tab').forEach(el=>{
           el.classList.toggle('active', el.id === tab);
         });
-        if (tab === 'tab-calculadora'){
-          document.getElementById('inpA').focus({preventScroll:true});
-        }
+        if (tab === 'tab-calculadora'){ document.getElementById('inpA').focus({preventScroll:true}); }
       });
     });
 
-    /* =================== Calculadora =================== */
+    /* ===== Calculadora (resultado m³) ===== */
     const inpA = document.getElementById('inpA');
     const inpH = document.getElementById('inpH');
     const inpL = document.getElementById('inpL');
     const inpSac = document.getElementById('inpSac');
     const inpConst = document.getElementById('inpConst');
-    const outEl = document.getElementById('calcOut');
+    const outEl = document.querySelector('#calcOut h2');
 
-    // Admite coma o punto como decimal
     function parseDec(txt){
       if (typeof txt !== 'string') return NaN;
       const s = txt.trim().replace(',', '.');
@@ -221,8 +167,6 @@
     }
     const fmt = (n, d=3) => Number(n).toFixed(d);
 
-    function showError(msg){ outEl.textContent = msg; }
-
     function calcular(){
       const A = parseDec(inpA.value);
       const H = parseDec(inpH.value);
@@ -230,12 +174,10 @@
       const Sac = parseDec(inpSac.value || '0');
       const C = parseDec(inpConst.value || '11.5');
 
-      if (!isFinite(A) || !isFinite(H) || !isFinite(L)){
-        showError('Por favor ingresa números válidos en A, H y L (puedes usar coma o punto).');
+      if (!isFinite(A) || !isFinite(H) || !isFinite(L) || !isFinite(Sac) || !isFinite(C) || C<=0){
+        outEl.textContent = '—';
         return;
       }
-      if (!isFinite(Sac)){ showError('Frente de sacrificio no válido.'); return; }
-      if (!isFinite(C) || C <= 0){ showError('La constante de conversión debe ser > 0.'); return; }
 
       // Fórmula: ((((H*2)+A)*0.9)*L)/C + Sac
       const perimetroParcial = (H * 2) + A;
@@ -244,52 +186,36 @@
       const m3_base = areaLineal / C;             // m³
       const m3_total = m3_base + Sac;             // m³
 
-      const texto =
-`Datos de entrada:
-A (m) = ${fmt(A)} | H (m) = ${fmt(H)} | L (m) = ${fmt(L)}
-Sacrificio (m³) = ${fmt(Sac)} | Constante (m²/m³) = ${fmt(C)}
-
-Cálculo paso a paso:
-Perímetro parcial = (H×2)+A = (${fmt(H)}×2)+${fmt(A)} = ${fmt(perimetroParcial)} m
-Ajuste 0.9 = ${fmt(perimetroParcial)} × 0.9 = ${fmt(perimetroAjustado)} m
-Área lineal = ${fmt(perimetroAjustado)} × ${fmt(L)} = ${fmt(areaLineal)} m²
-m³ base = Área lineal / ${fmt(C)} = ${fmt(m3_base)} m³
---------------------------------
-m³ TOTAL = m³ base + sacrificio = ${fmt(m3_base)} + ${fmt(Sac)} = ${fmt(m3_total)} m³`;
-
-      outEl.textContent = texto;
+      outEl.textContent = `${fmt(m3_total)} m³`;
     }
 
     document.getElementById('btnCalcular').addEventListener('click', calcular);
     document.getElementById('btnLimpiar').addEventListener('click', ()=>{
       [inpA, inpH, inpL, inpSac].forEach(i=>i.value='');
       inpConst.value = '11.5';
-      outEl.textContent = 'Ingresa A, H, L y el frente de sacrificio, luego presiona Calcular.';
+      outEl.textContent = '—';
       inpA.focus();
     });
-
-    // Cálculo en tiempo real cuando hay datos en A, H y L
     [inpA, inpH, inpL, inpSac, inpConst].forEach(el=>{
       el.addEventListener('input', ()=>{
         const hasCore = inpA.value.trim() !== '' && inpH.value.trim() !== '' && inpL.value.trim() !== '';
-        if (hasCore) calcular();
+        if (hasCore) calcular(); else outEl.textContent = '—';
       });
       el.addEventListener('keydown', (ev)=>{ if (ev.key === 'Enter') calcular(); });
     });
 
-    /* =================== Registro del Service Worker =================== */
-    (function() {
-      if ('serviceWorker' in navigator) {
-        const swUrl = '/shotcrete-calc/sw.js'; // sub-path correcto para GitHub Pages
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register(swUrl)
-            .then(reg => console.log('SW registrado:', reg.scope))
-            .catch(err => console.error('Error registrando SW:', err));
+    /* ===== Service Worker (si lo tienes en el repo) ===== */
+    (function(){
+      if ('serviceWorker' in navigator){
+        const swUrl = '/shotcrete-calc/sw.js';
+        window.addEventListener('load', ()=>{
+          navigator.serviceWorker.register(swUrl).catch(()=>{});
         });
       }
     })();
   </script>
 </body>
 </html>
+
 
 
