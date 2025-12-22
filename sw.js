@@ -1,7 +1,7 @@
 
 // --- Service Worker para GitHub Pages (sub-path /shotcrete-calc/) ---
 const REPO = '/shotcrete-calc';
-const CACHE_NAME = 'sc-v28'; // incrementa cuando cambies assets precacheados
+const CACHE_NAME = 'sc-v22'; // ← sube versión cuando cambies assets precacheados
 
 // Precache mínimo para funcionar offline
 const ASSETS = [
@@ -12,26 +12,19 @@ const ASSETS = [
   `${REPO}/icon-512.png`
 ];
 
-// 1) Instalar y precachear
 self.addEventListener('install', (event) => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
 });
 
-// 2) Activar y limpiar caches antiguos
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(
-      keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : Promise.resolve()))
-    );
+    await Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : Promise.resolve())));
     await self.clients.claim();
   })());
 });
 
-// 3) Fetch: navegación + recursos
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
@@ -41,21 +34,13 @@ self.addEventListener('fetch', (event) => {
       const cache = await caches.open(CACHE_NAME);
       const cachedIndex = await cache.match(`${REPO}/index.html`);
       if (cachedIndex) return cachedIndex;
-      try {
-        return await fetch(req);
-      } catch {
+      try { return await fetch(req); }
+      catch {
         return new Response(
-          `
-            <!doctype html><meta charset="utf-8">
-            <title>Offline</title>
-            <style>
-              body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;padding:2rem}
-              h1{margin:0 0 .5rem}
-              p{color:#444}
-            </style>
-            <h1>Sin conexión</h1>
-            <p>Abre la app con Internet al menos una vez para usarla sin conexión.</p>
-          `,
+          `<!doctype html><meta charset="utf-8"><title>Offline</title>
+           <style>body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;padding:2rem}
+           h1{margin:0 0 .5rem}</style>
+           <h1>Sin conexión</h1><p>Abre la app con Internet al menos una vez.</p>`,
           { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
         );
       }
@@ -63,7 +48,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Recursos: cache-first con fallback a red; cacheo en runtime de respuestas OK
+  // Recursos: cache-first con fallback a red + cacheo en runtime
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;
