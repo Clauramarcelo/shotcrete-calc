@@ -6,17 +6,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Shotcrete Calc</title>
 
-  <!-- Manifest PWA (sub-path de GitHub Pages) -->
+  <!-- Manifest e ícono (si lo tienes) -->
   <link rel="manifest" href="/shotcrete-calc/manifest.json">
-
-  <!-- Íconos (si los tienes en la raíz del repo) -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/shotcrete-calc/icon-192.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/shotcrete-calc/icon-192.png">
-
-  <!-- Color de la UI móvil -->
+  <link rel="icon" href="/shotcrete-calc/icon-192.png" sizes="192x192">
   <meta name="theme-color" content="#0a84ff">
 
-  <!-- ======= Estilos (Mobile App + Responsive) ======= -->
   <style>
     :root{
       --brand:#0a84ff; --brand-2:#166ef2;
@@ -33,7 +27,6 @@
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       line-height:1.35; padding-bottom:env(safe-area-inset-bottom)
     }
-    /* App bar */
     header{
       position:sticky; top:0; z-index:50;
       background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff;
@@ -43,41 +36,41 @@
     header .logo{ width:28px; height:28px; border-radius:6px; background:#fff2; display:inline-block }
     header h1{ margin:0; font-size:1.1rem }
 
-    /* Contenido */
     main{ max-width:960px; margin:0 auto; padding:1rem; padding-bottom:4.5rem }
 
-    /* Card/fieldset */
     fieldset{ border:1px solid var(--border); border-radius:.8rem; background:var(--card); padding:1rem; margin:0 0 1rem }
     legend{ font-weight:700; padding:0 .5rem }
     label{ display:block; margin:.55rem 0 .25rem }
 
-    /* Inputs */
     input,select{
       width:100%; padding:.65rem .75rem; font-size:1rem;
       border:1px solid var(--border); border-radius:.6rem; background:#fff; outline:none;
     }
     @media (prefers-color-scheme: dark){ input,select{ background:#0e0e10; color:var(--fg) } }
 
-    /* Grid */
     .row2{ display:grid; grid-template-columns:1fr 1fr; gap:1rem }
     .row3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem }
     @media (max-width:820px){ .row3{ grid-template-columns:1fr 1fr } }
     @media (max-width:560px){ .row3{ grid-template-columns:1fr } .row2{ grid-template-columns:1fr } }
 
-    /* Botones */
     .actions{ display:flex; flex-wrap:wrap; gap:.6rem; margin-top:.8rem }
     .btn{ border:none; border-radius:.6rem; padding:.7rem 1rem; font-size:1rem; display:inline-flex; align-items:center; gap:.5rem; cursor:pointer }
     .btn.primary{ background:var(--brand); color:#fff }
     .btn.secondary{ background:#2f3b48; color:#fff }
     .btn.ghost{ background:transparent; color:var(--brand); border:1px solid var(--brand) }
 
-    /* Resultado grande */
     .result{ margin-top:.9rem; padding:1rem; border-radius:.8rem; background:#fff; border:1px dashed var(--border); display:flex; align-items:center; justify-content:center; text-align:center }
     @media (prefers-color-scheme: dark){ .result{ background:#0e0e10 } }
     .result h2{ margin:0; font-size:clamp(1.6rem,4vw,2.2rem); font-weight:800; color:#0a84ff }
     .result small{ display:block; color:var(--muted); margin-top:.25rem }
 
-    /* Tab bar */
+    table{ width:100%; border-collapse:collapse; }
+    th, td{ border:1px solid var(--border); padding:.55rem; text-align:left; }
+    thead th{ background:#eef3ff; }
+    @media (prefers-color-scheme: dark){
+      thead th{ background:#0f203a; color:#cfe0ff; }
+    }
+
     .tabbar{
       position:fixed; left:0; right:0; bottom:0; z-index:60; background:var(--bg); border-top:1px solid var(--border);
       padding:.35rem calc(.6rem + env(safe-area-inset-bottom)) .35rem .6rem; display:grid; grid-template-columns:repeat(5,1fr); gap:.25rem;
@@ -91,76 +84,110 @@
     section.tab{ display:none }
     section.tab.active{ display:block }
 
-    /* Modo de cálculo */
     .mode{ display:flex; gap:.5rem; align-items:center; margin:.2rem 0 .4rem }
     .mode label{ display:flex; align-items:center; gap:.4rem; margin:0 }
   </style>
 </head>
 <body>
-  <!-- App Bar -->
   <header>
     <span class="logo" aria-hidden="true"></span>
     <h1>Shotcrete Calc</h1>
   </header>
 
-  <!-- Contenido -->
   <main>
-    <!-- ====== 1) CALCULADORA ====== -->
-    <section id="tab-calculadora" class="tab active" aria-labelledby="btn-calculadora">
+    <!-- ====== 1) CALCULO m3 (rápido) ====== -->
+    <section id="tab-calculo" class="tab active" aria-labelledby="btn-calculo">
       <fieldset>
-        <legend>Calculadora de cubicación</legend>
+        <legend>Calculo m3</legend>
 
-        <!-- Modo de cálculo: Avance (túnel) o Resane (hastial) -->
         <div class="mode" role="group" aria-label="Modo de cálculo">
-          <label><input type="radio" name="modo" value="tunnel" checked> Avance (túnel)</label>
-          <label><input type="radio" name="modo" value="wall"> Resane (hastial)</label>
+          <label><input type="radio" name="modoQuick" value="tunnel" checked> Avance (túnel)</label>
+          <label><input type="radio" name="modoQuick" value="wall"> Resane (hastial)</label>
         </div>
 
         <div class="row3">
           <div>
-            <label for="inpA">Ancho (A) — m</label>
-            <input id="inpA" type="text" inputmode="decimal" placeholder="Ej. 4.0">
+            <label for="qA">Ancho (A) — m</label>
+            <input id="qA" type="text" inputmode="decimal" placeholder="Ej. 4.0">
           </div>
           <div>
-            <label for="inpH">Altura (H) — m</label>
-            <input id="inpH" type="text" inputmode="decimal" placeholder="Ej. 3.5">
+            <label for="qH">Altura (H) — m</label>
+            <input id="qH" type="text" inputmode="decimal" placeholder="Ej. 3.5">
           </div>
           <div>
-            <label for="inpL">Largo (L) — m</label>
-            <input id="inpL" type="text" inputmode="decimal" placeholder="Ej. 20.0">
+            <label for="qL">Largo (L) — m</label>
+            <input id="qL" type="text" inputmode="decimal" placeholder="Ej. 20.0">
           </div>
         </div>
 
         <div class="row2" style="margin-top:.6rem">
           <div>
-            <label for="inpSac">Frente de sacrificio — m³</label>
-            <input id="inpSac" type="text" inputmode="decimal" placeholder="Ej. 0.5">
+            <label for="qSac">Frente de sacrificio — m³</label>
+            <input id="qSac" type="text" inputmode="decimal" placeholder="Ej. 0.5">
           </div>
           <div>
-            <label for="inpConst">Constante (m²/m³)</label>
-            <input id="inpConst" type="text" inputmode="decimal" value="11.5" placeholder="Ej. 11.5">
+            <label for="qConst">Constante (m²/m³)</label>
+            <input id="qConst" type="text" inputmode="decimal" value="11.5" placeholder="Ej. 11.5">
           </div>
         </div>
 
         <div class="actions">
-          <button class="btn primary" id="btnCalcular">Calcular</button>
-          <button class="btn ghost" id="btnLimpiar">Limpiar</button>
+          <button class="btn primary" id="qCalcular">Calcular</button>
+          <button class="btn ghost" id="qLimpiar">Limpiar</button>
         </div>
 
-        <!-- Resultado en grande (1 decimal) con nombre del modo -->
-        <div id="calcOut" class="result" aria-live="polite">
+        <div id="qOut" class="result" aria-live="polite">
           <h2>—</h2>
-          <small id="calcMode">Selecciona modo y completa los datos.</small>
+          <small id="qMode">Selecciona modo y completa los datos.</small>
         </div>
       </fieldset>
     </section>
 
-    <!-- ====== 2) REGISTRO ====== -->
-    <section id="tab-registro" class="tab" aria-labelledby="btn-registro">
+    <!-- ====== 2) REGISTROS (con su propia calculadora) ====== -->
+    <section id="tab-registros" class="tab" aria-labelledby="btn-registros">
+      <fieldset>
+        <legend>Calculadora de Registros</legend>
+
+        <div class="mode" role="group" aria-label="Modo de cálculo">
+          <label><input type="radio" name="modoRegCalc" value="tunnel" checked> Avance (túnel)</label>
+          <label><input type="radio" name="modoRegCalc" value="wall"> Resane (hastial)</label>
+        </div>
+
+        <div class="row3">
+          <div>
+            <label for="rA">Ancho (A) — m</label>
+            <input id="rA" type="text" inputmode="decimal" placeholder="Ej. 4.0">
+          </div>
+          <div>
+            <label for="rH">Altura (H) — m</label>
+            <input id="rH" type="text" inputmode="decimal" placeholder="Ej. 3.5">
+          </div>
+          <div>
+            <label for="rL">Largo (L) — m</label>
+            <input id="rL" type="text" inputmode="decimal" placeholder="Ej. 20.0">
+          </div>
+        </div>
+
+        <div class="row2" style="margin-top:.6rem">
+          <div>
+            <label for="rSac">Frente de sacrificio — m³</label>
+            <input id="rSac" type="text" inputmode="decimal" placeholder="Ej. 0.5">
+          </div>
+          <div>
+            <label for="rConst">Constante (m²/m³)</label>
+            <input id="rConst" type="text" inputmode="decimal" value="11.5" placeholder="Ej. 11.5">
+          </div>
+        </div>
+
+        <div id="rOut" class="result" aria-live="polite">
+          <h2>—</h2>
+          <small id="rMode">Selecciona modo y completa los datos.</small>
+        </div>
+      </fieldset>
+
       <fieldset>
         <legend>Registro de actividad</legend>
 
-        <!-- Form de entrada -->
         <div class="row3">
           <div>
             <label for="regFecha">Fecha</label>
@@ -203,13 +230,11 @@
             <input id="regObs" type="text" placeholder="Notas de operación..." />
           </div>
           <div class="actions" style="align-items:end; justify-content:flex-end;">
-            <button class="btn primary" id="regGuardar">Guardar registro</button>
+            <button class="btn primary" id="regCalcularGuardar">Calcular y guardar</button>
             <button class="btn ghost" id="regLimpiar">Limpiar</button>
-            <button class="btn secondary" id="regTomarCalc">Tomar cálculo actual</button>
           </div>
         </div>
 
-        <!-- Export / Import / Borrar -->
         <div class="actions" style="margin-top:.6rem">
           <button class="btn ghost" id="regExport">Exportar JSON</button>
           <button class="btn ghost" id="regImportBtn">Importar JSON</button>
@@ -243,9 +268,37 @@
       </fieldset>
     </section>
 
-    <!-- ====== 3) TABLAS ====== -->
+    <!-- ====== 3) TABLAS (gestión de registros + CSV) ====== -->
     <section id="tab-tablas" class="tab" aria-labelledby="btn-tablas">
-      <fieldset><legend>Tablas</legend><p class="muted">Próximo: tablas de referencia editables.</p></fieldset>
+      <fieldset>
+        <legend>Tabla de registros (CSV)</legend>
+        <div class="actions">
+          <button class="btn primary" id="tbl3ExportCSV">Exportar a CSV</button>
+          <button class="btn ghost"   id="tbl3Refrescar">Refrescar</button>
+          <button class="btn secondary" id="tbl3BorrarTodo">Borrar todo</button>
+        </div>
+        <table id="tbl3">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Fecha</th>
+              <th>Nivel</th>
+              <th>Labor</th>
+              <th>N° Robot</th>
+              <th>Presión (bar)</th>
+              <th>USO</th>
+              <th>Obs.</th>
+              <th>Modo</th>
+              <th>m³</th>
+              <th>Const.</th>
+              <th>Sac.</th>
+              <th>A/H/L</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </fieldset>
     </section>
 
     <!-- ====== 4) DASHBOARD ====== -->
@@ -259,24 +312,22 @@
     </section>
   </main>
 
-  <!-- Tab bar -->
   <nav class="tabbar" role="tablist" aria-label="Navegación">
-    <button id="btn-calculadora" class="active" role="tab" aria-controls="tab-calculadora" aria-selected="true">Calculadora</button>
-    <button id="btn-registro" role="tab" aria-controls="tab-registro" aria-selected="false">Registro</button>
-    <button id="btn-tablas" role="tab" aria-controls="tab-tablas" aria-selected="false">Tablas</button>
-    <button id="btn-dashboard" role="tab" aria-controls="tab-dashboard" aria-selected="false">Dashboard</button>
-    <button id="btn-ensayos" role="tab" aria-controls="tab-ensayos" aria-selected="false">Ensayos</button>
+    <button id="btn-calculo"  class="active" role="tab" aria-controls="tab-calculo"  aria-selected="true">Calculo m3</button>
+    <button id="btn-registros" role="tab" aria-controls="tab-registros" aria-selected="false">Registros</button>
+    <button id="btn-tablas"   role="tab" aria-controls="tab-tablas"   aria-selected="false">Tablas</button>
+    <button id="btn-dashboard"role="tab" aria-controls="tab-dashboard"aria-selected="false">Dashboard</button>
+    <button id="btn-ensayos"  role="tab" aria-controls="tab-ensayos"  aria-selected="false">Ensayos</button>
   </nav>
 
-  <!-- ======= JavaScript ======= -->
   <script>
     /* =================== Tabs =================== */
     const tabsMap = [
-      {btn:'btn-calculadora', tab:'tab-calculadora'},
-      {btn:'btn-registro',    tab:'tab-registro'},
-      {btn:'btn-tablas',      tab:'tab-tablas'},
-      {btn:'btn-dashboard',   tab:'tab-dashboard'},
-      {btn:'btn-ensayos',     tab:'tab-ensayos'}
+      {btn:'btn-calculo',   tab:'tab-calculo'},
+      {btn:'btn-registros', tab:'tab-registros'},
+      {btn:'btn-tablas',    tab:'tab-tablas'},
+      {btn:'btn-dashboard', tab:'tab-dashboard'},
+      {btn:'btn-ensayos',   tab:'tab-ensayos'}
     ];
     tabsMap.forEach(({btn, tab})=>{
       const b = document.getElementById(btn);
@@ -288,7 +339,9 @@
         document.querySelectorAll('section.tab').forEach(el=>{
           el.classList.toggle('active', el.id === tab);
         });
-        if (tab === 'tab-calculadora'){ document.getElementById('inpA')?.focus({preventScroll:true}); }
+        if (tab === 'tab-calculo'){ document.getElementById('qA')?.focus({preventScroll:true}); }
+        if (tab === 'tab-registros'){ document.getElementById('rA')?.focus({preventScroll:true}); }
+        if (tab === 'tab-tablas'){ renderTbl3(); }
       });
     });
 
@@ -302,92 +355,110 @@
     const fmt1 = (n) => Number(n).toFixed(1);
     const todayStr = () => new Date().toISOString().slice(0,10); // YYYY-MM-DD
 
-    /* =================== Calculadora: Avance / Resane =================== */
-    const inpA = document.getElementById('inpA');
-    const inpH = document.getElementById('inpH');
-    const inpL = document.getElementById('inpL');
-    const inpSac = document.getElementById('inpSac');
-    const inpConst = document.getElementById('inpConst');
-    const outH2 = document.querySelector('#calcOut h2');
-    const outMode = document.getElementById('calcMode');
-    const modeRadios = document.querySelectorAll('input[name="modo"]');
+    /* =================== CALCULO m3 (rápido) =================== */
+    const qA = document.getElementById('qA');
+    const qH = document.getElementById('qH');
+    const qL = document.getElementById('qL');
+    const qSac = document.getElementById('qSac');
+    const qConst = document.getElementById('qConst');
+    const qOutH2 = document.querySelector('#qOut h2');
+    const qOutMode = document.getElementById('qMode');
+    const qRadios = document.querySelectorAll('input[name="modoQuick"]');
 
-    const nombreModo = () => {
-      const m = [...modeRadios].find(r => r.checked)?.value || 'tunnel';
+    function nombreModoQuick(){
+      const m = [...qRadios].find(r => r.checked)?.value || 'tunnel';
       return m === 'tunnel' ? 'Avance' : 'Resane';
-    };
+    }
+    function calcularQuick(){
+      const A   = parseDec(qA?.value ?? '');
+      const H   = parseDec(qH?.value ?? '');
+      const L   = parseDec(qL?.value ?? '');
+      const Sac = parseDec(qSac?.value ?? '0');
+      const C   = parseDec(qConst?.value ?? '11.5');
+      const m   = [...qRadios].find(r => r.checked)?.value || 'tunnel';
 
-    // Último cálculo compartible con Registro
-    let lastCalc = null;
-
-    function calcular(){
-      const A   = parseDec(inpA?.value ?? '');
-      const H   = parseDec(inpH?.value ?? '');
-      const L   = parseDec(inpL?.value ?? '');
-      const Sac = parseDec(inpSac?.value ?? '0');
-      const C   = parseDec(inpConst?.value ?? '11.5');
-      const m   = [...modeRadios].find(r => r.checked)?.value || 'tunnel';
-
-      if (!isFinite(L) || !isFinite(H) || !isFinite(Sac) || !isFinite(C) || C<=0){
-        outH2.textContent = '—';
-        outMode.textContent = 'Completa los datos.';
-        lastCalc = null;
-        return;
+      if (!isFinite(L) || !isFinite(H) || !isFinite(C) || C<=0){
+        qOutH2.textContent = '—'; qOutMode.textContent = 'Completa los datos.'; return;
       }
       if (m === 'tunnel' && !isFinite(A)){
-        outH2.textContent = '—';
-        outMode.textContent = 'Completa A, H y L.';
-        lastCalc = null;
-        return;
+        qOutH2.textContent = '—'; qOutMode.textContent = 'Completa A, H y L.'; return;
       }
 
       let m3_base = 0;
       if (m === 'tunnel'){
         const perimetroParcial  = (H * 2) + A;
         const perimetroAjustado = perimetroParcial * 0.9;
-        const areaLineal        = perimetroAjustado * L;   // m²
+        const areaLineal        = perimetroAjustado * L;
         m3_base = areaLineal / C;
       } else {
         m3_base = (L * H) / C;
       }
       const m3_total = m3_base + (isFinite(Sac) ? Sac : 0);
+      qOutH2.textContent = `${nombreModoQuick()}: ${fmt1(m3_total)} m³`;
+      qOutMode.textContent = '';
+    }
+    document.getElementById('qCalcular')?.addEventListener('click', calcularQuick);
+    document.getElementById('qLimpiar')?.addEventListener('click', ()=>{
+      [qA, qH, qL, qSac].forEach(i=>{ if (i) i.value=''; });
+      qConst.value = '11.5';
+      document.querySelector('input[name="modoQuick"][value="tunnel"]').checked = true;
+      qOutH2.textContent = '—'; qOutMode.textContent = 'Selecciona modo y completa los datos.'; qA?.focus();
+    });
+    [qA, qH, qL, qSac, qConst, ...qRadios].forEach(el=>{
+      el?.addEventListener('input', ()=>{
+        const m = [...qRadios].find(r => r.checked)?.value || 'tunnel';
+        const wallReady   = (qH?.value.trim() && qL?.value.trim());
+        const tunnelReady = (qA?.value.trim() && wallReady);
+        const ready = (m === 'wall') ? wallReady : tunnelReady;
+        if (ready) calcularQuick(); else { qOutH2.textContent = '—'; qOutMode.textContent = 'Selecciona modo y completa los datos.'; }
+      });
+      el?.addEventListener('keydown', (ev)=>{ if (ev.key === 'Enter') calcularQuick(); });
+    });
 
-      outH2.textContent = `${nombreModo()}: ${fmt1(m3_total)} m³`;
-      outMode.textContent = '';
+    /* =================== REGISTROS (calculadora + formulario) =================== */
+    const rA = document.getElementById('rA');
+    const rH = document.getElementById('rH');
+    const rL = document.getElementById('rL');
+    const rSac = document.getElementById('rSac');
+    const rConst = document.getElementById('rConst');
+    const rOutH2 = document.querySelector('#rOut h2');
+    const rOutMode = document.getElementById('rMode');
+    const rRadios = document.querySelectorAll('input[name="modoRegCalc"]');
 
-      lastCalc = {
-        modo: nombreModo(),                 // "Avance" o "Resane"
-        m3: Number(fmt1(m3_total)),         // 1 decimal
-        A: isFinite(A) ? A : null,
-        H: H, L: L,
-        C: C, Sac: isFinite(Sac) ? Sac : 0
-      };
+    function nombreModoReg(){
+      const m = [...rRadios].find(r => r.checked)?.value || 'tunnel';
+      return m === 'tunnel' ? 'Avance' : 'Resane';
+    }
+    function calcularReg(){
+      const A   = parseDec(rA?.value ?? '');
+      const H   = parseDec(rH?.value ?? '');
+      const L   = parseDec(rL?.value ?? '');
+      const Sac = parseDec(rSac?.value ?? '0');
+      const C   = parseDec(rConst?.value ?? '11.5');
+      const m   = [...rRadios].find(r => r.checked)?.value || 'tunnel';
+
+      if (!isFinite(L) || !isFinite(H) || !isFinite(C) || C<=0){
+        rOutH2.textContent = '—'; rOutMode.textContent = 'Completa los datos.'; return {ok:false};
+      }
+      if (m === 'tunnel' && !isFinite(A)){
+        rOutH2.textContent = '—'; rOutMode.textContent = 'Completa A, H y L.'; return {ok:false};
+      }
+
+      let m3_base = 0;
+      if (m === 'tunnel'){
+        const perimetroParcial  = (H * 2) + A;
+        const perimetroAjustado = perimetroParcial * 0.9;
+        const areaLineal        = perimetroAjustado * L;
+        m3_base = areaLineal / C;
+      } else {
+        m3_base = (L * H) / C;
+      }
+      const m3_total = m3_base + (isFinite(Sac) ? Sac : 0);
+      rOutH2.textContent = `${nombreModoReg()}: ${fmt1(m3_total)} m³`;
+      rOutMode.textContent = '';
+      return {ok:true, modo:nombreModoReg(), m3:Number(fmt1(m3_total)), A:isFinite(A)?A:null, H, L, C, Sac:isFinite(Sac)?Sac:0 };
     }
 
-    document.getElementById('btnCalcular')?.addEventListener('click', calcular);
-    document.getElementById('btnLimpiar')?.addEventListener('click', ()=>{
-      [inpA, inpH, inpL, inpSac].forEach(i=>{ if (i) i.value=''; });
-      if (inpConst) inpConst.value = '11.5';
-      const tunnelRadio = document.querySelector('input[name="modo"][value="tunnel"]');
-      if (tunnelRadio) tunnelRadio.checked = true;
-      outH2.textContent = '—';
-      outMode.textContent = 'Selecciona modo y completa los datos.';
-      lastCalc = null;
-      inpA?.focus();
-    });
-
-    [inpA, inpH, inpL, inpSac, inpConst, ...modeRadios].forEach(el=>{
-      el?.addEventListener('input', ()=>{
-        const m = [...modeRadios].find(r => r.checked)?.value || 'tunnel';
-        const wallReady   = (inpH?.value.trim() && inpL?.value.trim());
-        const tunnelReady = (inpA?.value.trim() && wallReady);
-        const ready = (m === 'wall') ? wallReady : tunnelReady;
-        if (ready) calcular(); else { outH2.textContent = '—'; outMode.textContent = 'Selecciona modo y completa los datos.'; lastCalc = null; }
-      });
-      el?.addEventListener('keydown', (ev)=>{ if (ev.key === 'Enter') calcular(); });
-    });
-
-    /* =================== Registro =================== */
     const LS_REGS   = 'sc_registros';
     const regFecha  = document.getElementById('regFecha');
     const regNivel  = document.getElementById('regNivel');
@@ -412,15 +483,10 @@
     }
     limpiarRegistro();
 
-    document.getElementById('regTomarCalc')?.addEventListener('click', ()=>{
-      if (!lastCalc){
-        alert('No hay un cálculo vigente en la pestaña Calculadora.');
-        return;
-      }
-      alert(`Cálculo tomado: ${lastCalc.modo} — ${fmt1(lastCalc.m3)} m³`);
-    });
+    document.getElementById('regCalcularGuardar')?.addEventListener('click', ()=>{
+      const calc = calcularReg();
+      if (!calc.ok){ alert('Completa la calculadora de registros.'); return; }
 
-    document.getElementById('regGuardar')?.addEventListener('click', ()=>{
       const fecha   = regFecha.value || todayStr();
       const nivel   = regNivel.value.trim();
       const labor   = regLabor.value.trim();
@@ -437,17 +503,9 @@
       const regs = getRegs();
       regs.push({
         fecha, nivel, labor, robot,
-        presion: Number(presion.toFixed(2)),
-        uso,
-        obs,
-        // adjunta cálculo si existe
-        modo: lastCalc?.modo ?? null,
-        m3:   lastCalc?.m3   ?? null,
-        C:    lastCalc?.C    ?? null,
-        Sac:  lastCalc?.Sac  ?? null,
-        A:    lastCalc?.A    ?? null,
-        H:    lastCalc?.H    ?? null,
-        L:    lastCalc?.L    ?? null
+        presion: Number(presion.toFixed(2)), uso, obs,
+        modo: calc.modo, m3: calc.m3, C: calc.C, Sac: calc.Sac,
+        A: calc.A, H: calc.H, L: calc.L
       });
       setRegs(regs);
       renderRegs();
@@ -465,7 +523,6 @@
       a.click();
       URL.revokeObjectURL(url);
     });
-
     document.getElementById('regImportBtn')?.addEventListener('click', ()=> document.getElementById('regImportFile').click());
     document.getElementById('regImportFile')?.addEventListener('change', async (ev)=>{
       const file = ev.target.files[0];
@@ -473,27 +530,18 @@
       try {
         const txt = await file.text();
         const obj = JSON.parse(txt);
-        if (Array.isArray(obj)) {
-          setRegs(obj);
-        } else if (Array.isArray(obj.registros)) {
-          setRegs(obj.registros);
-        } else {
-          alert('Formato JSON inválido.');
-          ev.target.value = '';
-          return;
-        }
-        renderRegs();
+        if (Array.isArray(obj)) setRegs(obj);
+        else if (Array.isArray(obj.registros)) setRegs(obj.registros);
+        else { alert('Formato JSON inválido.'); ev.target.value = ''; return; }
+        renderRegs(); renderTbl3();
         alert('Registros importados.');
-      } catch {
-        alert('No se pudo leer el archivo.');
-      }
+      } catch { alert('No se pudo leer el archivo.'); }
       ev.target.value = '';
     });
-
     document.getElementById('regBorrarTodo')?.addEventListener('click', ()=>{
       if (confirm('¿Borrar TODOS los registros?')) {
         localStorage.removeItem(LS_REGS);
-        renderRegs();
+        renderRegs(); renderTbl3();
       }
     });
 
@@ -524,11 +572,86 @@
         `;
         tblRegBody.appendChild(tr);
         tr.querySelector('button')?.addEventListener('click', ()=>{
-          const arr = getRegs(); arr.splice(i,1); setRegs(arr); renderRegs();
+          const arr = getRegs(); arr.splice(i,1); setRegs(arr); renderRegs(); renderTbl3();
         });
       });
     }
     renderRegs();
+
+    /* =================== TABLAS (Pestaña 3) =================== */
+    const tbl3Body = document.querySelector('#tbl3 tbody');
+    function renderTbl3(){
+      const regs = getRegs();
+      tbl3Body.innerHTML = '';
+      regs.forEach((r, i) => {
+        const tr = document.createElement('tr');
+        const m3txt  = (r.m3 == null) ? '—' : fmt1(r.m3);
+        const constxt= (r.C ?? '—');
+        const sactxt = (r.Sac ?? '—');
+        const ahltxt = (r.A ?? '—') + '/' + (r.H ?? '—') + '/' + (r.L ?? '—');
+
+        tr.innerHTML = `
+          <td>${i+1}</td>
+          <td>${r.fecha}</td>
+          <td>${r.nivel}</td>
+          <td>${r.labor}</td>
+          <td>${r.robot}</td>
+          <td>${r.presion}</td>
+          <td>${r.uso ?? '—'}</td>
+          <td>${r.obs || ''}</td>
+          <td>${r.modo ?? '—'}</td>
+          <td>${m3txt}</td>
+          <td>${constxt}</td>
+          <td>${sactxt}</td>
+          <td>${ahltxt}</td>
+          <td><button class="btn ghost" data-i="${i}">Eliminar</button></td>
+        `;
+        tbl3Body.appendChild(tr);
+        tr.querySelector('button')?.addEventListener('click', ()=>{
+          const arr = getRegs(); arr.splice(i,1); setRegs(arr); renderTbl3(); renderRegs();
+        });
+      });
+    }
+
+    function toCSV(regs){
+      const headers = [
+        'N','Fecha','Nivel','Labor','Nro Robot','Presion (bar)','USO',
+        'Observaciones','Modo','m3','Constante','Sacrificio','A','H','L'
+      ];
+      const esc = (v) => {
+        const s = (v==null) ? '' : String(v);
+        return '"' + s.replace(/"/g,'""') + '"';
+      };
+      const lines = [headers.join(',')];
+      regs.forEach((r,i)=>{
+        lines.push([
+          i+1, r.fecha, r.nivel, r.labor, r.robot, r.presion, r.uso,
+          r.obs||'', r.modo, (r.m3==null? '' : fmt1(r.m3)), r.C, r.Sac, r.A, r.H, r.L
+        ].map(esc).join(','));
+      });
+      return lines.join('\r\n');
+    }
+
+    document.getElementById('tbl3ExportCSV')?.addEventListener('click', ()=>{
+      const regs = getRegs();
+      if (!regs.length){ alert('No hay registros para exportar.'); return; }
+      const csv = toCSV(regs);
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `shotcrete-registros-${Date.now()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('tbl3Refrescar')?.addEventListener('click', renderTbl3);
+
+    document.getElementById('tbl3BorrarTodo')?.addEventListener('click', ()=>{
+      if (confirm('¿Borrar TODOS los registros?')) {
+        localStorage.removeItem(LS_REGS);
+        renderTbl3(); renderRegs();
+      }
+    });
 
     /* =================== Service Worker =================== */
     (function(){
@@ -542,4 +665,3 @@
   </script>
 </body>
 </html>
-
