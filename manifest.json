@@ -1,8 +1,9 @@
+
 {
   "name": "Shotcrete Calc",
   "short_name": "ShotcreteCalc",
-  "description": "Calculadora de parámetros de shotcrete para interior mina.",
-  "start_url": "/shotcrete-calc/index.html",
+  "description": "Cubicación y control para shotcrete — funciona offline.",
+  "start_url": "/shotcrete-calc/",
   "scope": "/shotcrete-calc/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -21,3 +22,5 @@
     }
   ]
 }
+``
+
