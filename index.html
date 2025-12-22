@@ -7,10 +7,11 @@
   <title>Shotcrete Calc</title>
 
   <!-- PWA (sub-path GitHub Pages) -->
-  /shotcrete-calc/manifest.json
-  /shotcrete-calc/icon-192.png
+  <link rel="manifest" href="/shotcrete-calc/manifest.json">
+  <link rel="icon" href="/shotcrete-calc/icon-192.png" type="image/png">
   <meta name="theme-color" content="#0a84ff">
 
+  <!-- ======= Estilos (Mobile App + Responsive) ======= -->
   <style>
     :root{
       --brand:#0a84ff; --brand-2:#166ef2;
@@ -22,41 +23,81 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.35;padding-bottom:env(safe-area-inset-bottom)}
-    header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;padding:calc(.6rem + env(safe-area-inset-top)) 1rem .6rem 1rem;display:flex;align-items:center;gap:.75rem;box-shadow:0 2px 12px rgba(0,0,0,.12)}
-    header .logo{width:28px;height:28px;border-radius:6px;background:#fff2;display:inline-block}
-    header h1{margin:0;font-size:1.1rem}
-    main{max-width:960px;margin:0 auto;padding:1rem;padding-bottom:4.5rem}
-    fieldset{border:1px solid var(--border);border-radius:.8rem;background:var(--card);padding:1rem;margin:0 0 1rem}
-    legend{font-weight:700;padding:0 .5rem}
-    label{display:block;margin:.55rem 0 .25rem}
-    input,select{width:100%;padding:.65rem .75rem;font-size:1rem;border:1px solid var(--border);border-radius:.6rem;background:#fff;outline:none}
-    @media (prefers-color-scheme: dark){ input,select{background:#0e0e10;color:var(--fg)} }
-    .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
-    @media (max-width:820px){ .row3{grid-template-columns:1fr 1fr} }
-    @media (max-width:560px){ .row3{grid-template-columns:1fr} .row2{grid-template-columns:1fr} }
-    .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
-    .btn{border:none;border-radius:.6rem;padding:.7rem 1rem;font-size:1rem;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer}
-    .btn.primary{background:var(--brand);color:#fff}
-    .btn.secondary{background:#2f3b48;color:#fff}
-    .btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
-    .result{margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;text-align:center}
-    @media (prefers-color-scheme: dark){ .result{background:#0e0e10} }
-    .result h2{margin:0;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:#0a84ff}
-    .result small{display:block;color:var(--muted);margin-top:.25rem}
-    table{width:100%;border-collapse:collapse}
-    th,td{border:1px solid var(--border);padding:.55rem;text-align:left}
-    thead th{background:#eef3ff}
-    @media (prefers-color-scheme: dark){ thead th{background:#0f203a;color:#cfe0ff} }
-    .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--bg);border-top:1px solid var(--border);padding:.35rem calc(.6rem + env(safe-area-inset-bottom)) .35rem .6rem;display:grid;grid-template-columns:repeat(5,1fr);gap:.25rem}
-    .tabbar button{appearance:none;border:none;background:transparent;color:#667085;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;padding:.5rem 0;border-radius:.5rem;cursor:pointer;font-size:.9rem}
-    .tabbar button.active{color:#0a84ff;font-weight:700;background:var(--card)}
-    section.tab{display:none}
-    section.tab.active{display:block}
-    .mode{display:flex;gap:.5rem;align-items:center;margin:.2rem 0 .4rem}
-    .mode label{display:flex;align-items:center;gap:.4rem;margin:0}
-    .hidden{display:none !important}
+    body{
+      margin:0; background:var(--bg); color:var(--fg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      line-height:1.35; padding-bottom:env(safe-area-inset-bottom)
+    }
+    /* App bar */
+    header{
+      position:sticky; top:0; z-index:50;
+      background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff;
+      padding:calc(.6rem + env(safe-area-inset-top)) 1rem .6rem 1rem;
+      display:flex; align-items:center; gap:.75rem; box-shadow:0 2px 12px rgba(0,0,0,.12);
+    }
+    header .logo{ width:28px; height:28px; border-radius:6px; background:#fff2; display:inline-block }
+    header h1{ margin:0; font-size:1.1rem }
+
+    /* Contenido */
+    main{ max-width:960px; margin:0 auto; padding:1rem; padding-bottom:4.5rem }
+
+    /* Card/fieldset */
+    fieldset{ border:1px solid var(--border); border-radius:.8rem; background:var(--card); padding:1rem; margin:0 0 1rem }
+    legend{ font-weight:700; padding:0 .5rem }
+    label{ display:block; margin:.55rem 0 .25rem }
+
+    /* Inputs */
+    input,select{
+      width:100%; padding:.65rem .75rem; font-size:1rem;
+      border:1px solid var(--border); border-radius:.6rem; background:#fff; outline:none;
+    }
+    @media (prefers-color-scheme: dark){ input,select{ background:#0e0e10; color:var(--fg) } }
+
+    /* Grid */
+    .row2{ display:grid; grid-template-columns:1fr 1fr; gap:1rem }
+    .row3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem }
+    @media (max-width:820px){ .row3{ grid-template-columns:1fr 1fr } }
+    @media (max-width:560px){ .row3{ grid-template-columns:1fr } .row2{ grid-template-columns:1fr } }
+
+    /* Botones */
+    .actions{ display:flex; flex-wrap:wrap; gap:.6rem; margin-top:.8rem }
+    .btn{ border:none; border-radius:.6rem; padding:.7rem 1rem; font-size:1rem; display:inline-flex; align-items:center; gap:.5rem; cursor:pointer }
+    .btn.primary{ background:var(--brand); color:#fff }
+    .btn.secondary{ background:#2f3b48; color:#fff }
+    .btn.ghost{ background:transparent; color:var(--brand); border:1px solid var(--brand) }
+
+    /* Resultado grande */
+    .result{ margin-top:.9rem; padding:1rem; border-radius:.8rem; background:#fff; border:1px dashed var(--border); display:flex; align-items:center; justify-content:center; text-align:center }
+    @media (prefers-color-scheme: dark){ .result{ background:#0e0e10 } }
+    .result h2{ margin:0; font-size:clamp(1.6rem,4vw,2.2rem); font-weight:800; color:#0a84ff }
+    .result small{ display:block; color:var(--muted); margin-top:.25rem }
+
+    /* Tabla */
+    table{ width:100%; border-collapse:collapse; }
+    th, td{ border:1px solid var(--border); padding:.55rem; text-align:left; }
+    thead th{ background:#eef3ff; }
+    @media (prefers-color-scheme: dark){ thead th{ background:#0f203a; color:#cfe0ff; } }
+
+    /* Tab bar */
+    .tabbar{
+      position:fixed; left:0; right:0; bottom:0; z-index:60; background:var(--bg); border-top:1px solid var(--border);
+      padding:.35rem calc(.6rem + env(safe-area-inset-bottom)) .35rem .6rem; display:grid; grid-template-columns:repeat(5,1fr); gap:.25rem;
+    }
+    .tabbar button{
+      appearance:none; border:none; background:transparent; color:#667085;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.25rem;
+      padding:.5rem 0; border-radius:.5rem; cursor:pointer; font-size:.9rem;
+    }
+    .tabbar button.active{ color:#0a84ff; font-weight:700; background:var(--card) }
+    section.tab{ display:none }
+    section.tab.active{ display:block }
+
+    /* Modo de cálculo */
+    .mode{ display:flex; gap:.5rem; align-items:center; margin:.2rem 0 .4rem }
+    .mode label{ display:flex; align-items:center; gap:.4rem; margin:0 }
+
+    /* Utilidad */
+    .hidden{ display:none !important }
   </style>
 </head>
 <body>
@@ -70,65 +111,79 @@
     <section id="tab-calculo" class="tab active" aria-labelledby="btn-calculo">
       <fieldset>
         <legend>Calculo m3</legend>
+
         <div class="mode" role="group" aria-label="Modo de cálculo">
           <label><input type="radio" name="modoQuick" value="tunnel" checked> Avance (túnel)</label>
           <label><input type="radio" name="modoQuick" value="wall"> Resane (hastial)</label>
         </div>
+
         <div class="row3">
           <div><label for="qA">Ancho (A) — m</label><input id="qA" type="text" inputmode="decimal"></div>
           <div><label for="qH">Altura (H) — m</label><input id="qH" type="text" inputmode="decimal"></div>
           <div><label for="qL">Largo (L) — m</label><input id="qL" type="text" inputmode="decimal"></div>
         </div>
+
         <div class="row2" style="margin-top:.6rem">
           <div><label for="qSac">Frente de sacrificio — m³</label><input id="qSac" type="text" inputmode="decimal"></div>
           <div><label for="qConst">Constante (m²/m³)</label><input id="qConst" type="text" inputmode="decimal" value="11.5"></div>
         </div>
+
         <div class="actions">
           <button class="btn primary" id="qCalcular">Calcular</button>
           <button class="btn ghost" id="qLimpiar">Limpiar</button>
         </div>
+
         <div id="qOut" class="result" aria-live="polite">
-          <h2>—</h2><small id="qMode">Selecciona modo y completa los datos.</small>
+          <h2>—</h2>
+          <small id="qMode">Selecciona modo y completa los datos.</small>
         </div>
       </fieldset>
     </section>
 
-    <!-- ====== 2) REGISTROS (Calcular → Registrar; SIN tabla aquí) ====== -->
+    <!-- ====== 2) REGISTROS (Calcular → Registrar; sin tabla aquí) ====== -->
     <section id="tab-registros" class="tab" aria-labelledby="btn-registros">
       <!-- Calculadora de Registros -->
       <fieldset>
         <legend>Calculadora de Registros</legend>
+
         <div class="mode" role="group" aria-label="Modo de cálculo">
           <label><input type="radio" name="modoRegCalc" value="tunnel" checked> Avance (túnel)</label>
           <label><input type="radio" name="modoRegCalc" value="wall"> Resane (hastial)</label>
         </div>
+
         <div class="row3">
           <div><label for="rA">Ancho (A) — m</label><input id="rA" type="text" inputmode="decimal"></div>
           <div><label for="rH">Altura (H) — m</label><input id="rH" type="text" inputmode="decimal"></div>
           <div><label for="rL">Largo (L) — m</label><input id="rL" type="text" inputmode="decimal"></div>
         </div>
+
         <div class="row2" style="margin-top:.6rem">
           <div><label for="rSac">Frente de sacrificio — m³</label><input id="rSac" type="text" inputmode="decimal"></div>
           <div><label for="rConst">Constante (m²/m³)</label><input id="rConst" type="text" inputmode="decimal" value="11.5"></div>
         </div>
-        <!-- ACCIONES: SOLO “Calcular” -->
+
+        <!-- Acciones: SOLO “Calcular” -->
         <div class="actions">
           <button class="btn primary" id="rCalcBtn">Calcular</button>
         </div>
+
         <!-- Resultado -->
         <div id="rOut" class="result" aria-live="polite">
-          <h2>—</h2><small id="rMode">Primero calcula; luego podrás registrar la actividad.</small>
+          <h2>—</h2>
+          <small id="rMode">Primero calcula; luego podrás registrar la actividad.</small>
         </div>
       </fieldset>
 
       <!-- Formulario de registro (se muestra SOLO tras cálculo válido) -->
       <fieldset id="regForm" class="hidden">
         <legend>Registro de actividad</legend>
+
         <div class="row3">
           <div><label for="regFecha">Fecha</label><input id="regFecha" type="date" /></div>
           <div><label for="regNivel">Nivel</label><input id="regNivel" type="text" /></div>
           <div><label for="regLabor">Labor</label><input id="regLabor" type="text" /></div>
         </div>
+
         <div class="row3" style="margin-top:.6rem">
           <div><label for="regRobot">N° Robot</label><input id="regRobot" type="text" /></div>
           <div><label for="regPresion">Presión de aire (bar)</label><input id="regPresion" type="text" inputmode="decimal" placeholder="Ej. xx bar" /></div>
@@ -142,7 +197,7 @@
             </select>
           </div>
         </div>
-        <!-- NUEVO: Turno (Día/Noche) -->
+
         <div class="row2" style="margin-top:.6rem">
           <div>
             <label for="regTurno">Turno</label>
@@ -158,7 +213,7 @@
           </div>
         </div>
 
-        <!-- ACCIONES: SOLO “Registrar” (y un atajo para ir a Tablas) -->
+        <!-- Acciones: SOLO “Registrar” + ir a Tablas -->
         <div class="actions" style="align-items:end; justify-content:flex-end;">
           <button class="btn primary" id="regGuardarBtn">Registrar</button>
           <button class="btn secondary" id="goTablasBtn">Ir a Tablas</button>
@@ -190,9 +245,19 @@
       </fieldset>
     </section>
 
-    <!-- ====== 4) DASHBOARD ====== -->
+    <!-- ====== 4) DASHBOARD (Gráfico Producción) ====== -->
     <section id="tab-dashboard" class="tab" aria-labelledby="btn-dashboard">
-      <fieldset><legend>Dashboard</legend><p class="muted">Próximo: KPIs y gráficas.</p></fieldset>
+      <fieldset>
+        <legend>Producción</legend>
+        <div class="actions">
+          <button class="btn primary" id="btnRenderProduccion">Actualizar gráfico</button>
+        </div>
+        <canvas id="chartProduccion" width="900" height="360"
+                style="max-width:100%; background:var(--card); border:1px solid var(--border); border-radius:.6rem;"></canvas>
+        <p class="muted" style="margin-top:.5rem">
+          Suma de m³ por <strong>Labor</strong> usando los registros guardados.
+        </p>
+      </fieldset>
     </section>
 
     <!-- ====== 5) ENSAYOS ====== -->
@@ -201,6 +266,7 @@
     </section>
   </main>
 
+  <!-- Tab bar -->
   <nav class="tabbar" role="tablist" aria-label="Navegación">
     <button id="btn-calculo"  class="active" role="tab" aria-controls="tab-calculo"  aria-selected="true">Calculo m3</button>
     <button id="btn-registros"role="tab" aria-controls="tab-registros" aria-selected="false">Registros</button>
@@ -209,8 +275,9 @@
     <button id="btn-ensayos"  role="tab" aria-controls="tab-ensayos"  aria-selected="false">Ensayos</button>
   </nav>
 
+  <!-- ======= JavaScript ======= -->
   <script>
-    /* ===== Tabs ===== */
+    /* =================== Tabs =================== */
     const tabsMap = [
       {btn:'btn-calculo',   tab:'tab-calculo'},
       {btn:'btn-registros', tab:'tab-registros'},
@@ -229,16 +296,17 @@
         });
         if (tab === 'tab-calculo'){ document.getElementById('qA')?.focus({preventScroll:true}); }
         if (tab === 'tab-registros'){ document.getElementById('rA')?.focus({preventScroll:true}); }
-        if (tab === 'tab-tablas'){ renderTbl3(); }
+        if (tab === 'tab-tablas'){ renderTbl3(); }          // refrescar tabla
+        if (tab === 'tab-dashboard'){ renderDashboard(); }  // dibujar gráfico
       });
     });
 
-    /* ===== Utilidades ===== */
+    /* =================== Utilidades =================== */
     function parseDec(txt){ if (typeof txt !== 'string') return NaN; const s = txt.trim().replace(',', '.'); if (s==='') return NaN; return Number(s); }
     const fmt1 = (n) => Number(n).toFixed(1);
     const todayStr = () => new Date().toISOString().slice(0,10);
 
-    /* ===== Pestaña 1: Calculo m3 (rápido) ===== */
+    /* =================== Pestaña 1: Calculo m3 (rápido) =================== */
     const qA=document.getElementById('qA'), qH=document.getElementById('qH'), qL=document.getElementById('qL');
     const qSac=document.getElementById('qSac'), qConst=document.getElementById('qConst');
     const qOutH2=document.querySelector('#qOut h2'), qOutMode=document.getElementById('qMode');
@@ -255,10 +323,23 @@
       qOutH2.textContent=`${nombreModoQuick()}: ${fmt1(m3_total)} m³`; qOutMode.textContent='';
     }
     document.getElementById('qCalcular')?.addEventListener('click', calcularQuick);
-    document.getElementById('qLimpiar')?.addEventListener('click', ()=>{ [qA,qH,qL,qSac].forEach(i=>i.value=''); qConst.value='11.5'; document.querySelector('input[name="modoQuick"][value="tunnel"]').checked=true; qOutH2.textContent='—'; qOutMode.textContent='Selecciona modo y completa los datos.'; qA?.focus(); });
-    [qA,qH,qL,qSac,qConst,...qRadios].forEach(el=>{ el?.addEventListener('input',()=>{ const m=[...qRadios].find(r=>r.checked)?.value||'tunnel'; const wallReady=qH?.value.trim()&&qL?.value.trim(); const tunnelReady=qA?.value.trim()&&wallReady; const ready=(m==='wall')?wallReady:tunnelReady; if(ready) calcularQuick(); else { qOutH2.textContent='—'; qOutMode.textContent='Selecciona modo y completa los datos.'; } }); el?.addEventListener('keydown',ev=>{ if(ev.key==='Enter') calcularQuick(); }); });
+    document.getElementById('qLimpiar')?.addEventListener('click', ()=>{
+      [qA,qH,qL,qSac].forEach(i=>i.value=''); qConst.value='11.5';
+      document.querySelector('input[name="modoQuick"][value="tunnel"]').checked=true;
+      qOutH2.textContent='—'; qOutMode.textContent='Selecciona modo y completa los datos.'; qA?.focus();
+    });
+    [qA,qH,qL,qSac,qConst,...qRadios].forEach(el=>{
+      el?.addEventListener('input', ()=>{
+        const m=[...qRadios].find(r=>r.checked)?.value||'tunnel';
+        const wallReady=qH?.value.trim()&&qL?.value.trim();
+        const tunnelReady=qA?.value.trim()&&wallReady;
+        const ready=(m==='wall')?wallReady:tunnelReady;
+        if(ready) calcularQuick(); else { qOutH2.textContent='—'; qOutMode.textContent='Selecciona modo y completa los datos.'; }
+      });
+      el?.addEventListener('keydown', ev=>{ if(ev.key==='Enter') calcularQuick(); });
+    });
 
-    /* ===== Pestaña 2: Registros (Calcular → Registrar; sin tabla) ===== */
+    /* =================== Pestaña 2: Registros (Calcular → Registrar) =================== */
     const rA=document.getElementById('rA'), rH=document.getElementById('rH'), rL=document.getElementById('rL');
     const rSac=document.getElementById('rSac'), rConst=document.getElementById('rConst');
     const rOutH2=document.querySelector('#rOut h2'), rOutMode=document.getElementById('rMode');
@@ -281,35 +362,33 @@
       regForm.classList.remove('hidden'); // muestra el formulario “Registrar”
       return true;
     }
-
     rCalcBtn?.addEventListener('click', calcularReg);
 
-    /* ===== Storage y guardado (se visualiza SOLO en pestaña 3) ===== */
+    /* Storage y guardado (se visualiza SOLO en pestaña 3) */
     const LS_REGS='sc_registros';
     function getRegs(){ try{ return JSON.parse(localStorage.getItem(LS_REGS)) ?? []; }catch{ return []; } }
     function setRegs(arr){ localStorage.setItem(LS_REGS, JSON.stringify(arr)); }
 
     const regFecha=document.getElementById('regFecha'), regNivel=document.getElementById('regNivel'), regLabor=document.getElementById('regLabor');
-    const regRobot=document.getElementById('regRobot'), regPresion=document.getElementById('regPresion'), regUso=document.getElementById('regUso'), regTurno=document.getElementById('regTurno'), regObs=document.getElementById('regObs');
+    const regRobot=document.getElementById('regRobot'), regPresion=document.getElementById('regPresion'),
+          regUso=document.getElementById('regUso'), regTurno=document.getElementById('regTurno'), regObs=document.getElementById('regObs');
     const regGuardarBtn=document.getElementById('regGuardarBtn'), goTablasBtn=document.getElementById('goTablasBtn');
 
     function limpiarFormularioRegistro(){
-      regFecha.value=todayStr(); regNivel.value=''; regLabor.value=''; regRobot.value=''; regPresion.value=''; regUso.value=''; regTurno.value=''; regObs.value='';
-      regMsg.textContent='';
+      regFecha.value=todayStr(); regNivel.value=''; regLabor.value=''; regRobot.value='';
+      regPresion.value=''; regUso.value=''; regTurno.value=''; regObs.value=''; regMsg.textContent='';
     }
     limpiarFormularioRegistro();
 
     regGuardarBtn?.addEventListener('click', ()=>{
       if(!lastRegCalc){ alert('Primero realiza el cálculo.'); return; }
       const fecha=regFecha.value||todayStr(), nivel=regNivel.value.trim(), labor=regLabor.value.trim(), robot=regRobot.value.trim();
-      const presionRaw=regPresion.value.trim(); // puede venir "xx bar" o número
-      let presion = parseFloat(presionRaw.replace(/[^0-9.,-]/g,'')); // extrae número
-      presion = isNaN(presion) ? NaN : presion;
+      const presionRaw=regPresion.value.trim(); // puede venir “xx bar”
+      let presion=parseFloat(presionRaw.replace(/[^0-9.,-]/g,'')); presion=isNaN(presion)?NaN:presion;
       const uso=regUso.value, turno=regTurno.value, obs=regObs.value.trim();
 
       if(!fecha||!nivel||!labor||!robot||!isFinite(presion)||!uso||!turno){
-        alert('Completa Fecha, Nivel, Labor, N° Robot, Presión (bar), USO y Turno.');
-        return;
+        alert('Completa Fecha, Nivel, Labor, N° Robot, Presión (bar), USO y Turno.'); return;
       }
 
       const regs=getRegs();
@@ -321,18 +400,20 @@
       });
       setRegs(regs);
       regMsg.textContent='Registro guardado. Revisa la pestaña “Tablas”.';
+      // Mantener el dashboard sincronizado
+      renderProduccionChart();
     });
-
     goTablasBtn?.addEventListener('click', ()=>{ document.getElementById('btn-tablas')?.click(); });
 
-    /* ===== Pestaña 3: Tabla y CSV ===== */
+    /* =================== Pestaña 3: Tabla y CSV =================== */
     const tbl3Body=document.querySelector('#tbl3 tbody');
     function renderTbl3(){
       const regs=getRegs();
       tbl3Body.innerHTML='';
       regs.forEach((r,i)=>{
         const tr=document.createElement('tr');
-        const m3txt=(r.m3==null)?'—':fmt1(r.m3), constxt=(r.C??'—'), sactxt=(r.Sac??'—'), ahltxt=(r.A??'—')+'/'+(r.H??'—')+'/'+(r.L??'—');
+        const m3txt=(r.m3==null)?'—':fmt1(r.m3), constxt=(r.C??'—'), sactxt=(r.Sac??'—'),
+              ahltxt=(r.A??'—')+'/'+(r.H??'—')+'/'+(r.L??'—');
         tr.innerHTML=`
           <td>${i+1}</td><td>${r.fecha}</td><td>${r.nivel}</td><td>${r.labor}</td><td>${r.robot}</td>
           <td>${r.presion}</td><td>${r.uso??'—'}</td><td>${r.turno??'—'}</td><td>${r.obs||''}</td>
@@ -340,7 +421,8 @@
           <td><button class="btn ghost" data-i="${i}">Eliminar</button></td>`;
         tbl3Body.appendChild(tr);
         tr.querySelector('button')?.addEventListener('click', ()=>{
-          const arr=getRegs(); arr.splice(i,1); setRegs(arr); renderTbl3();
+          const arr=getRegs(); arr.splice(i,1); setRegs(arr);
+          renderTbl3(); renderProduccionChart(); // sincroniza el gráfico
         });
       });
     }
@@ -349,23 +431,107 @@
       const headers=['N','Fecha','Nivel','Labor','Nro Robot','Presion (bar)','USO','Turno','Observaciones','Modo','m3','Constante','Sacrificio','A','H','L'];
       const esc=(v)=>{ const s=(v==null)?'':String(v); return '"' + s.replace(/"/g,'""') + '"'; };
       const lines=[headers.join(',')];
-      regs.forEach((r,i)=>{ lines.push([i+1,r.fecha,r.nivel,r.labor,r.robot,r.presion,r.uso,r.turno,r.obs||'',r.modo,(r.m3==null?'':fmt1(r.m3)),r.C,r.Sac,r.A,r.H,r.L].map(esc).join(',')); });
+      regs.forEach((r,i)=>{
+        lines.push([i+1,r.fecha,r.nivel,r.labor,r.robot,r.presion,r.uso,r.turno,r.obs||'',r.modo,(r.m3==null?'':fmt1(r.m3)),r.C,r.Sac,r.A,r.H,r.L]
+          .map(esc).join(','));
+      });
       return lines.join('\r\n');
     }
-
     document.getElementById('tbl3ExportCSV')?.addEventListener('click', ()=>{
       const regs=getRegs(); if(!regs.length){ alert('No hay registros para exportar.'); return; }
-      const csv=toCSV(regs); const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}); const url=URL.createObjectURL(blob);
-      const a=document.createElement('a'); a.href=url; a.download=`shotcrete-registros-${Date.now()}.csv`; a.click(); URL.revokeObjectURL(url);
+      const csv=toCSV(regs);
+      const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download=`shotcrete-registros-${Date.now()}.csv`; a.click();
+      URL.revokeObjectURL(url);
     });
-    document.getElementById('tbl3Refrescar')?.addEventListener('click', renderTbl3);
+    document.getElementById('tbl3Refrescar')?.addEventListener('click', ()=>{ renderTbl3(); });
     document.getElementById('tbl3BorrarTodo')?.addEventListener('click', ()=>{
-      if(confirm('¿Borrar TODOS los registros?')){ localStorage.removeItem(LS_REGS); renderTbl3(); }
+      if(confirm('¿Borrar TODOS los registros?')){
+        localStorage.removeItem(LS_REGS); renderTbl3(); renderProduccionChart();
+      }
     });
 
-    /* ===== Service Worker ===== */
-    (function(){ if('serviceWorker' in navigator){ const swUrl='/shotcrete-calc/sw.js'; window.addEventListener('load',()=>{ navigator.serviceWorker.register(swUrl).catch(()=>{}); }); } })();
+    /* =================== Pestaña 4: Dashboard (Labor vs m³) =================== */
+    function aggregateM3PorLabor(){
+      const regs=getRegs(); const mapa=new Map();
+      for(const r of regs){
+        const labor=(r.labor??'').trim(); const m3=(r.m3==null?0:Number(r.m3));
+        if(!labor) continue;
+        mapa.set(labor,(mapa.get(labor)??0)+(isFinite(m3)?m3:0));
+      }
+      return [...mapa.entries()].map(([label,value])=>({label, value:Number(value.toFixed(1))}))
+                               .sort((a,b)=>b.value-a.value);
+    }
+    function renderProduccionChart(){
+      const data=aggregateM3PorLabor();
+      const canvas=document.getElementById('chartProduccion');
+      if(!canvas) return;
+      const ctx=canvas.getContext('2d');
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      if(!data.length){
+        ctx.fillStyle='#666'; ctx.font='16px system-ui';
+        ctx.fillText('Sin datos para graficar — registra actividad en la pestaña 2.', 20, 40);
+        return;
+      }
+      // Título
+      ctx.fillStyle='#111'; ctx.font='bold 18px system-ui';
+      ctx.fillText('Producción (Labor vs m³)', 20, 30);
+
+      // Área
+      const L=70,R=20,T=50,B=60,W=canvas.width,H=canvas.height;
+      const plotW=W-L-R, plotH=H-T-B;
+
+      // Ejes
+      ctx.strokeStyle='#888'; ctx.lineWidth=1; ctx.beginPath();
+      ctx.moveTo(L,H-B); ctx.lineTo(W-R,H-B); // X
+      ctx.moveTo(L,H-B); ctx.lineTo(L,T);     // Y
+      ctx.stroke();
+
+      // Escala Y
+      const maxVal=Math.max(...data.map(d=>d.value),1);
+      const niceMax=Math.ceil(maxVal/10)*10, ticks=5;
+      ctx.fillStyle='#333'; ctx.font='12px system-ui';
+      for(let i=0;i<=ticks;i++){
+        const val=(niceMax/ticks)*i;
+        const y=H-B-(val/niceMax)*plotH;
+        ctx.strokeStyle= i===0 ? '#888' : '#eee';
+        ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(W-R,y); ctx.stroke();
+        ctx.fillStyle='#333'; ctx.fillText(val.toFixed(0), L-40, y+4);
+      }
+
+      // Barras
+      const n=data.length, gapX=20;
+      const barW=Math.max(24, Math.floor((plotW - gapX*(n-1))/n));
+      data.forEach((d,i)=>{
+        const x=L + i*(barW+gapX);
+        const h=(d.value/niceMax)*plotH;
+        const y=H-B-h;
+        ctx.fillStyle='#0a84ff'; ctx.fillRect(x,y,barW,h);
+        ctx.fillStyle='#111'; ctx.font='12px system-ui';
+        ctx.fillText(d.value.toFixed(1), x, y-6);
+        ctx.save(); ctx.translate(x+barW/2, H-B+12); ctx.rotate(-Math.PI/6);
+        ctx.fillStyle='#333'; ctx.textAlign='left'; ctx.fillText(d.label, 0, 0);
+        ctx.restore();
+      });
+
+      // Etiquetas ejes
+      ctx.fillStyle='#333'; ctx.font='13px system-ui';
+      ctx.fillText('m³', L-50, T-10); ctx.textAlign='center';
+      ctx.fillText('Labor', L+plotW/2, H-20);
+    }
+    document.getElementById('btnRenderProduccion')?.addEventListener('click', renderProduccionChart);
+    function renderDashboard(){ renderProduccionChart(); }
+
+    /* =================== Service Worker =================== */
+    (function(){
+      if('serviceWorker' in navigator){
+        const swUrl='/shotcrete-calc/sw.js';
+        window.addEventListener('load', ()=>{
+          navigator.serviceWorker.register(swUrl).catch(()=>{});
+        });
+      }
+    })();
   </script>
 </body>
 </html>
-
