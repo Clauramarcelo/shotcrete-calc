@@ -1,163 +1,44 @@
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Shotcrete Calc</title>
 
-  <!-- Manifest PWA: en sub-path de GitHub Pages -->
-  <link rel="manifest" href="/shotcrete-calc/manifest.json">
+<section id="tab-calc" class="active">
+  <fieldset>
+    <legend>Calculadora de cubicación (A, H, L + frente de sacrificio)</legend>
 
-  <!-- Íconos (asegúrate de subir estos archivos al repo) -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/shotcrete-calc/icon-192.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/shotcrete-calc/icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="/shotcrete-calc/icon-512.png">
-
-  <!-- Color de la UI móvil -->
-  <meta name="theme-color" content="#0a84ff">
-
-  <!-- Estilos mínimos (opcional) -->
-  <style>
-    :root {
-      color-scheme: light dark;
-    }
-    body {
-      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: #fff; color: #111;
-    }
-    header {
-      display: flex; align-items: center; gap: .75rem;
-      padding: 1rem; background: #0a84ff; color: #fff;
-    }
-    header img { width: 32px; height: 32px; }
-    main { padding: 1rem; max-width: 720px; margin: 0 auto; }
-    fieldset { border: 1px solid #ddd; padding: 1rem; border-radius: .5rem; }
-    legend { font-weight: 600; }
-    label { display: block; margin: .5rem 0 .25rem; }
-    input, select { width: 100%; padding: .5rem; font-size: 1rem; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .actions { display: flex; gap: .5rem; margin-top: 1rem; }
-    button {
-      padding: .6rem 1rem; font-size: 1rem; border: none; border-radius: .4rem;
-      background: #0a84ff; color: #fff; cursor: pointer;
-    }
-    button.secondary { background: #555; }
-    .result { margin-top: 1rem; padding: .75rem; background: #f6f8fa; border-radius: .5rem; }
-    footer { padding: 1rem; text-align: center; color: #555; }
-    @media (prefers-color-scheme: dark) {
-      body { background: #0b0b0b; color: #eee; }
-      fieldset { border-color: #333; }
-      .result { background: #151515; }
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <img src="/shotcrete-calc/icon-192.png" alt="App icon">
-    <h1 style="margin:0">Shotcrete Calc</h1>
-  </header>
-
-  <main>
-    <!-- UI mínima: reemplaza por tu calculadora real -->
-    <fieldset>
-      <legend>Parámetros de mezcla (demo)</legend>
-      <div class="row">
-        <div>
-          <label for="vida_util">Vida útil (h)</label>
-          <input id="vida_util" type="number" step="0.1" min="0" placeholder="2.5">
-        </div>
-        <div>
-          <label for="slump">Slump (cm)</label>
-          <input id="slump" type="number" step="0.5" min="0" placeholder="8">
-        </div>
-        <div>
-          <label for="acelerante">Acelerante (L/m³)</label>
-          <input id="acelerante" type="number" step="0.1" min="0" placeholder="6.0">
-        </div>
-        <div>
-          <label for="res_inicial">Resistencia inicial (MPa @2h)</label>
-          <input id="res_inicial" type="number" step="0.1" min="0" placeholder="2.0">
-        </div>
+    <div class="row3">
+      <div>
+        <label for="ancho">Ancho (A) — m</label>
+        <input id="ancho" type="number" step="0.01" min="0" placeholder="Ej. 4.00">
       </div>
-      <div class="actions">
-        <button id="calcular">Calcular</button>
-        <button class="secondary" id="guardar">Guardar (offline)</button>
-        <button class="secondary" id="limpiar">Limpiar</button>
+      <div>
+        <label for="altura">Altura (H) — m</label>
+        <input id="altura" type="number" step="0.01" min="0" placeholder="Ej. 3.50">
       </div>
-      <div class="result" id="resultado" aria-live="polite">
-        Ingresa datos y presiona <strong>Calcular</strong>.
+      <div>
+        <label for="largo">Largo (L) — m</label>
+        <input id="largo" type="number" step="0.01" min="0" placeholder="Ej. 20.00">
       </div>
-    </fieldset>
+    </div>
 
-    <p style="margin-top:1rem">
-      Esta app está preparada para funcionar <strong>offline</strong> una vez abierta con conexión al menos una vez.
-    </p>
-  </main>
+    <div class="row">
+      <div>
+        <label for="sacrificio">Frente de sacrificio — m³</label>
+        <input id="sacrificio" type="number" step="0.01" min="0" placeholder="Ej. 0.50">
+        <div class="muted">Se suma al volumen calculado por la fórmula.</div>
+      </div>
+      <div>
+        <label for="const_115">Constante de conversión (m²/m³)</label>
+        <input id="const_115" type="number" step="0.01" min="0" value="11.5">
+        <div class="muted">Por defecto 11.5 (11.5 m² se lanzan con 1 m³).</div>
+      </div>
+    </div>
 
-  <footer>
-    © 2025 Shotcrete Calc
-  </footer>
+    <div class="actions">
+      <button class="primary" id="btn-calcular-m3">Calcular m³</button>
+      <button class="secondary" id="btn-limpiar-m3">Limpiar</button>
+    </div>
 
-  <!-- Lógica mínima y persistencia offline -->
-  <script>
-    // Persistencia local simple para uso offline
-    const fields = ["vida_util", "slump", "acelerante", "res_inicial"];
-    function loadStored() {
-      fields.forEach(id => {
-        const el = document.getElementById(id);
-        const val = localStorage.getItem("sc_" + id);
-        if (val !== null) el.value = val;
-      });
-    }
-    function saveStored() {
-      fields.forEach(id => {
-        const el = document.getElementById(id);
-        localStorage.setItem("sc_" + id, el.value);
-      });
-    }
-    function clearStored() {
-      fields.forEach(id => localStorage.removeItem("sc_" + id));
-      fields.forEach(id => { document.getElementById(id).value = ""; });
-      document.getElementById("resultado").textContent = "Campos limpiados.";
-    }
-    function calcular() {
-      const vida = parseFloat(document.getElementById("vida_util").value || "0");
-      const slump = parseFloat(document.getElementById("slump").value || "0");
-      const acel = parseFloat(document.getElementById("acelerante").value || "0");
-      const ri = parseFloat(document.getElementById("res_inicial").value || "0");
+    <div id="calc-resultado" class="result" aria-live="polite">
+      Ingresa A, H, L y el frente de sacrificio, luego presiona <strong>Calcular m³</strong>.
+    </div>
+  </fieldset>
+</section>
 
-      // Fórmula demo (sustituye por tu cálculo real)
-      const indiceTrab = (slump * 0.1) + (vida * 0.25) - (acel * 0.05);
-      const mensaje =
-        `Índice de trabajabilidad (demo): ${indiceTrab.toFixed(2)}\n` +
-        `Resistencia inicial (ingresada): ${ri.toFixed(2)} MPa`;
-
-      document.getElementById("resultado").textContent = mensaje;
-    }
-
-    document.getElementById("calcular").addEventListener("click", calcular);
-    document.getElementById("guardar").addEventListener("click", () => {
-      saveStored();
-      document.getElementById("resultado").textContent = "Parámetros guardados (offline).";
-    });
-    document.getElementById("limpiar").addEventListener("click", clearStored);
-
-    // Carga inicial de valores guardados
-    loadStored();
-  </script>
-
-  <!-- Registro del Service Worker en el sub-path correcto -->
-  <script>
-    (function() {
-      if ('serviceWorker' in navigator) {
-        const swUrl = '/shotcrete-calc/sw.js'; // Importante: sub-path de Pages
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register(swUrl)
-            .then(reg => console.log('SW registrado:', reg.scope))
-            .catch(err => console.error('Error registrando SW:', err));
-        });
-      }
-    })();
-  </script>
-</body>
-</html>
