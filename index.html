@@ -5,51 +5,107 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Shotcrete Calc</title>
+
+  <!-- Manifest PWA (sub-path de GitHub Pages) -->
+  <link rel="manifest" href="/shotcrete-calc/manifest.json">
+
+  <!-- Íconos (si los tienes en la raíz del repo) -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/shotcrete-calc/icon-192.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="/shotcrete-calc/icon-192.png">
+
+  <!-- Color de la UI móvil -->
+  <meta name="theme-color" content="#0a84ff">
+
+  <!-- ======= Estilos (Mobile App + Responsive) ======= -->
   <style>
-    :root{ --brand:#0a84ff; --brand-2:#166ef2; --bg:#ffffff; --fg:#0b0b0b; --muted:#667085; --card:#f6f8fa; --border:#d0d5dd; color-scheme: light dark; }
-    @media (prefers-color-scheme: dark){ :root{ --bg:#0b0b0b; --fg:#eee; --muted:#98a2b3; --card:#14171a; --border:#2a2e33; } }
+    :root{
+      --brand:#0a84ff; --brand-2:#166ef2;
+      --bg:#ffffff; --fg:#0b0b0b; --muted:#667085; --card:#f6f8fa; --border:#d0d5dd;
+      color-scheme: light dark;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{ --bg:#0b0b0b; --fg:#eee; --muted:#98a2b3; --card:#14171a; --border:#2a2e33; }
+    }
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.35;padding-bottom:env(safe-area-inset-bottom)}
-    header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;padding:calc(.6rem + env(safe-area-inset-top)) 1rem .6rem 1rem;display:flex;align-items:center;gap:.75rem;box-shadow:0 2px 12px rgba(0,0,0,.12)}
-    header .logo{width:28px;height:28px;border-radius:6px;background:#fff2;display:inline-block}
-    header h1{margin:0;font-size:1.1rem}
-    main{max-width:960px;margin:0 auto;padding:1rem;padding-bottom:4.5rem}
-    fieldset{border:1px solid var(--border);border-radius:.8rem;background:var(--card);padding:1rem;margin:0 0 1rem}
-    legend{font-weight:700;padding:0 .5rem}
-    label{display:block;margin:.55rem 0 .25rem}
-    input,select{width:100%;padding:.65rem .75rem;font-size:1rem;border:1px solid var(--border);border-radius:.6rem;background:#fff;outline:none}
-    @media (prefers-color-scheme: dark){ input,select{background:#0e0e10;color:var(--fg)} }
-    .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
-    @media (max-width:820px){ .row3{grid-template-columns:1fr 1fr} }
-    @media (max-width:560px){ .row3{grid-template-columns:1fr} .row2{grid-template-columns:1fr} }
-    .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
-    .btn{border:none;border-radius:.6rem;padding:.7rem 1rem;font-size:1rem;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer}
-    .btn.primary{background:var(--brand);color:#fff}
-    .btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--fg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      line-height:1.35; padding-bottom:env(safe-area-inset-bottom)
+    }
+    /* App bar */
+    header{
+      position:sticky; top:0; z-index:50;
+      background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff;
+      padding:calc(.6rem + env(safe-area-inset-top)) 1rem .6rem 1rem;
+      display:flex; align-items:center; gap:.75rem; box-shadow:0 2px 12px rgba(0,0,0,.12);
+    }
+    header .logo{ width:28px; height:28px; border-radius:6px; background:#fff2; display:inline-block }
+    header h1{ margin:0; font-size:1.1rem }
+
+    /* Contenido */
+    main{ max-width:960px; margin:0 auto; padding:1rem; padding-bottom:4.5rem }
+
+    /* Card/fieldset */
+    fieldset{ border:1px solid var(--border); border-radius:.8rem; background:var(--card); padding:1rem; margin:0 0 1rem }
+    legend{ font-weight:700; padding:0 .5rem }
+    label{ display:block; margin:.55rem 0 .25rem }
+
+    /* Inputs */
+    input,select{
+      width:100%; padding:.65rem .75rem; font-size:1rem;
+      border:1px solid var(--border); border-radius:.6rem; background:#fff; outline:none;
+    }
+    @media (prefers-color-scheme: dark){ input,select{ background:#0e0e10; color:var(--fg) } }
+
+    /* Grid */
+    .row2{ display:grid; grid-template-columns:1fr 1fr; gap:1rem }
+    .row3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem }
+    @media (max-width:820px){ .row3{ grid-template-columns:1fr 1fr } }
+    @media (max-width:560px){ .row3{ grid-template-columns:1fr } .row2{ grid-template-columns:1fr } }
+
+    /* Botones */
+    .actions{ display:flex; flex-wrap:wrap; gap:.6rem; margin-top:.8rem }
+    .btn{ border:none; border-radius:.6rem; padding:.7rem 1rem; font-size:1rem; display:inline-flex; align-items:center; gap:.5rem; cursor:pointer }
+    .btn.primary{ background:var(--brand); color:#fff }
+    .btn.secondary{ background:#2f3b48; color:#fff }
+    .btn.ghost{ background:transparent; color:var(--brand); border:1px solid var(--brand) }
+
     /* Resultado grande */
-    .result{margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;text-align:center}
-    @media (prefers-color-scheme: dark){ .result{background:#0e0e10} }
-    .result h2{margin:0;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:#0a84ff}
-    .result small{display:block;color:var(--muted);margin-top:.25rem}
-    /* Tab bar (si la usas) */
-    .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--bg);border-top:1px solid var(--border);padding:.35rem calc(.6rem + env(safe-area-inset-bottom)) .35rem .6rem;display:grid;grid-template-columns:repeat(5,1fr);gap:.25rem}
-    .tabbar button{appearance:none;border:none;background:transparent;color:#667085;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;padding:.5rem 0;border-radius:.5rem;cursor:pointer;font-size:.9rem}
-    .tabbar button.active{color:#0a84ff;font-weight:700;background:var(--card)}
-    section.tab{display:none}
-    section.tab.active{display:block}
-    .mode{display:flex;gap:.5rem;align-items:center;margin:.2rem 0 .4rem}
-    .mode label{display:flex;align-items:center;gap:.4rem;margin:0}
+    .result{ margin-top:.9rem; padding:1rem; border-radius:.8rem; background:#fff; border:1px dashed var(--border); display:flex; align-items:center; justify-content:center; text-align:center }
+    @media (prefers-color-scheme: dark){ .result{ background:#0e0e10 } }
+    .result h2{ margin:0; font-size:clamp(1.6rem,4vw,2.2rem); font-weight:800; color:#0a84ff }
+    .result small{ display:block; color:var(--muted); margin-top:.25rem }
+
+    /* Tab bar */
+    .tabbar{
+      position:fixed; left:0; right:0; bottom:0; z-index:60; background:var(--bg); border-top:1px solid var(--border);
+      padding:.35rem calc(.6rem + env(safe-area-inset-bottom)) .35rem .6rem; display:grid; grid-template-columns:repeat(5,1fr); gap:.25rem;
+    }
+    .tabbar button{
+      appearance:none; border:none; background:transparent; color:#667085;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.25rem;
+      padding:.5rem 0; border-radius:.5rem; cursor:pointer; font-size:.9rem;
+    }
+    .tabbar button.active{ color:#0a84ff; font-weight:700; background:var(--card) }
+    section.tab{ display:none }
+    section.tab.active{ display:block }
+
+    /* Modo de cálculo */
+    .mode{ display:flex; gap:.5rem; align-items:center; margin:.2rem 0 .4rem }
+    .mode label{ display:flex; align-items:center; gap:.4rem; margin:0 }
   </style>
 </head>
 <body>
+  <!-- App Bar -->
   <header>
     <span class="logo" aria-hidden="true"></span>
     <h1>Shotcrete Calc</h1>
   </header>
 
+  <!-- Contenido -->
   <main>
-    <!-- ====== Calculadora ====== -->
+    <!-- ====== 1) CALCULADORA ====== -->
     <section id="tab-calculadora" class="tab active" aria-labelledby="btn-calculadora">
       <fieldset>
         <legend>Calculadora de cubicación</legend>
@@ -99,22 +155,111 @@
       </fieldset>
     </section>
 
-    <!-- (Opcional) otras pestañas -->
+    <!-- ====== 2) REGISTRO ====== -->
     <section id="tab-registro" class="tab" aria-labelledby="btn-registro">
-      <fieldset><legend>Registro</legend><p>Próximo: guardado offline, export/import.</p></fieldset>
+      <fieldset>
+        <legend>Registro de actividad</legend>
+
+        <!-- Form de entrada -->
+        <div class="row3">
+          <div>
+            <label for="regFecha">Fecha</label>
+            <input id="regFecha" type="date" />
+          </div>
+          <div>
+            <label for="regNivel">Nivel</label>
+            <input id="regNivel" type="text" placeholder="Ej. 350 NE" />
+          </div>
+          <div>
+            <label for="regLabor">Labor</label>
+            <input id="regLabor" type="text" placeholder="Ej. Carguío 1201" />
+          </div>
+        </div>
+
+        <div class="row3" style="margin-top:.6rem">
+          <div>
+            <label for="regRobot">N° Robot</label>
+            <input id="regRobot" type="text" placeholder="Ej. Alpha 20-03" />
+          </div>
+          <div>
+            <label for="regPresion">Presión de aire (bar)</label>
+            <input id="regPresion" type="number" step="0.1" min="0" placeholder="Ej. 4.5" />
+          </div>
+          <div>
+            <label for="regUso">USO</label>
+            <select id="regUso">
+              <option value="" selected disabled>Selecciona…</option>
+              <option value="NIC">NIC</option>
+              <option value="REH">REH</option>
+              <option value="REP">REP</option>
+              <option value="OPE">OPE</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row2" style="margin-top:.6rem">
+          <div>
+            <label for="regObs">Observaciones</label>
+            <input id="regObs" type="text" placeholder="Notas de operación..." />
+          </div>
+          <div class="actions" style="align-items:end; justify-content:flex-end;">
+            <button class="btn primary" id="regGuardar">Guardar registro</button>
+            <button class="btn ghost" id="regLimpiar">Limpiar</button>
+            <button class="btn secondary" id="regTomarCalc">Tomar cálculo actual</button>
+          </div>
+        </div>
+
+        <!-- Export / Import / Borrar -->
+        <div class="actions" style="margin-top:.6rem">
+          <button class="btn ghost" id="regExport">Exportar JSON</button>
+          <button class="btn ghost" id="regImportBtn">Importar JSON</button>
+          <input id="regImportFile" type="file" accept="application/json" style="display:none">
+          <button class="btn ghost" id="regBorrarTodo">Borrar todo</button>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Registros guardados (offline)</legend>
+        <table id="tblRegistros">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Nivel</th>
+              <th>Labor</th>
+              <th>N° Robot</th>
+              <th>Presión (bar)</th>
+              <th>USO</th>
+              <th>Obs.</th>
+              <th>Modo</th>
+              <th>m³</th>
+              <th>Const.</th>
+              <th>Sac.</th>
+              <th>A/H/L</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </fieldset>
     </section>
+
+    <!-- ====== 3) TABLAS ====== -->
     <section id="tab-tablas" class="tab" aria-labelledby="btn-tablas">
-      <fieldset><legend>Tablas</legend><p>Próximo: tablas editables.</p></fieldset>
+      <fieldset><legend>Tablas</legend><p class="muted">Próximo: tablas de referencia editables.</p></fieldset>
     </section>
+
+    <!-- ====== 4) DASHBOARD ====== -->
     <section id="tab-dashboard" class="tab" aria-labelledby="btn-dashboard">
-      <fieldset><legend>Dashboard</legend><p>Próximo: KPIs y gráficas.</p></fieldset>
+      <fieldset><legend>Dashboard</legend><p class="muted">Próximo: KPIs y gráficas.</p></fieldset>
     </section>
+
+    <!-- ====== 5) ENSAYOS ====== -->
     <section id="tab-ensayos" class="tab" aria-labelledby="btn-ensayos">
-      <fieldset><legend>Ensayos de Resistencias</legend><p>Próximo: cálculo y registro f’c.</p></fieldset>
+      <fieldset><legend>Ensayos de Resistencias</legend><p class="muted">Próximo: cálculo y registro de f’c.</p></fieldset>
     </section>
   </main>
 
-  <!-- Tab bar (si la usas) -->
+  <!-- Tab bar -->
   <nav class="tabbar" role="tablist" aria-label="Navegación">
     <button id="btn-calculadora" class="active" role="tab" aria-controls="tab-calculadora" aria-selected="true">Calculadora</button>
     <button id="btn-registro" role="tab" aria-controls="tab-registro" aria-selected="false">Registro</button>
@@ -123,16 +268,17 @@
     <button id="btn-ensayos" role="tab" aria-controls="tab-ensayos" aria-selected="false">Ensayos</button>
   </nav>
 
+  <!-- ======= JavaScript ======= -->
   <script>
-    /* ===== Tabs (si las usas) ===== */
-    const mapTabs = [
+    /* =================== Tabs =================== */
+    const tabsMap = [
       {btn:'btn-calculadora', tab:'tab-calculadora'},
       {btn:'btn-registro',    tab:'tab-registro'},
       {btn:'btn-tablas',      tab:'tab-tablas'},
       {btn:'btn-dashboard',   tab:'tab-dashboard'},
       {btn:'btn-ensayos',     tab:'tab-ensayos'}
     ];
-    mapTabs.forEach(({btn, tab})=>{
+    tabsMap.forEach(({btn, tab})=>{
       const b = document.getElementById(btn);
       b?.addEventListener('click', ()=>{
         document.querySelectorAll('.tabbar button').forEach(el=>{
@@ -146,7 +292,17 @@
       });
     });
 
-    /* ===== Calculadora con modos ===== */
+    /* =================== Utilidades =================== */
+    function parseDec(txt){
+      if (typeof txt !== 'string') return NaN;
+      const s = txt.trim().replace(',', '.');
+      if (s === '') return NaN;
+      return Number(s);
+    }
+    const fmt1 = (n) => Number(n).toFixed(1);
+    const todayStr = () => new Date().toISOString().slice(0,10); // YYYY-MM-DD
+
+    /* =================== Calculadora: Avance / Resane =================== */
     const inpA = document.getElementById('inpA');
     const inpH = document.getElementById('inpH');
     const inpL = document.getElementById('inpL');
@@ -156,73 +312,225 @@
     const outMode = document.getElementById('calcMode');
     const modeRadios = document.querySelectorAll('input[name="modo"]');
 
-    function parseDec(txt){
-      if (typeof txt !== 'string') return NaN;
-      const s = txt.trim().replace(',', '.');
-      if (s === '') return NaN;
-      return Number(s);
-    }
-    const fmt1 = (n) => Number(n).toFixed(1); // 1 decimal
-
-    function nombreModo(){
+    const nombreModo = () => {
       const m = [...modeRadios].find(r => r.checked)?.value || 'tunnel';
       return m === 'tunnel' ? 'Avance' : 'Resane';
-    }
+    };
+
+    // Último cálculo compartible con Registro
+    let lastCalc = null;
 
     function calcular(){
-      const A = parseDec(inpA.value);
-      const H = parseDec(inpH.value);
-      const L = parseDec(inpL.value);
-      const Sac = parseDec(inpSac.value || '0');
-      const C = parseDec(inpConst.value || '11.5');
-      const m = [...modeRadios].find(r => r.checked)?.value || 'tunnel';
+      const A   = parseDec(inpA?.value ?? '');
+      const H   = parseDec(inpH?.value ?? '');
+      const L   = parseDec(inpL?.value ?? '');
+      const Sac = parseDec(inpSac?.value ?? '0');
+      const C   = parseDec(inpConst?.value ?? '11.5');
+      const m   = [...modeRadios].find(r => r.checked)?.value || 'tunnel';
 
-      // Validaciones mínimas
       if (!isFinite(L) || !isFinite(H) || !isFinite(Sac) || !isFinite(C) || C<=0){
-        outH2.textContent = '—'; outMode.textContent = 'Completa los campos.';
+        outH2.textContent = '—';
+        outMode.textContent = 'Completa los datos.';
+        lastCalc = null;
         return;
       }
-      if (m === 'tunnel' && !isFinite(A)){ outH2.textContent = '—'; outMode.textContent = 'Completa A, H y L.'; return; }
+      if (m === 'tunnel' && !isFinite(A)){
+        outH2.textContent = '—';
+        outMode.textContent = 'Completa A, H y L.';
+        lastCalc = null;
+        return;
+      }
 
       let m3_base = 0;
       if (m === 'tunnel'){
-        // Avance (túnel): ((((H*2)+A)*0.9)*L)/C
-        const perimetroParcial = (H * 2) + A;
+        const perimetroParcial  = (H * 2) + A;
         const perimetroAjustado = perimetroParcial * 0.9;
-        const areaLineal = perimetroAjustado * L;   // m²
+        const areaLineal        = perimetroAjustado * L;   // m²
         m3_base = areaLineal / C;
       } else {
-        // Resane (hastial): (L * H)/C
         m3_base = (L * H) / C;
       }
-
       const m3_total = m3_base + (isFinite(Sac) ? Sac : 0);
+
       outH2.textContent = `${nombreModo()}: ${fmt1(m3_total)} m³`;
-      outMode.textContent = ''; // no comentarios extra
+      outMode.textContent = '';
+
+      lastCalc = {
+        modo: nombreModo(),                 // "Avance" o "Resane"
+        m3: Number(fmt1(m3_total)),         // 1 decimal
+        A: isFinite(A) ? A : null,
+        H: H, L: L,
+        C: C, Sac: isFinite(Sac) ? Sac : 0
+      };
     }
 
-    document.getElementById('btnCalcular').addEventListener('click', calcular);
-    document.getElementById('btnLimpiar').addEventListener('click', ()=>{
-      [inpA, inpH, inpL, inpSac].forEach(i=>i.value='');
-      inpConst.value = '11.5';
-      document.querySelector('input[name="modo"][value="tunnel"]').checked = true;
-      outH2.textContent = '—'; outMode.textContent = 'Selecciona modo y completa los datos.';
-      inpA.focus();
+    document.getElementById('btnCalcular')?.addEventListener('click', calcular);
+    document.getElementById('btnLimpiar')?.addEventListener('click', ()=>{
+      [inpA, inpH, inpL, inpSac].forEach(i=>{ if (i) i.value=''; });
+      if (inpConst) inpConst.value = '11.5';
+      const tunnelRadio = document.querySelector('input[name="modo"][value="tunnel"]');
+      if (tunnelRadio) tunnelRadio.checked = true;
+      outH2.textContent = '—';
+      outMode.textContent = 'Selecciona modo y completa los datos.';
+      lastCalc = null;
+      inpA?.focus();
     });
 
-    // Cálculo en tiempo real con datos mínimos
     [inpA, inpH, inpL, inpSac, inpConst, ...modeRadios].forEach(el=>{
-      el.addEventListener('input', ()=>{
+      el?.addEventListener('input', ()=>{
         const m = [...modeRadios].find(r => r.checked)?.value || 'tunnel';
-        const wallReady   = inpH.value.trim() !== '' && inpL.value.trim() !== '';
-        const tunnelReady = inpA.value.trim() !== '' && wallReady;
+        const wallReady   = (inpH?.value.trim() && inpL?.value.trim());
+        const tunnelReady = (inpA?.value.trim() && wallReady);
         const ready = (m === 'wall') ? wallReady : tunnelReady;
-        if (ready) calcular(); else { outH2.textContent = '—'; outMode.textContent = 'Selecciona modo y completa los datos.'; }
+        if (ready) calcular(); else { outH2.textContent = '—'; outMode.textContent = 'Selecciona modo y completa los datos.'; lastCalc = null; }
       });
-      el.addEventListener?.('keydown', (ev)=>{ if (ev.key === 'Enter') calcular(); });
+      el?.addEventListener('keydown', (ev)=>{ if (ev.key === 'Enter') calcular(); });
     });
 
-    /* ===== Service Worker (si lo usas) ===== */
+    /* =================== Registro =================== */
+    const LS_REGS   = 'sc_registros';
+    const regFecha  = document.getElementById('regFecha');
+    const regNivel  = document.getElementById('regNivel');
+    const regLabor  = document.getElementById('regLabor');
+    const regRobot  = document.getElementById('regRobot');
+    const regPresion= document.getElementById('regPresion');
+    const regUso    = document.getElementById('regUso');
+    const regObs    = document.getElementById('regObs');
+    const tblRegBody= document.querySelector('#tblRegistros tbody');
+
+    function getRegs(){ try { return JSON.parse(localStorage.getItem(LS_REGS)) ?? []; } catch { return []; } }
+    function setRegs(arr){ localStorage.setItem(LS_REGS, JSON.stringify(arr)); }
+
+    function limpiarRegistro(){
+      regFecha.value = todayStr();
+      regNivel.value = '';
+      regLabor.value = '';
+      regRobot.value = '';
+      regPresion.value = '';
+      regUso.value = '';
+      regObs.value = '';
+    }
+    limpiarRegistro();
+
+    document.getElementById('regTomarCalc')?.addEventListener('click', ()=>{
+      if (!lastCalc){
+        alert('No hay un cálculo vigente en la pestaña Calculadora.');
+        return;
+      }
+      alert(`Cálculo tomado: ${lastCalc.modo} — ${fmt1(lastCalc.m3)} m³`);
+    });
+
+    document.getElementById('regGuardar')?.addEventListener('click', ()=>{
+      const fecha   = regFecha.value || todayStr();
+      const nivel   = regNivel.value.trim();
+      const labor   = regLabor.value.trim();
+      const robot   = regRobot.value.trim();
+      const presion = parseDec(regPresion.value || '');
+      const uso     = regUso.value;
+      const obs     = regObs.value.trim();
+
+      if (!fecha || !nivel || !labor || !robot || !isFinite(presion) || !uso){
+        alert('Completa Fecha, Nivel, Labor, N° Robot, Presión (bar) y USO.');
+        return;
+      }
+
+      const regs = getRegs();
+      regs.push({
+        fecha, nivel, labor, robot,
+        presion: Number(presion.toFixed(2)),
+        uso,
+        obs,
+        // adjunta cálculo si existe
+        modo: lastCalc?.modo ?? null,
+        m3:   lastCalc?.m3   ?? null,
+        C:    lastCalc?.C    ?? null,
+        Sac:  lastCalc?.Sac  ?? null,
+        A:    lastCalc?.A    ?? null,
+        H:    lastCalc?.H    ?? null,
+        L:    lastCalc?.L    ?? null
+      });
+      setRegs(regs);
+      renderRegs();
+      alert('Registro guardado.');
+    });
+
+    document.getElementById('regLimpiar')?.addEventListener('click', limpiarRegistro);
+
+    document.getElementById('regExport')?.addEventListener('click', ()=>{
+      const regs = getRegs();
+      const blob = new Blob([JSON.stringify({registros: regs}, null, 2)], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `shotcrete-registros-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('regImportBtn')?.addEventListener('click', ()=> document.getElementById('regImportFile').click());
+    document.getElementById('regImportFile')?.addEventListener('change', async (ev)=>{
+      const file = ev.target.files[0];
+      if (!file) return;
+      try {
+        const txt = await file.text();
+        const obj = JSON.parse(txt);
+        if (Array.isArray(obj)) {
+          setRegs(obj);
+        } else if (Array.isArray(obj.registros)) {
+          setRegs(obj.registros);
+        } else {
+          alert('Formato JSON inválido.');
+          ev.target.value = '';
+          return;
+        }
+        renderRegs();
+        alert('Registros importados.');
+      } catch {
+        alert('No se pudo leer el archivo.');
+      }
+      ev.target.value = '';
+    });
+
+    document.getElementById('regBorrarTodo')?.addEventListener('click', ()=>{
+      if (confirm('¿Borrar TODOS los registros?')) {
+        localStorage.removeItem(LS_REGS);
+        renderRegs();
+      }
+    });
+
+    function renderRegs(){
+      const regs = getRegs();
+      tblRegBody.innerHTML = '';
+      regs.forEach((r, i) => {
+        const tr = document.createElement('tr');
+        const m3txt  = (r.m3 == null) ? '—' : fmt1(r.m3);
+        const constxt= (r.C ?? '—');
+        const sactxt = (r.Sac ?? '—');
+        const ahltxt = (r.A ?? '—') + '/' + (r.H ?? '—') + '/' + (r.L ?? '—');
+
+        tr.innerHTML = `
+          <td>${r.fecha}</td>
+          <td>${r.nivel}</td>
+          <td>${r.labor}</td>
+          <td>${r.robot}</td>
+          <td>${r.presion}</td>
+          <td>${r.uso ?? '—'}</td>
+          <td>${r.obs || ''}</td>
+          <td>${r.modo ?? '—'}</td>
+          <td>${m3txt}</td>
+          <td>${constxt}</td>
+          <td>${sactxt}</td>
+          <td>${ahltxt}</td>
+          <td><button class="btn ghost" data-i="${i}">Eliminar</button></td>
+        `;
+        tblRegBody.appendChild(tr);
+        tr.querySelector('button')?.addEventListener('click', ()=>{
+          const arr = getRegs(); arr.splice(i,1); setRegs(arr); renderRegs();
+        });
+      });
+    }
+    renderRegs();
+
+    /* =================== Service Worker =================== */
     (function(){
       if ('serviceWorker' in navigator){
         const swUrl = '/shotcrete-calc/sw.js';
@@ -234,3 +542,4 @@
   </script>
 </body>
 </html>
+
