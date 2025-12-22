@@ -1,7 +1,7 @@
 
 // --- Service Worker para GitHub Pages (sub-path /shotcrete-calc/) ---
 const REPO = '/shotcrete-calc';
-const CACHE_NAME = 'sc-v25'; // incrementa cuando cambies assets precacheados
+const CACHE_NAME = 'sc-v26'; // incrementa cuando cambies assets precacheados
 
 // Precache mínimo para funcionar offline
 const ASSETS = [
