@@ -2,7 +2,7 @@
 {
   "name": "Shotcrete Calc",
   "short_name": "ShotcreteCalc",
-  "description": "Cubicación y control para shotcrete — funciona offline.",
+  "description": "Cubicación para Avance (túnel) y Resane (hastial) — funciona offline.",
   "start_url": "/shotcrete-calc/",
   "scope": "/shotcrete-calc/",
   "display": "standalone",
