@@ -75,13 +75,13 @@
           <label><input type="radio" name="modoQuick" value="wall"> Resane (hastial)</label>
         </div>
         <div class="row3">
-          <div><label for="qA">Ancho (A) — m</label><input id="qA" type="text" inputmode="decimal" placeholder="Ej. 4.0"></div>
-          <div><label for="qH">Altura (H) — m</label><input id="qH" type="text" inputmode="decimal" placeholder="Ej. 3.5"></div>
-          <div><label for="qL">Largo (L) — m</label><input id="qL" type="text" inputmode="decimal" placeholder="Ej. 20.0"></div>
+          <div><label for="qA">Ancho (A) — m</label><input id="qA" type="text" inputmode="decimal"></div>
+          <div><label for="qH">Altura (H) — m</label><input id="qH" type="text" inputmode="decimal"></div>
+          <div><label for="qL">Largo (L) — m</label><input id="qL" type="text" inputmode="decimal"></div>
         </div>
         <div class="row2" style="margin-top:.6rem">
-          <div><label for="qSac">Frente de sacrificio — m³</label><input id="qSac" type="text" inputmode="decimal" placeholder="Ej. 0.5"></div>
-          <div><label for="qConst">Constante (m²/m³)</label><input id="qConst" type="text" inputmode="decimal" value="11.5" placeholder="Ej. 11.5"></div>
+          <div><label for="qSac">Frente de sacrificio — m³</label><input id="qSac" type="text" inputmode="decimal"></div>
+          <div><label for="qConst">Constante (m²/m³)</label><input id="qConst" type="text" inputmode="decimal" value="11.5"></div>
         </div>
         <div class="actions">
           <button class="btn primary" id="qCalcular">Calcular</button>
@@ -103,13 +103,13 @@
           <label><input type="radio" name="modoRegCalc" value="wall"> Resane (hastial)</label>
         </div>
         <div class="row3">
-          <div><label for="rA">Ancho (A) — m</label><input id="rA" type="text" inputmode="decimal" placeholder="Ej. 4.0"></div>
-          <div><label for="rH">Altura (H) — m</label><input id="rH" type="text" inputmode="decimal" placeholder="Ej. 3.5"></div>
-          <div><label for="rL">Largo (L) — m</label><input id="rL" type="text" inputmode="decimal" placeholder="Ej. 20.0"></div>
+          <div><label for="rA">Ancho (A) — m</label><input id="rA" type="text" inputmode="decimal"></div>
+          <div><label for="rH">Altura (H) — m</label><input id="rH" type="text" inputmode="decimal"></div>
+          <div><label for="rL">Largo (L) — m</label><input id="rL" type="text" inputmode="decimal"></div>
         </div>
         <div class="row2" style="margin-top:.6rem">
-          <div><label for="rSac">Frente de sacrificio — m³</label><input id="rSac" type="text" inputmode="decimal" placeholder="Ej. 0.5"></div>
-          <div><label for="rConst">Constante (m²/m³)</label><input id="rConst" type="text" inputmode="decimal" value="11.5" placeholder="Ej. 11.5"></div>
+          <div><label for="rSac">Frente de sacrificio — m³</label><input id="rSac" type="text" inputmode="decimal"></div>
+          <div><label for="rConst">Constante (m²/m³)</label><input id="rConst" type="text" inputmode="decimal" value="11.5"></div>
         </div>
         <!-- ACCIONES: SOLO “Calcular” -->
         <div class="actions">
@@ -126,12 +126,12 @@
         <legend>Registro de actividad</legend>
         <div class="row3">
           <div><label for="regFecha">Fecha</label><input id="regFecha" type="date" /></div>
-          <div><label for="regNivel">Nivel</label><input id="regNivel" type="text" placeholder="Ej. 350 NE" /></div>
-          <div><label for="regLabor">Labor</label><input id="regLabor" type="text" placeholder="Ej. Carguío 1201" /></div>
+          <div><label for="regNivel">Nivel</label><input id="regNivel" type="text" /></div>
+          <div><label for="regLabor">Labor</label><input id="regLabor" type="text" /></div>
         </div>
         <div class="row3" style="margin-top:.6rem">
-          <div><label for="regRobot">N° Robot</label><input id="regRobot" type="text" placeholder="Ej. Alpha 20-03" /></div>
-          <div><label for="regPresion">Presión de aire (bar)</label><input id="regPresion" type="number" step="0.1" min="0" placeholder="Ej. 4.5" /></div>
+          <div><label for="regRobot">N° Robot</label><input id="regRobot" type="text" /></div>
+          <div><label for="regPresion">Presión de aire (bar)</label><input id="regPresion" type="text" inputmode="decimal" placeholder="Ej. xx bar" /></div>
           <div><label for="regUso">USO</label>
             <select id="regUso">
               <option value="" selected disabled>Selecciona…</option>
@@ -142,13 +142,26 @@
             </select>
           </div>
         </div>
+        <!-- NUEVO: Turno (Día/Noche) -->
         <div class="row2" style="margin-top:.6rem">
-          <div><label for="regObs">Observaciones</label><input id="regObs" type="text" placeholder="Notas de operación..." /></div>
-          <!-- ACCIONES: SOLO “Registrar” (y un atajo para ir a Tablas) -->
-          <div class="actions" style="align-items:end; justify-content:flex-end;">
-            <button class="btn primary" id="regGuardarBtn">Registrar</button>
-            <button class="btn secondary" id="goTablasBtn">Ir a Tablas</button>
+          <div>
+            <label for="regTurno">Turno</label>
+            <select id="regTurno">
+              <option value="" selected disabled>Selecciona…</option>
+              <option value="Día">Día</option>
+              <option value="Noche">Noche</option>
+            </select>
           </div>
+          <div>
+            <label for="regObs">Observaciones</label>
+            <input id="regObs" type="text" />
+          </div>
+        </div>
+
+        <!-- ACCIONES: SOLO “Registrar” (y un atajo para ir a Tablas) -->
+        <div class="actions" style="align-items:end; justify-content:flex-end;">
+          <button class="btn primary" id="regGuardarBtn">Registrar</button>
+          <button class="btn secondary" id="goTablasBtn">Ir a Tablas</button>
         </div>
         <p id="regMsg" class="muted" style="margin-top:.4rem"></p>
       </fieldset>
@@ -168,8 +181,8 @@
           <thead>
             <tr>
               <th>#</th><th>Fecha</th><th>Nivel</th><th>Labor</th><th>N° Robot</th>
-              <th>Presión (bar)</th><th>USO</th><th>Obs.</th><th>Modo</th><th>m³</th>
-              <th>Const.</th><th>Sac.</th><th>A/H/L</th><th>Acciones</th>
+              <th>Presión (bar)</th><th>USO</th><th>Turno</th><th>Obs.</th>
+              <th>Modo</th><th>m³</th><th>Const.</th><th>Sac.</th><th>A/H/L</th><th>Acciones</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -277,11 +290,11 @@
     function setRegs(arr){ localStorage.setItem(LS_REGS, JSON.stringify(arr)); }
 
     const regFecha=document.getElementById('regFecha'), regNivel=document.getElementById('regNivel'), regLabor=document.getElementById('regLabor');
-    const regRobot=document.getElementById('regRobot'), regPresion=document.getElementById('regPresion'), regUso=document.getElementById('regUso'), regObs=document.getElementById('regObs');
+    const regRobot=document.getElementById('regRobot'), regPresion=document.getElementById('regPresion'), regUso=document.getElementById('regUso'), regTurno=document.getElementById('regTurno'), regObs=document.getElementById('regObs');
     const regGuardarBtn=document.getElementById('regGuardarBtn'), goTablasBtn=document.getElementById('goTablasBtn');
 
     function limpiarFormularioRegistro(){
-      regFecha.value=todayStr(); regNivel.value=''; regLabor.value=''; regRobot.value=''; regPresion.value=''; regUso.value=''; regObs.value='';
+      regFecha.value=todayStr(); regNivel.value=''; regLabor.value=''; regRobot.value=''; regPresion.value=''; regUso.value=''; regTurno.value=''; regObs.value='';
       regMsg.textContent='';
     }
     limpiarFormularioRegistro();
@@ -289,12 +302,20 @@
     regGuardarBtn?.addEventListener('click', ()=>{
       if(!lastRegCalc){ alert('Primero realiza el cálculo.'); return; }
       const fecha=regFecha.value||todayStr(), nivel=regNivel.value.trim(), labor=regLabor.value.trim(), robot=regRobot.value.trim();
-      const presion=parseDec(regPresion.value||''), uso=regUso.value, obs=regObs.value.trim();
-      if(!fecha||!nivel||!labor||!robot||!isFinite(presion)||!uso){ alert('Completa Fecha, Nivel, Labor, N° Robot, Presión (bar) y USO.'); return; }
+      const presionRaw=regPresion.value.trim(); // puede venir "xx bar" o número
+      let presion = parseFloat(presionRaw.replace(/[^0-9.,-]/g,'')); // extrae número
+      presion = isNaN(presion) ? NaN : presion;
+      const uso=regUso.value, turno=regTurno.value, obs=regObs.value.trim();
+
+      if(!fecha||!nivel||!labor||!robot||!isFinite(presion)||!uso||!turno){
+        alert('Completa Fecha, Nivel, Labor, N° Robot, Presión (bar), USO y Turno.');
+        return;
+      }
+
       const regs=getRegs();
       regs.push({
         fecha, nivel, labor, robot,
-        presion:Number(presion.toFixed(2)), uso, obs,
+        presion:Number(presion.toFixed(2)), uso, turno, obs,
         modo:lastRegCalc.modo, m3:lastRegCalc.m3, C:lastRegCalc.C, Sac:lastRegCalc.Sac,
         A:lastRegCalc.A, H:lastRegCalc.H, L:lastRegCalc.L
       });
@@ -314,8 +335,8 @@
         const m3txt=(r.m3==null)?'—':fmt1(r.m3), constxt=(r.C??'—'), sactxt=(r.Sac??'—'), ahltxt=(r.A??'—')+'/'+(r.H??'—')+'/'+(r.L??'—');
         tr.innerHTML=`
           <td>${i+1}</td><td>${r.fecha}</td><td>${r.nivel}</td><td>${r.labor}</td><td>${r.robot}</td>
-          <td>${r.presion}</td><td>${r.uso??'—'}</td><td>${r.obs||''}</td><td>${r.modo??'—'}</td><td>${m3txt}</td>
-          <td>${constxt}</td><td>${sactxt}</td><td>${ahltxt}</td>
+          <td>${r.presion}</td><td>${r.uso??'—'}</td><td>${r.turno??'—'}</td><td>${r.obs||''}</td>
+          <td>${r.modo??'—'}</td><td>${m3txt}</td><td>${constxt}</td><td>${sactxt}</td><td>${ahltxt}</td>
           <td><button class="btn ghost" data-i="${i}">Eliminar</button></td>`;
         tbl3Body.appendChild(tr);
         tr.querySelector('button')?.addEventListener('click', ()=>{
@@ -325,10 +346,10 @@
     }
 
     function toCSV(regs){
-      const headers=['N','Fecha','Nivel','Labor','Nro Robot','Presion (bar)','USO','Observaciones','Modo','m3','Constante','Sacrificio','A','H','L'];
+      const headers=['N','Fecha','Nivel','Labor','Nro Robot','Presion (bar)','USO','Turno','Observaciones','Modo','m3','Constante','Sacrificio','A','H','L'];
       const esc=(v)=>{ const s=(v==null)?'':String(v); return '"' + s.replace(/"/g,'""') + '"'; };
       const lines=[headers.join(',')];
-      regs.forEach((r,i)=>{ lines.push([i+1,r.fecha,r.nivel,r.labor,r.robot,r.presion,r.uso,r.obs||'',r.modo,(r.m3==null?'':fmt1(r.m3)),r.C,r.Sac,r.A,r.H,r.L].map(esc).join(',')); });
+      regs.forEach((r,i)=>{ lines.push([i+1,r.fecha,r.nivel,r.labor,r.robot,r.presion,r.uso,r.turno,r.obs||'',r.modo,(r.m3==null?'':fmt1(r.m3)),r.C,r.Sac,r.A,r.H,r.L].map(esc).join(',')); });
       return lines.join('\r\n');
     }
 
@@ -347,3 +368,4 @@
   </script>
 </body>
 </html>
+
