@@ -11,7 +11,6 @@
   /shotcrete-calc/icon-192.png
   <meta name="theme-color" content="#0a84ff">
 
-  <!-- ======= Estilos (Mobile App + Responsive) ======= -->
   <style>
     :root{
       --brand:#0a84ff; --brand-2:#166ef2;
@@ -23,78 +22,48 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{
-      margin:0; background:var(--bg); color:var(--fg);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      line-height:1.35; padding-bottom:env(safe-area-inset-bottom)
-    }
-    /* App bar */
-    header{
-      position:sticky; top:0; z-index:50;
-      background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff;
-      padding:calc(.6rem + env(safe-area-inset-top)) 1rem .6rem 1rem;
-      display:flex; align-items:center; gap:.75rem; box-shadow:0 2px 12px rgba(0,0,0,.12);
-    }
-    header .logo{ width:28px; height:28px; border-radius:6px; background:#fff2; display:inline-block }
-    header h1{ margin:0; font-size:1.1rem }
+    body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.35;padding-bottom:env(safe-area-inset-bottom)}
+    header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;padding:calc(.6rem + env(safe-area-inset-top)) 1rem .6rem 1rem;display:flex;align-items:center;gap:.75rem;box-shadow:0 2px 12px rgba(0,0,0,.12)}
+    header .logo{width:28px;height:28px;border-radius:6px;background:#fff2;display:inline-block}
+    header h1{margin:0;font-size:1.1rem}
 
-    /* Contenido */
-    main{ max-width:960px; margin:0 auto; padding:1rem; padding-bottom:4.5rem }
+    main{max-width:960px;margin:0 auto;padding:1rem;padding-bottom:4.5rem}
+    fieldset{border:1px solid var(--border);border-radius:.8rem;background:var(--card);padding:1rem;margin:0 0 1rem}
+    legend{font-weight:700;padding:0 .5rem}
+    label{display:block;margin:.55rem 0 .25rem}
 
-    /* Card/fieldset */
-    fieldset{ border:1px solid var(--border); border-radius:.8rem; background:var(--card); padding:1rem; margin:0 0 1rem }
-    legend{ font-weight:700; padding:0 .5rem }
-    label{ display:block; margin:.55rem 0 .25rem }
+    input,select{width:100%;padding:.65rem .75rem;font-size:1rem;border:1px solid var(--border);border-radius:.6rem;background:#fff;outline:none}
+    @media (prefers-color-scheme: dark){ input,select{background:#0e0e10;color:var(--fg)} }
 
-    /* Inputs */
-    input,select{
-      width:100%; padding:.65rem .75rem; font-size:1rem;
-      border:1px solid var(--border); border-radius:.6rem; background:#fff; outline:none;
-    }
-    @media (prefers-color-scheme: dark){ input,select{ background:#0e0e10; color:var(--fg) } }
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+    @media (max-width:820px){ .row3{grid-template-columns:1fr 1fr} }
+    @media (max-width:560px){ .row3{grid-template-columns:1fr} .row2{grid-template-columns:1fr} }
 
-    /* Grid */
-    .row2{ display:grid; grid-template-columns:1fr 1fr; gap:1rem }
-    .row3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem }
-    @media (max-width:820px){ .row3{ grid-template-columns:1fr 1fr } }
-    @media (max-width:560px){ .row3{ grid-template-columns:1fr } .row2{ grid-template-columns:1fr } }
+    .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
+    .btn{border:none;border-radius:.6rem;padding:.7rem 1rem;font-size:1rem;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer}
+    .btn.primary{background:var(--brand);color:#fff}
+    .btn.secondary{background:#2f3b48;color:#fff}
+    .btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
 
-    /* Botones */
-    .actions{ display:flex; flex-wrap:wrap; gap:.6rem; margin-top:.8rem }
-    .btn{ border:none; border-radius:.6rem; padding:.7rem 1rem; font-size:1rem; display:inline-flex; align-items:center; gap:.5rem; cursor:pointer }
-    .btn.primary{ background:var(--brand); color:#fff }
-    .btn.secondary{ background:#2f3b48; color:#fff }
-    .btn.ghost{ background:transparent; color:var(--brand); border:1px solid var(--brand) }
+    .result{margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;text-align:center}
+    @media (prefers-color-scheme: dark){ .result{background:#0e0e10} }
+    .result h2{margin:0;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:#0a84ff}
+    .result small{display:block;color:var(--muted);margin-top:.25rem}
 
-    /* Resultado grande */
-    .result{ margin-top:.9rem; padding:1rem; border-radius:.8rem; background:#fff; border:1px dashed var(--border); display:flex; align-items:center; justify-content:center; text-align:center }
-    @media (prefers-color-scheme: dark){ .result{ background:#0e0e10 } }
-    .result h2{ margin:0; font-size:clamp(1.6rem,4vw,2.2rem); font-weight:800; color:#0a84ff }
-    .result small{ display:block; color:var(--muted); margin-top:.25rem }
+    table{width:100%;border-collapse:collapse}
+    th,td{border:1px solid var(--border);padding:.55rem;text-align:left}
+    thead th{background:#eef3ff}
+    @media (prefers-color-scheme: dark){ thead th{background:#0f203a;color:#cfe0ff} }
 
-    /* Tabla */
-    table{ width:100%; border-collapse:collapse; }
-    th, td{ border:1px solid var(--border); padding:.55rem; text-align:left; }
-    thead th{ background:#eef3ff; }
-    @media (prefers-color-scheme: dark){ thead th{ background:#0f203a; color:#cfe0ff; } }
+    .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--bg);border-top:1px solid var(--border);padding:.35rem calc(.6rem + env(safe-area-inset-bottom)) .35rem .6rem;display:grid;grid-template-columns:repeat(5,1fr);gap:.25rem}
+    .tabbar button{appearance:none;border:none;background:transparent;color:#667085;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;padding:.5rem 0;border-radius:.5rem;cursor:pointer;font-size:.9rem}
+    .tabbar button.active{color:#0a84ff;font-weight:700;background:var(--card)}
+    section.tab{display:none}
+    section.tab.active{display:block}
 
-    /* Tab bar */
-    .tabbar{
-      position:fixed; left:0; right:0; bottom:0; z-index:60; background:var(--bg); border-top:1px solid var(--border);
-      padding:.35rem calc(.6rem + env(safe-area-inset-bottom)) .35rem .6rem; display:grid; grid-template-columns:repeat(5,1fr); gap:.25rem;
-    }
-    .tabbar button{
-      appearance:none; border:none; background:transparent; color:#667085;
-      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.25rem;
-      padding:.5rem 0; border-radius:.5rem; cursor:pointer; font-size:.9rem;
-    }
-    .tabbar button.active{ color:#0a84ff; font-weight:700; background:var(--card) }
-    section.tab{ display:none }
-    section.tab.active{ display:block }
-
-    /* Utilidad */
-    .hidden{ display:none !important }
-    .muted{ color:var(--muted); font-size:.95rem }
+    .hidden{display:none !important}
+    .muted{color:var(--muted);font-size:.95rem}
   </style>
 </head>
 <body>
@@ -130,8 +99,8 @@
         </div>
 
         <div class="actions">
-          <button class="btn primary" id="qCalcular">Calcular</button>
-          <button class="btn ghost" id="qLimpiar">Limpiar</button>
+          <button class="btn primary" id="qCalcular" type="button">Calcular</button>
+          <button class="btn ghost" id="qLimpiar" type="button">Limpiar</button>
         </div>
 
         <div id="qOut" class="result" aria-live="polite">
@@ -140,9 +109,8 @@
       </fieldset>
     </section>
 
-    <!-- ====== 2) REGISTROS (Calcular → Registrar; SIN tabla aquí) ====== -->
+    <!-- ====== 2) REGISTROS (Calcular → Registrar) ====== -->
     <section id="tab-registros" class="tab" aria-labelledby="btn-registros">
-      <!-- Calculadora de Registros -->
       <fieldset>
         <legend>Calculadora de Registros</legend>
 
@@ -167,7 +135,624 @@
         </div>
 
         <div class="actions">
-          <button class="btn primary" id="rCalcBtn">Calcular</button>
+          <button class="btn primary" id="rCalcBtn" type="button">Calcular</button>
+        </div>
+
+        <div id="rOut" class="result" aria-live="polite">
+          <h2>—</h2><small id="rMode">Primero calcula; luego podrás registrar la actividad.</small>
+        </div>
+      </fieldset>
+
+      <fieldset id="regForm" class="hidden">
+        <legend>Registro de actividad</legend>
+        <div class="row3">
+          <div><label for="regFecha">Fecha</label><input id="regFecha" type="date" /></div>
+          <div><label for="regNivel">Nivel</label><input id="regNivel" type="text" /></div>
+          <div><label for="regLabor">Labor</label><input id="regLabor" type="text" /></div>
+        </div>
+        <div class="row3" style="margin-top:.6rem">
+          <div><label for="regRobot">N° Robot</label><input id="regRobot" type="text" /></div>
+          <div><label for="regPresion">Presión de aire (bar)</label><input id="regPresion" type="text" inputmode="decimal" placeholder="Ej. xx bar" /></div>
+          <div><label for="regUso">USO</label>
+            <select id="regUso">
+              <option value="" selected disabled>Selecciona…</option>
+              <option value="NIC">NIC</option>
+              <option value="REH">REH</option>
+              <option value="REP">REP</option>
+              <option value="OPE">OPE</option>
+            </select>
+          </div>
+        </div>
+        <div class="row2" style="margin-top:.6rem">
+          <div>
+            <label for="regTurno">Turno</label>
+            <select id="regTurno">
+              <option value="" selected disabled>Selecciona…</option>
+              <option value="Día">Día</option>
+              <option value="Noche">Noche</option>
+            </select>
+          </div>
+          <div>
+            <label for="regObs">Observaciones</label>
+            <input id="regObs" type="text" />
+          </div>
+        </div>
+        <div class="actions" style="align-items:end; justify-content:flex-end;">
+          <button class="btn primary" id="regGuardarBtn" type="button">Registrar</button>
+          <button class="btn secondary" id="goTablasBtn" type="button">Ir a Tablas</button>
+        </div>
+        <p id="regMsg" class="muted" style="margin-top:.4rem"></p>
+      </fieldset>
+    </section>
+
+    <!-- ====== 3) TABLAS ====== -->
+    <section id="tab-tablas" class="tab" aria-labelledby="btn-tablas">
+      <fieldset>
+        <legend>Tabla de registros (CSV)</legend>
+        <div class="actions">
+          <button class="btn primary"  id="tbl3ExportCSV" type="button">Exportar a CSV</button>
+          <button class="btn ghost"    id="tbl3Refrescar"  type="button">Refrescar</button>
+          <button class="btn secondary"id="tbl3BorrarTodo" type="button">Borrar todo</button>
+        </div>
+        <table id="tbl3">
+          <thead>
+            <tr>
+              <th>#</th><th>Fecha</th><th>Nivel</th><th>Labor</th><th>N° Robot</th>
+              <th>Presión (bar)</th><th>USO</th><th>Turno</th><th>Obs.</th>
+              <th>Modo</th><th>m³</th><th>Const.</th><th>Sac.</th><th>A/H/L</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </fieldset>
+    </section>
+
+    <!-- ====== 4) DASHBOARD ====== -->
+    <section id="tab-dashboard" class="tab" aria-labelledby="btn-dashboard">
+      <fieldset>
+        <legend>Producción (Labor vs m³)</legend>
+        <div class="actions">
+          <button class="btn primary" id="btnRenderProduccion" type="button">Actualizar gráfico</button>
+        </div>
+        <canvas id="chartProduccion" width="900" height="360"
+                style="max-width:100%; background:var(--card); border:1px solid var(--border); border-radius:.6rem;"></canvas>
+        <p class="muted" style="margin-top:.5rem">Suma de m³ por <strong>Labor</strong>.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Ensayos — Resistencia (MPa) vs Tiempo (h)</legend>
+        <div class="row2" style="align-items:end;">
+          <div>
+            <label for="ensayoSelect">Selecciona un ensayo</label>
+            <select id="ensayoSelect"></select>
+            <p class="muted" id="ensayoMeta" style="margin:.35rem 0 0;"></p>
+          </div>
+          <div class="actions" style="justify-content:flex-end;">
+            <button class="btn primary" id="btnRenderEnsayo" type="button">Dibujar curva</button>
+            <label style="display:flex; align-items:center; gap:.35rem; margin-left:.5rem;">
+              <input type="checkbox" id="chkGuias" checked>
+              <span>Guías de referencia</span>
+            </label>
+          </div>
+        </div>
+
+        <canvas id="chartEnsayo" width="900" height="420"
+                style="max-width:100%; background:#fff; border:1px solid var(--border); border-radius:.6rem; margin-top:.6rem;"></canvas>
+        <p class="muted" style="margin-top:.5rem">Ejes logarítmicos, grilla mayor/menor, etiquetas en cada punto.</p>
+      </fieldset>
+    </section>
+
+    <!-- ====== 5) ENSAYOS ====== -->
+    <section id="tab-ensayos" class="tab" aria-labelledby="btn-ensayos">
+      <fieldset>
+        <legend>Datos del ensayo</legend>
+        <div class="row3">
+          <div><label for="eLabor">Labor</label><input id="eLabor" type="text"></div>
+          <div><label for="eNivel">Nivel</label><input id="eNivel" type="text"></div>
+          <div><label for="eRobot">Robot</label><input id="eRobot" type="text"></div>
+        </div>
+        <p class="muted" style="margin-top:.35rem">Temperatura y Slump se registran en <strong>Registros</strong>.</p>
+      </fieldset>
+
+      <!-- Penetración (método A) -->
+      <fieldset>
+        <legend>Penetración (método A) — 10 fuerzas por tiempo</legend>
+
+        <div class="row2">
+          <div>
+            <label for="pHoraIni">Hora inicial (hh:mm)</label>
+            <input id="pHoraIni" type="text" placeholder="ej. 23:00">
+          </div>
+          <div class="muted" style="display:flex;align-items:end">
+            Ej.: lectura 23:15 con hora inicial 23:00 → hora acumulada = 0.25 h
+          </div>
+        </div>
+
+        <div class="row2" style="margin-top:.6rem">
+          <div><label for="pHora">Hora de lectura (hh:mm)</label><input id="pHora" type="text" placeholder="ej. 23:15"></div>
+          <div><label for="pFuerzas">10 Fuerzas (N), separadas por coma</label><input id="pFuerzas" type="text" placeholder="145,134,175,180,210,150,152,152,164,134"></div>
+        </div>
+
+        <div class="row2" style="margin-top:.6rem">
+          <div><label for="pRestar">Restar (N)</label><input id="pRestar" type="text" inputmode="decimal" value="37"></div>
+          <div><label for="pKPen">Dividir entre (N→MPa)</label><input id="pKPen" type="text" inputmode="decimal" value="526"></div>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" id="pAdd" type="button">Añadir fila</button>
+          <button class="btn ghost" id="pClear" type="button">Limpiar</button>
+          <button class="btn secondary" id="pSave" type="button">Guardar ensayo (Penetración)</button>
+        </div>
+
+        <table id="tblPen">
+          <thead>
+            <tr>
+              <th>#</th><th>Hora lectura</th><th>Hora acumulada (h)</th>
+              <th>Fuerzas (10)</th><th>Promedio (N)</th><th>MPa = (Prom−37)/526</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </fieldset>
+
+      <!-- Pull‑out (Hilti B) -->
+      <fieldset>
+        <legend>Pull‑out (método Hilti B)</legend>
+        <div class="row3">
+          <div><label for="hHora">Hora lectura (hh:mm)</label><input id="hHora" type="text" placeholder="01:00"></div>
+          <div><label for="hHoraAc">Hora acumulada (h)</label><input id="hHoraAc" type="text" inputmode="decimal" placeholder="1.00"></div>
+          <div><label for="hPerforada">Parte perforada (mm)</label><input id="hPerforada" type="text" inputmode="decimal"></div>
+        </div>
+        <div class="row2" style="margin-top:.6rem">
+          <div><label for="hPullN">Lectura pull‑out (N)</label><input id="hPullN" type="text" inputmode="decimal"></div>
+          <div><label for="hOffset">Offset (+)</label><input id="hOffset" type="text" inputmode="decimal" value="2.7"></div>
+          <div><label for="hDivisor">Divisor (/) → MPa</label><input id="hDivisor" type="text" inputmode="decimal" value="7.69"></div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" id="hAdd" type="button">Añadir fila</button>
+          <button class="btn ghost" id="hClear" type="button">Limpiar</button>
+          <button class="btn secondary" id="hSave" type="button">Guardar ensayo (Hilti)</button>
+        </div>
+
+        <table id="tblHilti">
+          <thead>
+            <tr>
+              <th>#</th><th>Hora</th><th>h acumulada</th><th>Perforada (mm)</th><th>Pull‑out (N)</th>
+              <th>Relación (N/mm)</th><th>Grupo h</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <p class="muted" style="margin-top:.35rem">MPa (por grupo h) = (PROM(Relación N/mm) + 2.7) / 7.69.</p>
+      </fieldset>
+
+      <!-- Resumen de ensayos -->
+      <fieldset>
+        <legend>Ensayos guardados (resumen)</legend>
+        <table id="tblEnsRes">
+          <thead>
+            <tr>
+              <th>#</th><th>Tipo</th><th>Labor | Nivel | Robot</th>
+              <th>MPa 1h</th><th>MPa 2h</th><th>MPa 3h</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </fieldset>
+    </section>
+  </main>
+
+  <!-- Tab bar (corregido) -->
+  <nav class="tabbar" role="tablist" aria-label="Navegación">
+    <button type="button" id="btn-calculo"   class="active" role="tab" aria-controls="tab-calculo"   aria-selected="true">Calculo m3</button>
+    <button type="button" id="btn-registros" role="tab" aria-controls="tab-registros" aria-selected="false">Registros</button>
+    <button type="button" id="btn-tablas"    role="tab" aria-controls="tab-tablas"    aria-selected="false">Tablas</button>
+    <button type="button" id="btn-dashboard" role="tab" aria-controls="tab-dashboard" aria-selected="false">Dashboard</button>
+    <button type="button" id="btn-ensayos"   role="tab" aria-controls="tab-ensayos"   aria-selected="false">Ensayos</button>
+  </nav>
+
+  <!-- ======= JavaScript ======= -->
+  <script>
+    /* ===== Tabs robustos (delegación en el <nav>) ===== */
+    document.addEventListener('DOMContentLoaded', () => {
+      const nav = document.querySelector('.tabbar');
+      if (!nav) return;
+      nav.addEventListener('click', (ev) => {
+        const btn = ev.target.closest('button[id^="btn-"]');
+        if (!btn) return;
+        const name  = btn.id.replace('btn-', ''); // calculo|registros|tablas|dashboard|ensayos
+        const tabId = `tab-${name}`;
+
+        document.querySelectorAll('.tabbar button').forEach(b => {
+          const active = (b === btn);
+          b.classList.toggle('active', active);
+          b.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        document.querySelectorAll('section.tab').forEach(sec => {
+          sec.classList.toggle('active', sec.id === tabId);
+        });
+
+        if (tabId === 'tab-calculo')   { document.getElementById('qA')?.focus({preventScroll:true}); }
+        if (tabId === 'tab-registros') { document.getElementById('rA')?.focus({preventScroll:true}); }
+        if (tabId === 'tab-tablas')    { renderTbl3?.(); }
+        if (tabId === 'tab-dashboard') { renderDashboard?.(); }
+        if (tabId === 'tab-ensayos')   { renderEnsRes?.(); }
+      });
+    });
+
+    /* ===== Utilidades ===== */
+    function parseDec(txt){ if (typeof txt !== 'string') return NaN; const s = txt.trim().replace(',', '.'); if (s==='') return NaN; return Number(s); }
+    const fmt1 = (n) => Number(n).toFixed(1);
+    const todayStr = () => new Date().toISOString().slice(0,10);
+
+    /* ===== Pestaña 1: Calculo m3 ===== */
+    const qA=document.getElementById('qA'), qH=document.getElementById('qH'), qL=document.getElementById('qL');
+    const qSac=document.getElementById('qSac'), qConst=document.getElementById('qConst');
+    const qOutH2=document.querySelector('#qOut h2'), qOutMode=document.getElementById('qMode');
+    const qRadios=document.querySelectorAll('input[name="modoQuick"]');
+
+    function nombreModoQuick(){ const m=[...qRadios].find(r=>r.checked)?.value||'tunnel'; return m==='tunnel'?'Avance':'Resane'; }
+    function calcularQuick(){
+      const A=parseDec(qA?.value??''), H=parseDec(qH?.value??''), L=parseDec(qL?.value??''), Sac=parseDec(qSac?.value??'0'), C=parseDec(qConst?.value??'11.5');
+      const m=[...qRadios].find(r=>r.checked)?.value||'tunnel';
+      if(!isFinite(L)||!isFinite(H)||!isFinite(C)||C<=0){ qOutH2.textContent='—'; qOutMode.textContent='Completa los datos.'; return; }
+      if(m==='tunnel'&&!isFinite(A)){ qOutH2.textContent='—'; qOutMode.textContent='Completa A, H y L.'; return; }
+      let m3_base=0; if(m==='tunnel'){ const pp=(H*2)+A, pa=pp*0.9, al=pa*L; m3_base=al/C; } else { m3_base=(L*H)/C; }
+      const m3_total=m3_base+(isFinite(Sac)?Sac:0);
+      qOutH2.textContent=`${nombreModoQuick()}: ${fmt1(m3_total)} m³`; qOutMode.textContent='';
+    }
+    document.getElementById('qCalcular')?.addEventListener('click', calcularQuick);
+    document.getElementById('qLimpiar')?.addEventListener('click', ()=>{
+      [qA,qH,qL,qSac].forEach(i=>i.value=''); qConst.value='11.5';
+      document.querySelector('input[name="modoQuick"][value="tunnel"]').checked=true;
+      qOutH2.textContent='—'; qOutMode.textContent='Selecciona modo y completa los datos.'; qA?.focus();
+    });
+    [qA,qH,qL,qSac,qConst,...qRadios].forEach(el=>{
+      el?.addEventListener('input', ()=>{
+        const m=[...qRadios].find(r=>r.checked)?.value||'tunnel';
+        const wallReady=qH?.value.trim()&&qL?.value.trim();
+        const tunnelReady=qA?.value.trim()&&wallReady;
+        const ready=(m==='wall')?wallReady:tunnelReady;
+        if(ready) calcularQuick(); else { qOutH2.textContent='—'; qOutMode.textContent='Selecciona modo y completa los datos.'; }
+      });
+      el?.addEventListener('keydown', ev=>{ if(ev.key==='Enter') calcularQuick(); });
+    });
+
+    /* ===== Pestaña 2: Registros ===== */
+    const rA=document.getElementById('rA'), rH=document.getElementById('rH'), rL=document.getElementById('rL');
+    const rSac=document.getElementById('rSac'), rConst=document.getElementById('rConst');
+    const rOutH2=document.querySelector('#rOut h2'), rOutMode=document.getElementById('rMode');
+    const rRadios=document.querySelectorAll('input[name="modoRegCalc"]');
+    const rCalcBtn=document.getElementById('rCalcBtn');
+    const regForm=document.getElementById('regForm'), regMsg=document.getElementById('regMsg');
+
+    function nombreModoReg(){ const m=[...rRadios].find(r=>r.checked)?.value||'tunnel'; return m==='tunnel'?'Avance':'Resane'; }
+    let lastRegCalc=null;
+    function calcularReg(){
+      const A=parseDec(rA?.value??''), H=parseDec(rH?.value??''), L=parseDec(rL?.value??''), Sac=parseDec(rSac?.value??'0'), C=parseDec(rConst?.value??'11.5');
+      const m=[...rRadios].find(r=>r.checked)?.value||'tunnel';
+      if(!isFinite(L)||!isFinite(H)||!isFinite(C)||C<=0){ rOutH2.textContent='—'; rOutMode.textContent='Completa los datos.'; regForm.classList.add('hidden'); lastRegCalc=null; return false; }
+      if(m==='tunnel'&&!isFinite(A)){ rOutH2.textContent='—'; rOutMode.textContent='Completa A, H y L.'; regForm.classList.add('hidden'); lastRegCalc=null; return false; }
+      let m3_base=0; if(m==='tunnel'){ const pp=(H*2)+A, pa=pp*0.9, al=pa*L; m3_base=al/C; } else { m3_base=(L*H)/C; }
+      const m3_total=m3_base+(isFinite(Sac)?Sac:0);
+      rOutH2.textContent=`${nombreModoReg()}: ${fmt1(m3_total)} m³`; rOutMode.textContent='';
+      lastRegCalc={modo:nombreModoReg(), m3:Number(fmt1(m3_total)), A:isFinite(A)?A:null, H, L, C, Sac:isFinite(Sac)?Sac:0};
+      regForm.classList.remove('hidden'); 
+      return true;
+    }
+    rCalcBtn?.addEventListener('click', calcularReg);
+
+    const LS_REGS='sc_registros';
+    function getRegs(){ try{ return JSON.parse(localStorage.getItem(LS_REGS)) ?? []; }catch{ return []; } }
+    function setRegs(arr){ localStorage.setItem(LS_REGS, JSON.stringify(arr)); }
+
+    const regFecha=document.getElementById('regFecha'), regNivel=document.getElementById('regNivel'), regLabor=document.getElementById('regLabor');
+    const regRobot=document.getElementById('regRobot'), regPresion=document.getElementById('regPresion'),
+          regUso=document.getElementById('regUso'), regTurno=document.getElementById('regTurno'), regObs=document.getElementById('regObs');
+    const regGuardarBtn=document.getElementById('regGuardarBtn'), goTablasBtn=document.getElementById('goTablasBtn');
+
+    function limpiarFormularioRegistro(){
+      regFecha.value=todayStr(); regNivel.value=''; regLabor.value=''; regRobot.value='';
+      regPresion.value=''; regUso.value=''; regTurno.value=''; regObs.value=''; regMsg.textContent='';
+    }
+    limpiarFormularioRegistro();
+
+    regGuardarBtn?.addEventListener('click', ()=>{
+      if(!lastRegCalc){ alert('Primero realiza el cálculo.'); return; }
+      const fecha=regFecha.value||todayStr(), nivel=regNivel.value.trim(), labor=regLabor.value.trim(), robot=regRobot.value.trim();
+      const presionRaw=regPresion.value.trim(); let presion=parseFloat(presionRaw.replace(/[^0-9.,-]/g,'')); presion=isNaN(presion)?NaN:presion;
+      const uso=regUso.value, turno=regTurno.value, obs=regObs.value.trim();
+
+      if(!fecha||!nivel||!labor||!robot||!isFinite(presion)||!uso||!turno){
+        alert('Completa Fecha, Nivel, Labor, N° Robot, Presión (bar), USO y Turno.'); return;
+      }
+
+      const regs=getRegs();
+      regs.push({
+        fecha, nivel, labor, robot,
+        presion:Number(presion.toFixed(2)), uso, turno, obs,
+        modo:lastRegCalc.modo, m3:lastRegCalc.m3, C:lastRegCalc.C, Sac:lastRegCalc.Sac,
+        A:lastRegCalc.A, H:lastRegCalc.H, L:lastRegCalc.L
+      });
+      setRegs(regs);
+      regMsg.textContent='Registro guardado. Revisa la pestaña “Tablas”.';
+      renderProduccionChart(); 
+    });
+    goTablasBtn?.addEventListener('click', ()=>{ document.getElementById('btn-tablas')?.click(); });
+
+    /* ===== Pestaña 3: Tabla y CSV ===== */
+    const tbl3Body=document.querySelector('#tbl3 tbody');
+    function renderTbl3(){
+      const regs=getRegs();
+      tbl3Body.innerHTML='';
+      regs.forEach((r,i)=>{
+        const tr=document.createElement('tr');
+        const m3txt=(r.m3==null)?'—':fmt1(r.m3), constxt=(r.C??'—'), sactxt=(r.Sac??'—'), ahltxt=(r.A??'—')+'/'+(r.H??'—')+'/'+(r.L??'—');
+        tr.innerHTML=`
+          <td>${i+1}</td><td>${r.fecha}</td><td>${r.nivel}</td><td>${r.labor}</td><td>${r.robot}</td>
+          <td>${r.presion}</td><td>${r.uso??'—'}</td><td>${r.turno??'—'}</td><td>${r.obs||''}</td>
+          <td>${r.modo??'—'}</td><td>${m3txt}</td><td>${constxt}</td><td>${sactxt}</td><td>${ahltxt}</td>
+          <td><button class="btn ghost" data-i="${i}" type="button">Eliminar</button></td>`;
+        tbl3Body.appendChild(tr);
+        tr.querySelector('button')?.addEventListener('click', ()=>{
+          const arr=getRegs(); arr.splice(i,1); setRegs(arr);
+          renderTbl3(); renderProduccionChart();
+        });
+      });
+    }
+
+    function toCSV(regs){
+      const headers=['N','Fecha','Nivel','Labor','Nro Robot','Presion (bar)','USO','Turno','Observaciones','Modo','m3','Constante','Sacrificio','A','H','L'];
+      const esc=(v)=>{ const s=(v==null)?'':String(v); return '"' + s.replace(/"/g,'""') + '"'; };
+      const lines=[headers.join(',')];
+      regs.forEach((r,i)=>{
+        lines.push([i+1,r.fecha,r.nivel,r.labor,r.robot,r.presion,r.uso,r.turno,r.obs||'',r.modo,(r.m3==null?'':fmt1(r.m3)),r.C,r.Sac,r.A,r.H,r.L]
+          .map(esc).join(','));
+      });
+      return lines.join('\r\n');
+    }
+    document.getElementById('tbl3ExportCSV')?.addEventListener('click', ()=>{
+      const regs=getRegs(); if(!regs.length){ alert('No hay registros para exportar.'); return; }
+      const csv=toCSV(regs);
+      const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download=`shotcrete-registros-${Date.now()}.csv`; a.click();
+      URL.revokeObjectURL(url);
+    });
+    document.getElementById('tbl3Refrescar')?.addEventListener('click', ()=>{ renderTbl3(); });
+    document.getElementById('tbl3BorrarTodo')?.addEventListener('click', ()=>{
+      if(confirm('¿Borrar TODOS los registros?')){
+        localStorage.removeItem(LS_REGS); renderTbl3(); renderProduccionChart();
+      }
+    });
+
+    /* ===== Pestaña 4: Dashboard (Producción) ===== */
+    function aggregateM3PorLabor(){
+      const regs=getRegs(); const mapa=new Map();
+      for(const r of regs){
+        const labor=(r.labor??'').trim(); const m3=(r.m3==null?0:Number(r.m3));
+        if(!labor) continue;
+        mapa.set(labor,(mapa.get(labor)??0)+(isFinite(m3)?m3:0));
+      }
+      return [...mapa.entries()].map(([label,value])=>({label, value:Number(value.toFixed(1))}))
+                               .sort((a,b)=>b.value-a.value);
+    }
+    function renderProduccionChart(){
+      const data=aggregateM3PorLabor();
+      const canvas=document.getElementById('chartProduccion');
+      if(!canvas) return;
+      const ctx=canvas.getContext('2d');
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      if(!data.length){
+        ctx.fillStyle='#666'; ctx.font='16px system-ui';
+        ctx.fillText('Sin datos para graficar — registra actividad en la pestaña 2.', 20, 40);
+        return;
+      }
+      ctx.fillStyle='#111'; ctx.font='bold 18px system-ui'; ctx.fillText('Producción (Labor vs m³)', 20, 30);
+
+      const L=70,R=20,T=50,B=60,W=canvas.width,H=canvas.height;
+      const plotW=W-L-R, plotH=H-T-B;
+
+      ctx.strokeStyle='#888'; ctx.lineWidth=1; ctx.beginPath();
+      ctx.moveTo(L,H-B); ctx.lineTo(W-R,H-B);
+      ctx.moveTo(L,H-B); ctx.lineTo(L,T);
+      ctx.stroke();
+
+      const maxVal=Math.max(...data.map(d=>d.value),1);
+      const niceMax=Math.ceil(maxVal/10)*10, ticks=5;
+      ctx.fillStyle='#333'; ctx.font='12px system-ui';
+      for(let i=0;i<=ticks;i++){
+        const val=(niceMax/ticks)*i;
+        const y=H-B-(val/niceMax)*plotH;
+        ctx.strokeStyle= i===0 ? '#888' : '#eee';
+        ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(W-R,y); ctx.stroke();
+        ctx.fillStyle='#333'; ctx.fillText(val.toFixed(0), L-40, y+4);
+      }
+
+      const n=data.length, gapX=20;
+      const barW=Math.max(24, Math.floor((plotW - gapX*(n-1))/n));
+      data.forEach((d,i)=>{
+        const x=L + i*(barW+gapX);
+        const h=(d.value/niceMax)*plotH;
+        const y=H-B-h;
+        ctx.fillStyle='#0a84ff'; ctx.fillRect(x,y,barW,h);
+        ctx.fillStyle='#111'; ctx.font='12px system-ui';
+        ctx.fillText(d.value.toFixed(1), x, y-6);
+        ctx.save(); ctx.translate(x+barW/2, H-B+12); ctx.rotate(-Math.PI/6);
+        ctx.fillStyle='#333'; ctx.textAlign='left'; ctx.fillText(d.label, 0, 0);
+        ctx.restore();
+      });
+
+      ctx.fillStyle='#333'; ctx.font='13px system-ui';
+      ctx.fillText('m³', L-50, T-10); ctx.textAlign='center';
+      ctx.fillText('Labor', L+plotW/2, H-20);
+    }
+    document.getElementById('btnRenderProduccion')?.addEventListener('click', renderProduccionChart);
+
+    /* ===== Pestaña 4: Ensayo log‑log ===== */
+    const LS_ENSAYOS='sc_ensayos2';
+    function getEnsayos(){ try{ return JSON.parse(localStorage.getItem(LS_ENSAYOS)) ?? []; }catch{ return []; } }
+    function populateEnsayoSelect(){
+      const sel=document.getElementById('ensayoSelect'); const meta=document.getElementById('ensayoMeta'); if(!sel) return;
+      const ens=getEnsayos(); sel.innerHTML='';
+      if(!ens.length){ sel.innerHTML='<option value="" disabled selected>Sin ensayos</option>'; meta.textContent=''; return; }
+      ens.forEach((e,i)=>{ const opt=document.createElement('option'); opt.value=String(i); opt.textContent=`${e.meta?.labor||'—'} | ${e.meta?.nivel||'—'} | ${e.meta?.robot||'—'}`; sel.appendChild(opt); });
+      sel.value='0'; meta.textContent='';
+    }
+    const logMap = (v, vmin, vmax, p0, p1) => { const lv=Math.log10(Math.max(v,1e-12)), lmin=Math.log10(vmin), lmax=Math.log10(vmax); return p0 + (lv-lmin)*(p1-p0)/(lmax-lmin); };
+    function renderEnsayoChart(){
+      const canvas=document.getElementById('chartEnsayo'); if(!canvas) return;
+      const showGuides=document.getElementById('chkGuias')?.checked ?? true;
+      const sel=document.getElementById('ensayoSelect'); const ens=getEnsayos(); const i=Number(sel?.value||'-1'); const e=ens[i];
+      const ctx=canvas.getContext('2d'); const W=canvas.width,H=canvas.height; ctx.clearRect(0,0,W,H);
+      const L=80,R=20,T=50,B=60, plotW=W-L-R, plotH=H-T-B; const XMIN=0.1,XMAX=100, YMIN=¡Listo, Laura! Aquí tienes **los códigos corregidos y completos** para que las pestañas funcionen perfecto (con `type="button"` en el Tab bar y **delegación de eventos** en el `<nav>`), y con las fórmulas que acordamos para **Penetración** y **Hilti B**.
+
+> Publica los tres archivos en la raíz de tu repo `shotcrete-calc`.  
+> Luego, recarga con **Ctrl+F5** para que el navegador tome la nueva versión del Service Worker.
+
+---
+
+## `index.html`
+
+```html
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Shotcrete Calc</title>
+
+  <!-- PWA (sub-path GitHub Pages) -->
+  /shotcrete-calc/manifest.json
+  /shotcrete-calc/icon-192.png
+  <meta name="theme-color" content="#0a84ff">
+
+  <style>
+    :root{
+      --brand:#0a84ff; --brand-2:#166ef2;
+      --bg:#ffffff; --fg:#0b0b0b; --muted:#667085; --card:#f6f8fa; --border:#d0d5dd;
+      color-scheme: light dark;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{ --bg:#0b0b0b; --fg:#eee; --muted:#98a2b3; --card:#14171a; --border:#2a2e33; }
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.35;padding-bottom:env(safe-area-inset-bottom)}
+    header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;padding:calc(.6rem + env(safe-area-inset-top)) 1rem .6rem 1rem;display:flex;align-items:center;gap:.75rem;box-shadow:0 2px 12px rgba(0,0,0,.12)}
+    header .logo{width:28px;height:28px;border-radius:6px;background:#fff2;display:inline-block}
+    header h1{margin:0;font-size:1.1rem}
+
+    main{max-width:960px;margin:0 auto;padding:1rem;padding-bottom:4.5rem}
+
+    fieldset{border:1px solid var(--border);border-radius:.8rem;background:var(--card);padding:1rem;margin:0 0 1rem}
+    legend{font-weight:700;padding:0 .5rem}
+    label{display:block;margin:.55rem 0 .25rem}
+
+    input,select{width:100%;padding:.65rem .75rem;font-size:1rem;border:1px solid var(--border);border-radius:.6rem;background:#fff;outline:none}
+    @media (prefers-color-scheme: dark){ input,select{background:#0e0e10;color:var(--fg)} }
+
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+    @media (max-width:820px){ .row3{grid-template-columns:1fr 1fr} }
+    @media (max-width:560px){ .row3{grid-template-columns:1fr} .row2{grid-template-columns:1fr} }
+
+    .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
+    .btn{border:none;border-radius:.6rem;padding:.7rem 1rem;font-size:1rem;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer}
+    .btn.primary{background:var(--brand);color:#fff}
+    .btn.secondary{background:#2f3b48;color:#fff}
+    .btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+
+    .result{margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;text-align:center}
+    @media (prefers-color-scheme: dark){ .result{background:#0e0e10} }
+    .result h2{margin:0;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:#0a84ff}
+    .result small{display:block;color:var(--muted);margin-top:.25rem}
+
+    table{width:100%;border-collapse:collapse}
+    th,td{border:1px solid var(--border);padding:.55rem;text-align:left}
+    thead th{background:#eef3ff}
+    @media (prefers-color-scheme: dark){ thead th{background:#0f203a;color:#cfe0ff} }
+
+    .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--bg);border-top:1px solid var(--border);padding:.35rem calc(.6rem + env(safe-area-inset-bottom)) .35rem .6rem;display:grid;grid-template-columns:repeat(5,1fr);gap:.25rem}
+    .tabbar button{appearance:none;border:none;background:transparent;color:#667085;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;padding:.5rem 0;border-radius:.5rem;cursor:pointer;font-size:.9rem}
+    .tabbar button.active{color:#0a84ff;font-weight:700;background:var(--card)}
+    section.tab{display:none}
+    section.tab.active{display:block}
+
+    .hidden{display:none !important}
+    .muted{color:var(--muted);font-size:.95rem}
+  </style>
+</head>
+<body>
+  <header>
+    <span class="logo" aria-hidden="true"></span>
+    <h1>Shotcrete Calc</h1>
+  </header>
+
+  <main>
+    <!-- ====== 1) CALCULO m3 (rápido) ====== -->
+    <section id="tab-calculo" class="tab active" aria-labelledby="btn-calculo">
+      <fieldset>
+        <legend>Calculo m3</legend>
+
+        <div class="actions" style="margin-bottom:.4rem">
+          <span class="muted">Modo:</span>
+          <label style="display:inline-flex;align-items:center;gap:.35rem;margin-left:.5rem">
+            <input type="radio" name="modoQuick" value="tunnel" checked> Avance (túnel)
+          </label>
+          <label style="display:inline-flex;align-items:center;gap:.35rem;margin-left:.5rem">
+            <input type="radio" name="modoQuick" value="wall"> Resane (hastial)
+          </label>
+        </div>
+
+        <div class="row3">
+          <div><label for="qA">Ancho (A) — m</label><input id="qA" type="text" inputmode="decimal"></div>
+          <div><label for="qH">Altura (H) — m</label><input id="qH" type="text" inputmode="decimal"></div>
+          <div><label for="qL">Largo (L) — m</label><input id="qL" type="text" inputmode="decimal"></div>
+        </div>
+        <div class="row2" style="margin-top:.6rem">
+          <div><label for="qSac">Frente de sacrificio — m³</label><input id="qSac" type="text" inputmode="decimal"></div>
+          <div><label for="qConst">Constante (m²/m³)</label><input id="qConst" type="text" inputmode="decimal" value="11.5"></div>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" id="qCalcular" type="button">Calcular</button>
+          <button class="btn ghost" id="qLimpiar" type="button">Limpiar</button>
+        </div>
+
+        <div id="qOut" class="result" aria-live="polite">
+          <h2>—</h2><small id="qMode">Selecciona modo y completa los datos.</small>
+        </div>
+      </fieldset>
+    </section>
+
+    <!-- ====== 2) REGISTROS (Calcular → Registrar; SIN tabla aquí) ====== -->
+    <section id="tab-registros" class="tab" aria-labelledby="btn-registros">
+      <fieldset>
+        <legend>Calculadora de Registros</legend>
+
+        <div class="actions" style="margin-bottom:.4rem">
+          <span class="muted">Modo:</span>
+          <label style="display:inline-flex;align-items:center;gap:.35rem;margin-left:.5rem">
+            <input type="radio" name="modoRegCalc" value="tunnel" checked> Avance (túnel)
+          </label>
+          <label style="display:inline-flex;align-items:center;gap:.35rem;margin-left:.5rem">
+            <input type="radio" name="modoRegCalc" value="wall"> Resane (hastial)
+          </label>
+        </div>
+
+        <div class="row3">
+          <div><label for="rA">Ancho (A) — m</label><input id="rA" type="text" inputmode="decimal"></div>
+          <div><label for="rH">Altura (H) — m</label><input id="rH" type="text" inputmode="decimal"></div>
+          <div><label for="rL">Largo (L) — m</label><input id="rL" type="text" inputmode="decimal"></div>
+        </div>
+        <div class="row2" style="margin-top:.6rem">
+          <div><label for="rSac">Frente de sacrificio — m³</label><input id="rSac" type="text" inputmode="decimal"></div>
+          <div><label for="rConst">Constante (m²/m³)</label><input id="rConst" type="text" inputmode="decimal" value="11.5"></div>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" id="rCalcBtn" type="button">Calcular</button>
         </div>
 
         <div id="rOut" class="result" aria-live="polite">
@@ -211,8 +796,8 @@
           </div>
         </div>
         <div class="actions" style="align-items:end; justify-content:flex-end;">
-          <button class="btn primary" id="regGuardarBtn">Registrar</button>
-          <button class="btn secondary" id="goTablasBtn">Ir a Tablas</button>
+          <button class="btn primary" id="regGuardarBtn" type="button">Registrar</button>
+          <button class="btn secondary" id="goTablasBtn" type="button">Ir a Tablas</button>
         </div>
         <p id="regMsg" class="muted" style="margin-top:.4rem"></p>
       </fieldset>
@@ -223,9 +808,9 @@
       <fieldset>
         <legend>Tabla de registros (CSV)</legend>
         <div class="actions">
-          <button class="btn primary"  id="tbl3ExportCSV">Exportar a CSV</button>
-          <button class="btn ghost"    id="tbl3Refrescar">Refrescar</button>
-          <button class="btn secondary"id="tbl3BorrarTodo">Borrar todo</button>
+          <button class="btn primary"  id="tbl3ExportCSV" type="button">Exportar a CSV</button>
+          <button class="btn ghost"    id="tbl3Refrescar"  type="button">Refrescar</button>
+          <button class="btn secondary"id="tbl3BorrarTodo" type="button">Borrar todo</button>
         </div>
         <table id="tbl3">
           <thead>
@@ -246,7 +831,7 @@
       <fieldset>
         <legend>Producción (Labor vs m³)</legend>
         <div class="actions">
-          <button class="btn primary" id="btnRenderProduccion">Actualizar gráfico</button>
+          <button class="btn primary" id="btnRenderProduccion" type="button">Actualizar gráfico</button>
         </div>
         <canvas id="chartProduccion" width="900" height="360"
                 style="max-width:100%; background:var(--card); border:1px solid var(--border); border-radius:.6rem;"></canvas>
@@ -264,7 +849,7 @@
             <p class="muted" id="ensayoMeta" style="margin:.35rem 0 0;"></p>
           </div>
           <div class="actions" style="justify-content:flex-end;">
-            <button class="btn primary" id="btnRenderEnsayo">Dibujar curva</button>
+            <button class="btn primary" id="btnRenderEnsayo" type="button">Dibujar curva</button>
             <label style="display:flex; align-items:center; gap:.35rem; margin-left:.5rem;">
               <input type="checkbox" id="chkGuias" checked>
               <span>Guías de referencia</span>
@@ -290,25 +875,23 @@
           <div><label for="eNivel">Nivel</label><input id="eNivel" type="text"></div>
           <div><label for="eRobot">Robot</label><input id="eRobot" type="text"></div>
         </div>
-        <p class="muted" style="margin-top:.35rem">Temperatura/Slump se gestionan en <strong>Registros</strong>; aquí no hace falta.</p>
+        <p class="muted" style="margin-top:.35rem">Temperatura y Slump se registran en <strong>Registros</strong>.</p>
       </fieldset>
 
-      <!-- A) Penetración (método A) -->
+      <!-- Penetración (método A) -->
       <fieldset>
         <legend>Penetración (método A) — 10 fuerzas por tiempo</legend>
 
-        <!-- Hora inicial -->
         <div class="row2">
           <div>
             <label for="pHoraIni">Hora inicial (hh:mm)</label>
             <input id="pHoraIni" type="text" placeholder="ej. 23:00">
           </div>
           <div class="muted" style="display:flex;align-items:end">
-            Ejemplo: lectura 23:15 con hora inicial 23:00 → hora acumulada = 0.25 h
+            Ej.: lectura 23:15 con hora inicial 23:00 → hora acumulada = 0.25 h
           </div>
         </div>
 
-        <!-- Fila de lectura -->
         <div class="row2" style="margin-top:.6rem">
           <div>
             <label for="pHora">Hora de lectura (hh:mm)</label>
@@ -320,7 +903,6 @@
           </div>
         </div>
 
-        <!-- Parámetros -->
         <div class="row2" style="margin-top:.6rem">
           <div>
             <label for="pRestar">Restar (N)</label>
@@ -333,9 +915,9 @@
         </div>
 
         <div class="actions">
-          <button class="btn primary" id="pAdd">Añadir fila</button>
-          <button class="btn ghost" id="pClear">Limpiar</button>
-          <button class="btn secondary" id="pSave">Guardar ensayo (Penetración)</button>
+          <button class="btn primary" id="pAdd" type="button">Añadir fila</button>
+          <button class="btn ghost" id="pClear" type="button">Limpiar</button>
+          <button class="btn secondary" id="pSave" type="button">Guardar ensayo (Penetración)</button>
         </div>
 
         <table id="tblPen">
@@ -349,11 +931,12 @@
         </table>
 
         <p class="muted" style="margin-top:.35rem">
-          Tiempos típicos: 0:15, 0:30, 0:45, 1:00 respecto a la <strong>hora inicial</strong>. Si cruza medianoche, se corrige sumando 24 h.
+          Tiempos típicos: 0:15, 0:30, 0:45, 1:00 respecto a la <strong>hora inicial</strong>.  
+          Si cruza medianoche, se corrige sumando 24 h.
         </p>
       </fieldset>
 
-      <!-- B) Pull‑out (Hilti B) -->
+      <!-- Pull‑out (Hilti B) -->
       <fieldset>
         <legend>Pull‑out (método Hilti B)</legend>
         <div class="row3">
@@ -367,9 +950,9 @@
           <div><label for="hDivisor">Divisor (/) → MPa</label><input id="hDivisor" type="text" inputmode="decimal" value="7.69"></div>
         </div>
         <div class="actions">
-          <button class="btn primary" id="hAdd">Añadir fila</button>
-          <button class="btn ghost" id="hClear">Limpiar</button>
-          <button class="btn secondary" id="hSave">Guardar ensayo (Hilti)</button>
+          <button class="btn primary" id="hAdd" type="button">Añadir fila</button>
+          <button class="btn ghost" id="hClear" type="button">Limpiar</button>
+          <button class="btn secondary" id="hSave" type="button">Guardar ensayo (Hilti)</button>
         </div>
 
         <table id="tblHilti">
@@ -381,7 +964,9 @@
           </thead>
           <tbody></tbody>
         </table>
-        <p class="muted" style="margin-top:.35rem">MPa (por grupo h) = (PROM(Relación N/mm) + 2.7) / 7.69 — según tu hoja Hilti B.</p>
+        <p class="muted" style="margin-top:.35rem">
+          MPa (por grupo h) = (PROM(Relación N/mm) + 2.7) / 7.69 — según Hilti B.
+        </p>
       </fieldset>
 
       <!-- Resumen (para el Dashboard) -->
@@ -400,48 +985,55 @@
     </section>
   </main>
 
-  <!-- Tab bar -->
+  <!-- Tab bar corregido (type="button") -->
   <nav class="tabbar" role="tablist" aria-label="Navegación">
-    <button id="btn-calculo"   class="active" role="tab" aria-controls="tab-calculo"   aria-selected="true">Calculo m3</button>
-    <button id="btn-registros" role="tab" aria-controls="tab-registros" aria-selected="false">Registros</button>
-    <button id="btn-tablas"    role="tab" aria-controls="tab-tablas"    aria-selected="false">Tablas</button>
-    <button id="btn-dashboard" role="tab" aria-controls="tab-dashboard" aria-selected="false">Dashboard</button>
-    <button id="btn-ensayos"   role="tab" aria-controls="tab-ensayos"   aria-selected="false">Ensayos</button>
+    <button type="button" id="btn-calculo"   class="active" role="tab" aria-controls="tab-calculo"   aria-selected="true">Calculo m3</button>
+    <button type="button" id="btn-registros" role="tab" aria-controls="tab-registros" aria-selected="false">Registros</button>
+    <button type="button" id="btn-tablas"    role="tab" aria-controls="tab-tablas"    aria-selected="false">Tablas</button>
+    <button type="button" id="btn-dashboard" role="tab" aria-controls="tab-dashboard" aria-selected="false">Dashboard</button>
+    <button type="button" id="btn-ensayos"   role="tab" aria-controls="tab-ensayos"   aria-selected="false">Ensayos</button>
   </nav>
 
-  <!-- ======= JavaScript ======= -->
   <script>
-    /* =================== Tabs =================== */
-    const tabsMap = [
-      {btn:'btn-calculo',   tab:'tab-calculo'},
-      {btn:'btn-registros', tab:'tab-registros'},
-      {btn:'btn-tablas',    tab:'tab-tablas'},
-      {btn:'btn-dashboard', tab:'tab-dashboard'},
-      {btn:'btn-ensayos',   tab:'tab-ensayos'}
-    ];
-    tabsMap.forEach(({btn, tab})=>{
-      document.getElementById(btn)?.addEventListener('click', ()=>{
-        document.querySelectorAll('.tabbar button').forEach(el=>{
-          el.classList.toggle('active', el.id === btn);
-          el.setAttribute('aria-selected', el.id === btn ? 'true' : 'false');
+    /* ===== Tabs robustos (delegación en el <nav>) ===== */
+    document.addEventListener('DOMContentLoaded', () => {
+      const nav = document.querySelector('.tabbar');
+      if (!nav) return;
+
+      nav.addEventListener('click', (ev) => {
+        const btn = ev.target.closest('button[id^="btn-"]');
+        if (!btn) return;
+
+        const name  = btn.id.replace('btn-', '');   // calculo|registros|tablas|dashboard|ensayos
+        const tabId = `tab-${name}`;
+
+        // Toggle botones
+        document.querySelectorAll('.tabbar button').forEach(b => {
+          const active = (b === btn);
+          b.classList.toggle('active', active);
+          b.setAttribute('aria-selected', active ? 'true' : 'false');
         });
-        document.querySelectorAll('section.tab').forEach(el=>{
-          el.classList.toggle('active', el.id === tab);
+
+        // Toggle secciones
+        document.querySelectorAll('section.tab').forEach(sec => {
+          sec.classList.toggle('active', sec.id === tabId);
         });
-        if (tab === 'tab-calculo'){ document.getElementById('qA')?.focus({preventScroll:true}); }
-        if (tab === 'tab-registros'){ document.getElementById('rA')?.focus({preventScroll:true}); }
-        if (tab === 'tab-tablas'){ renderTbl3(); }
-        if (tab === 'tab-dashboard'){ renderDashboard(); }
-        if (tab === 'tab-ensayos'){ renderEnsRes(); }
+
+        // Acciones al entrar
+        if (tabId === 'tab-calculo')   { document.getElementById('qA')?.focus({preventScroll:true}); }
+        if (tabId === 'tab-registros') { document.getElementById('rA')?.focus({preventScroll:true}); }
+        if (tabId === 'tab-tablas')    { renderTbl3?.(); }
+        if (tabId === 'tab-dashboard') { renderDashboard?.(); }
+        if (tabId === 'tab-ensayos')   { renderEnsRes?.(); }
       });
     });
 
-    /* =================== Utilidades =================== */
+    /* ===== Utilidades ===== */
     function parseDec(txt){ if (typeof txt !== 'string') return NaN; const s = txt.trim().replace(',', '.'); if (s==='') return NaN; return Number(s); }
     const fmt1 = (n) => Number(n).toFixed(1);
     const todayStr = () => new Date().toISOString().slice(0,10);
 
-    /* =================== Pestaña 1: Calculo m3 (rápido) =================== */
+    /* ===== Pestaña 1: Calculo m3 ===== */
     const qA=document.getElementById('qA'), qH=document.getElementById('qH'), qL=document.getElementById('qL');
     const qSac=document.getElementById('qSac'), qConst=document.getElementById('qConst');
     const qOutH2=document.querySelector('#qOut h2'), qOutMode=document.getElementById('qMode');
@@ -474,7 +1066,7 @@
       el?.addEventListener('keydown', ev=>{ if(ev.key==='Enter') calcularQuick(); });
     });
 
-    /* =================== Pestaña 2: Registros (Calcular → Registrar) =================== */
+    /* ===== Pestaña 2: Registros ===== */
     const rA=document.getElementById('rA'), rH=document.getElementById('rH'), rL=document.getElementById('rL');
     const rSac=document.getElementById('rSac'), rConst=document.getElementById('rConst');
     const rOutH2=document.querySelector('#rOut h2'), rOutMode=document.getElementById('rMode');
@@ -494,12 +1086,11 @@
       const m3_total=m3_base+(isFinite(Sac)?Sac:0);
       rOutH2.textContent=`${nombreModoReg()}: ${fmt1(m3_total)} m³`; rOutMode.textContent='';
       lastRegCalc={modo:nombreModoReg(), m3:Number(fmt1(m3_total)), A:isFinite(A)?A:null, H, L, C, Sac:isFinite(Sac)?Sac:0};
-      regForm.classList.remove('hidden'); // muestra el formulario “Registrar”
+      regForm.classList.remove('hidden');
       return true;
     }
     rCalcBtn?.addEventListener('click', calcularReg);
 
-    /* Storage y guardado (se visualiza SOLO en pestaña 3) */
     const LS_REGS='sc_registros';
     function getRegs(){ try{ return JSON.parse(localStorage.getItem(LS_REGS)) ?? []; }catch{ return []; } }
     function setRegs(arr){ localStorage.setItem(LS_REGS, JSON.stringify(arr)); }
@@ -518,8 +1109,7 @@
     regGuardarBtn?.addEventListener('click', ()=>{
       if(!lastRegCalc){ alert('Primero realiza el cálculo.'); return; }
       const fecha=regFecha.value||todayStr(), nivel=regNivel.value.trim(), labor=regLabor.value.trim(), robot=regRobot.value.trim();
-      const presionRaw=regPresion.value.trim(); // puede venir “xx bar”
-      let presion=parseFloat(presionRaw.replace(/[^0-9.,-]/g,'')); presion=isNaN(presion)?NaN:presion;
+      const presionRaw=regPresion.value.trim(); let presion=parseFloat(presionRaw.replace(/[^0-9.,-]/g,'')); presion=isNaN(presion)?NaN:presion;
       const uso=regUso.value, turno=regTurno.value, obs=regObs.value.trim();
 
       if(!fecha||!nivel||!labor||!robot||!isFinite(presion)||!uso||!turno){
@@ -535,24 +1125,23 @@
       });
       setRegs(regs);
       regMsg.textContent='Registro guardado. Revisa la pestaña “Tablas”.';
-      renderProduccionChart(); // sincroniza el dashboard
+      renderProduccionChart();
     });
     goTablasBtn?.addEventListener('click', ()=>{ document.getElementById('btn-tablas')?.click(); });
 
-    /* =================== Pestaña 3: Tabla y CSV =================== */
+    /* ===== Pestaña 3: Tabla y CSV ===== */
     const tbl3Body=document.querySelector('#tbl3 tbody');
     function renderTbl3(){
       const regs=getRegs();
       tbl3Body.innerHTML='';
       regs.forEach((r,i)=>{
         const tr=document.createElement('tr');
-        const m3txt=(r.m3==null)?'—':fmt1(r.m3), constxt=(r.C??'—'), sactxt=(r.Sac??'—'),
-              ahltxt=(r.A??'—')+'/'+(r.H??'—')+'/'+(r.L??'—');
+        const m3txt=(r.m3==null)?'—':fmt1(r.m3), constxt=(r.C??'—'), sactxt=(r.Sac??'—'), ahltxt=(r.A??'—')+'/'+(r.H??'—')+'/'+(r.L??'—');
         tr.innerHTML=`
           <td>${i+1}</td><td>${r.fecha}</td><td>${r.nivel}</td><td>${r.labor}</td><td>${r.robot}</td>
           <td>${r.presion}</td><td>${r.uso??'—'}</td><td>${r.turno??'—'}</td><td>${r.obs||''}</td>
           <td>${r.modo??'—'}</td><td>${m3txt}</td><td>${constxt}</td><td>${sactxt}</td><td>${ahltxt}</td>
-          <td><button class="btn ghost" data-i="${i}">Eliminar</button></td>`;
+          <td><button class="btn ghost" type="button" data-i="${i}">Eliminar</button></td>`;
         tbl3Body.appendChild(tr);
         tr.querySelector('button')?.addEventListener('click', ()=>{
           const arr=getRegs(); arr.splice(i,1); setRegs(arr);
@@ -586,7 +1175,7 @@
       }
     });
 
-    /* =================== Pestaña 4: Dashboard (Labor vs m³) =================== */
+    /* ===== Pestaña 4: Dashboard (Producción) ===== */
     function aggregateM3PorLabor(){
       const regs=getRegs(); const mapa=new Map();
       for(const r of regs){
@@ -608,21 +1197,17 @@
         ctx.fillText('Sin datos para graficar — registra actividad en la pestaña 2.', 20, 40);
         return;
       }
-      // Título
       ctx.fillStyle='#111'; ctx.font='bold 18px system-ui';
       ctx.fillText('Producción (Labor vs m³)', 20, 30);
 
-      // Área
       const L=70,R=20,T=50,B=60,W=canvas.width,H=canvas.height;
       const plotW=W-L-R, plotH=H-T-B;
 
-      // Ejes
       ctx.strokeStyle='#888'; ctx.lineWidth=1; ctx.beginPath();
-      ctx.moveTo(L,H-B); ctx.lineTo(W-R,H-B); // X
-      ctx.moveTo(L,H-B); ctx.lineTo(L,T);     // Y
+      ctx.moveTo(L,H-B); ctx.lineTo(W-R,H-B);
+      ctx.moveTo(L,H-B); ctx.lineTo(L,T);
       ctx.stroke();
 
-      // Escala Y
       const maxVal=Math.max(...data.map(d=>d.value),1);
       const niceMax=Math.ceil(maxVal/10)*10, ticks=5;
       ctx.fillStyle='#333'; ctx.font='12px system-ui';
@@ -634,7 +1219,6 @@
         ctx.fillStyle='#333'; ctx.fillText(val.toFixed(0), L-40, y+4);
       }
 
-      // Barras
       const n=data.length, gapX=20;
       const barW=Math.max(24, Math.floor((plotW - gapX*(n-1))/n));
       data.forEach((d,i)=>{
@@ -649,17 +1233,15 @@
         ctx.restore();
       });
 
-      // Etiquetas ejes
       ctx.fillStyle='#333'; ctx.font='13px system-ui';
       ctx.fillText('m³', L-50, T-10); ctx.textAlign='center';
       ctx.fillText('Labor', L+plotW/2, H-20);
     }
     document.getElementById('btnRenderProduccion')?.addEventListener('click', renderProduccionChart);
 
-    /* =================== Pestaña 4: Dashboard (Ensayo log‑log) =================== */
-    const LS_ENSAYOS = 'sc_ensayos2';
+    /* ===== Pestaña 4: Dashboard (Ensayo log‑log) ===== */
+    const LS_ENSAYOS='sc_ensayos2';
     function getEnsayos(){ try{ return JSON.parse(localStorage.getItem(LS_ENSAYOS)) ?? []; }catch{ return []; } }
-    function setEnsayos(arr){ localStorage.setItem(LS_ENSAYOS, JSON.stringify(arr)); }
 
     function populateEnsayoSelect(){
       const sel=document.getElementById('ensayoSelect'); const meta=document.getElementById('ensayoMeta'); if(!sel) return;
@@ -668,6 +1250,7 @@
       ens.forEach((e,i)=>{ const opt=document.createElement('option'); opt.value=String(i); opt.textContent=`${e.meta?.labor||'—'} | ${e.meta?.nivel||'—'} | ${e.meta?.robot||'—'}`; sel.appendChild(opt); });
       sel.value='0'; meta.textContent='';
     }
+
     const logMap = (v, vmin, vmax, p0, p1) => { const lv=Math.log10(Math.max(v,1e-12)), lmin=Math.log10(vmin), lmax=Math.log10(vmax); return p0 + (lv-lmin)*(p1-p0)/(lmax-lmin); };
     function renderEnsayoChart(){
       const canvas=document.getElementById('chartEnsayo'); if(!canvas) return;
@@ -678,18 +1261,15 @@
 
       if(!e){ ctx.fillStyle='#666'; ctx.font='16px system-ui'; ctx.fillText('Selecciona un ensayo.', 20, 40); return; }
 
-      // Datos (Penetración prioritaria; si no, Hilti)
       let pts=[]; if(e.penetracion){ pts=e.penetracion.map(r=>({x:r.h_acum,y:r.mpa})); } else if(e.hilti_mpa){ pts=e.hilti_mpa.map(r=>({x:r.h,y:r.mpa})); }
       pts = pts.filter(p=>isFinite(p.y)&&p.y>0).sort((a,b)=>a.x-b.x);
 
-      // Grid mayor/menor
       ctx.strokeStyle='#ddd'; ctx.lineWidth=1;
       [0.1,1,10,100].forEach(xv=>{ const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); });
       [0.01,0.1,1,10,100].forEach(yv=>{ const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+plotW,y); ctx.stroke(); });
       ctx.strokeStyle='#eee'; for(let d=-1; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const xv=base*m; if(xv<XMIN||xv>XMAX) continue; const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); } }
       for(let d=-2; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const yv=base*m; if(yv<YMIN||yv>YMAX) continue; const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+plotW,y); ctx.stroke(); } }
 
-      // Ejes + etiquetas
       ctx.strokeStyle='#888'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(L,T+plotH); ctx.lineTo(L+plotW,T+plotH); ctx.moveTo(L,T+plotH); ctx.lineTo(L,T); ctx.stroke();
       ctx.fillStyle='#111'; ctx.font='bold 14px system-ui'; ctx.fillText('Resistencia (MPa) vs Tiempo (h) — log‑log', L, T-20);
       ctx.font='12px system-ui'; [0.1,1,10,100].forEach(xv=>{ const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.fillText(String(xv), x-10, T+plotH+18); });
@@ -697,14 +1277,12 @@
       ctx.save(); ctx.translate(L-65, T+plotH/2); ctx.rotate(-Math.PI/2); ctx.font='13px system-ui'; ctx.fillText('RESISTENCIA (MPa)', 0, 0); ctx.restore();
       ctx.font='13px system-ui'; ctx.textAlign='center'; ctx.fillText('TIEMPO (h)', L+plotW/2, H-20);
 
-      // Guías (opcional)
       if (showGuides){
         const guides=[{c:0.12,k:0.8},{c:0.35,k:0.8},{c:0.90,k:0.8}];
         ctx.strokeStyle='#000'; ctx.lineWidth=2;
         guides.forEach(g=>{ ctx.beginPath(); let first=true; for(let xv=XMIN; xv<=XMAX; xv*=1.06){ const yv=g.c*Math.pow(xv,g.k); const x=logMap(xv,XMIN,XMAX,L,L+plotW), y=logMap(yv,YMIN,YMAX,T+plotH,T); if(first){ ctx.moveTo(x,y); first=false; } else { ctx.lineTo(x,y); } } ctx.stroke(); });
       }
 
-      // Curva azul + etiquetas
       if(!pts.length){ ctx.fillStyle='#666'; ctx.font='16px system-ui'; ctx.fillText('Sin puntos > 0.', L+20, T+40); return; }
       ctx.strokeStyle='#136BFB'; ctx.lineWidth=3; ctx.fillStyle='#136BFB';
       ctx.beginPath(); pts.forEach((p,i)=>{ const x=logMap(p.x,XMIN,XMAX,L,L+plotW), y=logMap(p.y,YMIN,YMAX,T+plotH,T); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke();
@@ -715,23 +1293,17 @@
 
     function renderDashboard(){
       renderProduccionChart?.();
-      populateEnsayoSelect();
-      renderEnsayoChart();
+      populateEnsayoSelect?.();
+      renderEnsayoChart?.();
     }
 
-    /* =================== Pestaña 5: Ensayos (lógica) =================== */
-    const LS_ENSAYOS = 'sc_ensayos2';
-    function getEnsayos(){ try{ return JSON.parse(localStorage.getItem(LS_ENSAYOS)) ?? []; }catch{ return []; } }
+    /* ===== Pestaña 5: Ensayos (lógica) ===== */
     function setEnsayos(arr){ localStorage.setItem(LS_ENSAYOS, JSON.stringify(arr)); }
-
-    const hhmmToHours = (hhmm) =>
-      (/^\d{1,2}:\d{2}$/.test(hhmm)
-        ? ((h=Number(hhmm.split(':')[0])), (m=Number(hhmm.split(':')[1])), h + m/60)
-        : NaN);
+    const hhmmToHours = (hhmm) => (/^\d{1,2}:\d{2}$/.test(hhmm) ? ((h=Number(hhmm.split(':')[0])), (m=Number(hhmm.split(':')[1])), h + m/60) : NaN);
     function renum(tbody){ [...tbody.querySelectorAll('tr')].forEach((tr,i)=>tr.children[0].textContent=i+1); }
     function metaEns(){ return { labor: document.getElementById('eLabor').value.trim(), nivel: document.getElementById('eNivel').value.trim(), robot: document.getElementById('eRobot').value.trim() }; }
 
-    /* --- Penetración --- */
+    /* Penetración */
     const tblPenBody = document.querySelector('#tblPen tbody');
     document.getElementById('pAdd')?.addEventListener('click', ()=>{
       const horaIni = document.getElementById('pHoraIni').value.trim();
@@ -745,21 +1317,14 @@
       const fuerzasTxt = document.getElementById('pFuerzas').value;
       const fuerzas = (fuerzasTxt||'').split(/[,\s]+/).map(Number).filter(v=>isFinite(v));
 
-      if (!isFinite(h0) || !isFinite(hR)){
-        alert('Revisa hora inicial y hora de lectura (formato hh:mm).'); return;
-      }
-      if (fuerzas.length !== 10){
-        alert('El método exige exactamente 10 fuerzas por tiempo.'); return;
-      }
-      if (!isFinite(restar) || !isFinite(K) || K<=0){
-        alert('Parámetros inválidos (Restar y Dividir entre).'); return;
-      }
+      if (!isFinite(h0) || !isFinite(hR)){ alert('Revisa hora inicial y hora de lectura (hh:mm).'); return; }
+      if (fuerzas.length !== 10){ alert('El método exige exactamente 10 fuerzas por tiempo.'); return; }
+      if (!isFinite(restar) || !isFinite(K) || K<=0){ alert('Parámetros inválidos (Restar y Dividir entre).'); return; }
 
       // Hora acumulada (corrige cruce de medianoche)
       let hAcum = hR - h0;
       if (hAcum < 0) hAcum += 24;
 
-      // Promedio y MPa = (Prom − 37)/526
       const prom = fuerzas.reduce((s,v)=>s+v,0)/fuerzas.length;
       const mpa  = (prom - restar) / K;
 
@@ -771,20 +1336,12 @@
         <td>${fuerzas.join(', ')}</td>
         <td>${prom.toFixed(1)}</td>
         <td>${mpa.toFixed(3)}</td>
-        <td><button class="btn ghost del">Eliminar</button></td>
+        <td><button class="btn ghost del" type="button">Eliminar</button></td>
       `;
-      tblPenBody.appendChild(tr);
-      renum(tblPenBody);
-
-      tr.querySelector('.del')?.addEventListener('click', ()=>{
-        tr.remove();
-        renum(tblPenBody);
-      });
+      tblPenBody.appendChild(tr); renum(tblPenBody);
+      tr.querySelector('.del')?.addEventListener('click', ()=>{ tr.remove(); renum(tblPenBody); });
     });
-
-    document.getElementById('pClear')?.addEventListener('click', ()=>{
-      tblPenBody.innerHTML='';
-    });
+    document.getElementById('pClear')?.addEventListener('click', ()=>{ tblPenBody.innerHTML=''; });
 
     document.getElementById('pSave')?.addEventListener('click', ()=>{
       const filas = [...tblPenBody.querySelectorAll('tr')].map(tr => {
@@ -793,27 +1350,19 @@
           tipo     : 'penetracion',
           hora     : td[1].textContent,
           h_acum   : Number(td[2].textContent),
-          fuerzas  : td[3].textContent,     // trazabilidad
+          fuerzas  : td[3].textContent,
           promN    : Number(td[4].textContent),
           mpa      : Number(td[5].textContent)
         };
       });
-      if (!filas.length){
-        alert('Añade al menos una fila de penetración.'); return;
-      }
-
+      if (!filas.length){ alert('Añade filas de penetración.'); return; }
       const arr = getEnsayos(); arr.push({ meta: metaEns(), penetracion: filas });
       setEnsayos(arr);
-
-      // Actualiza resumen y dashboard
-      renderEnsRes?.();
-      populateEnsayoSelect?.();
-      renderEnsayoChart?.();
-
+      renderEnsRes?.(); populateEnsayoSelect?.(); renderEnsayoChart?.();
       alert('Ensayo (Penetración) guardado con MPa = (Prom − 37)/526 y hora acumulada desde la hora inicial.');
     });
 
-    /* --- Hilti B --- */
+    /* Hilti B */
     const tblHiltiBody = document.querySelector('#tblHilti tbody');
     document.getElementById('hAdd')?.addEventListener('click', ()=>{
       const hora = document.getElementById('hHora').value.trim();
@@ -823,7 +1372,7 @@
       if (!/^\d{1,2}:\d{2}$/.test(hora) || !isFinite(h) || !isFinite(perforada) || !isFinite(pullN)){ alert('Completa hora, h acumulada, perforada y N.'); return; }
       const rel = perforada>0 ? (pullN/perforada) : NaN; if (!isFinite(rel)){ alert('Perforada debe ser > 0.'); return; }
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td></td><td>${hora}</td><td>${h.toFixed(3)}</td><td>${perforada.toFixed(1)}</td><td>${pullN.toFixed(1)}</td><td>${rel.toFixed(3)}</td><td>${h.toFixed(2)} h</td><td><button class="btn ghost del">Eliminar</button></td>`;
+      tr.innerHTML = `<td></td><td>${hora}</td><td>${h.toFixed(3)}</td><td>${perforada.toFixed(1)}</td><td>${pullN.toFixed(1)}</td><td>${rel.toFixed(3)}</td><td>${h.toFixed(2)} h</td><td><button class="btn ghost del" type="button">Eliminar</button></td>`;
       tblHiltiBody.appendChild(tr); renum(tblHiltiBody);
       tr.querySelector('.del')?.addEventListener('click', ()=>{ tr.remove(); renum(tblHiltiBody); });
     });
@@ -838,11 +1387,10 @@
       });
       if (!filas.length){ alert('Añade filas Hilti.'); return; }
 
-      // Promedio por hora
       const byH = {}; filas.forEach(f=>{ const key = f.h_acum.toFixed(2); (byH[key] ||= []).push(f.rel_Nmm); });
       const mpaByH = Object.entries(byH).map(([h, arr])=>{
         const promRel = arr.reduce((s,v)=>s+v,0)/arr.length;
-        const mpa = (promRel + off) / div; // MPa = (PROM + 2.7) / 7.69
+        const mpa = (promRel + off) / div; 
         return { h:Number(h), mpa:Number(mpa.toFixed(3)) };
       });
 
@@ -851,7 +1399,7 @@
       populateEnsayoSelect(); renderEnsayoChart();
     });
 
-    /* --- Resumen (para el Dashboard) --- */
+    /* Resumen ensayos */
     const tblEnsResBody = document.querySelector('#tblEnsRes tbody');
     function renderEnsRes(){
       const ens = getEnsayos(); tblEnsResBody.innerHTML='';
@@ -862,7 +1410,7 @@
         const m2 = pickPen(2.0) ?? pickHil(2.0);
         const m3 = pickPen(3.0) ?? pickHil(3.0);
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i+1}</td><td>${e.penetracion?'Penetración':'Hilti B'}</td><td>${e.meta?.labor||'—'} | ${e.meta?.nivel||'—'} | ${e.meta?.robot||'—'}</td><td>${m1?.toFixed?.(3) ?? '—'}</td><td>${m2?.toFixed?.(3) ?? '—'}</td><td>${m3?.toFixed?.(3) ?? '—'}</td><td><button class="btn ghost del">Eliminar</button></td>`;
+        tr.innerHTML = `<td>${i+1}</td><td>${e.penetracion?'Penetración':'Hilti B'}</td><td>${e.meta?.labor||'—'} | ${e.meta?.nivel||'—'} | ${e.meta?.robot||'—'}</td><td>${m1?.toFixed?.(3) ?? '—'}</td><td>${m2?.toFixed?.(3) ?? '—'}</td><td>${m3?.toFixed?.(3) ?? '—'}</td><td><button class="btn ghost del" type="button">Eliminar</button></td>`;
         tblEnsResBody.appendChild(tr);
         tr.querySelector('.del')?.addEventListener('click', ()=>{ const arr=getEnsayos(); arr.splice(i,1); setEnsayos(arr); renderEnsRes(); populateEnsayoSelect(); renderEnsayoChart(); });
       });
@@ -874,5 +1422,6 @@
   </script>
 </body>
 </html>
+
 
 
