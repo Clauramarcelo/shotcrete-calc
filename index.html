@@ -243,7 +243,7 @@
         <canvas id="chartEnsayo" width="900" height="420"
                 style="max-width:100%; background:#fff; border:1px solid var(--border); border-radius:.6rem; margin-top:.6rem;"></canvas>
 
-        <!-- Panel Curvas J (texto) -->
+        <!-- Panel: Curvas J (texto) -->
         <div id="panelCurvasJ" style="
           margin-top:.8rem; padding:.9rem; border:1px solid var(--border);
           border-radius:.6rem; background:var(--card); font-size:.95rem; line-height:1.45;">
@@ -536,8 +536,7 @@
       tbl3Body.innerHTML='';
       regs.forEach((r,i)=>{
         const tr=document.createElement('tr');
-        const m3txt=(r.m3==null)?'—':fmt1(r.m3), constxt=(r.C??'—'), sactxt=(r.Sac??'—'),
-              ahltxt=(r.A??'—')+'/'+(r.H??'—')+'/'+(r.L??'—');
+        const m3txt=(r.m3==null)?'—':fmt1(r.m3), constxt=(r.C??'—'), sactxt=(r.Sac??'—'), ahltxt=(r.A??'—')+'/'+(r.H??'—')+'/'+(r.L??'—');
         tr.innerHTML=`
           <td>${i+1}</td><td>${r.fecha}</td><td>${r.nivel}</td><td>${r.labor}</td><td>${r.robot}</td>
           <td>${r.presion}</td><td>${r.uso??'—'}</td><td>${r.turno??'—'}</td><td>${r.obs||''}</td>
@@ -652,7 +651,7 @@
       sel.value='0'; meta.textContent='';
     }
 
-    /* ===== Pestaña 4: Ensayo log‑log ===== */
+    /* ===== Pestaña 4: Ensayo log‑log (con J1/J2/J3 suavizadas) ===== */
     const logMap = (v, vmin, vmax, p0, p1) => { const lv=Math.log10(Math.max(v,1e-12)), lmin=Math.log10(vmin), lmax=Math.log10(vmax); return p0 + (lv-lmin)*(p1-p0)/(lmax-lmin); };
 
     function renderEnsayoChart(){
@@ -660,23 +659,23 @@
       const sel=document.getElementById('ensayoSelect'); const ens=getEnsayos(); const i=Number(sel?.value||'-1'); const e=ens[i];
       const ctx=canvas.getContext('2d'); const W=canvas.width,H=canvas.height; ctx.clearRect(0,0,W,H);
 
-      const L=80,R=20,T=60,B=70, plotW=W-L-R, plotH=H-T-B; const XMIN=0.1,XMAX=100, YMIN=0.01,YMAX=100;
+      // Márgenes y rango
+      const L=80, R=24, T=68, B=74;
+      const plotW=W-L-R, plotH=H-T-B;
+      const XMIN=0.1, XMAX=100, YMIN=0.01, YMAX=100;
       const showMinors=document.getElementById('chkGuias')?.checked ?? true;
 
-      // Título
-      ctx.fillStyle = '#111';
-      ctx.font = 'bold 16px system-ui';
-      ctx.fillText('EVOLUCIÓN DE RESISTENCIAS INICIALES Y TEMPRANAS', L, T - 28);
-      ctx.font = '12px system-ui';
-      ctx.fillStyle = '#333';
-      ctx.fillText('MPa vs Tiempo (h) — ejes logarítmicos', L, T - 12);
+      // ===== Título centrado =====
+      ctx.font='bold 16px system-ui'; ctx.fillStyle='#111'; ctx.textAlign='center';
+      ctx.fillText('EVOLUCIÓN DE RESISTENCIAS INICIALES Y TEMPRANAS', L+plotW/2, T-28);
+      ctx.font='12px system-ui'; ctx.fillStyle='#333';
+      ctx.fillText('MPa vs Tiempo (h) — ejes logarítmicos', L+plotW/2, T-12);
+      ctx.textAlign='left';
 
-      // Grilla mayor
+      // Grillas (mayor/menor)
       ctx.strokeStyle='#ddd'; ctx.lineWidth=1;
       [0.1,1,10,100].forEach(xv=>{ const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); });
       [0.01,0.1,1,10,100].forEach(yv=>{ const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+plotW,y); ctx.stroke(); });
-
-      // Grilla menor (opcional)
       if (showMinors){
         ctx.strokeStyle='#eee';
         for(let d=-1; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const xv=base*m; if(xv<XMIN||xv>XMAX) continue; const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); } }
@@ -689,14 +688,15 @@
       ctx.moveTo(L,T+plotH); ctx.lineTo(L,T);
       ctx.stroke();
 
-      // Etiquetas ejes
+      // Etiquetas de ejes
       ctx.fillStyle='#111'; ctx.font='12px system-ui';
       [0.1,1,10,100].forEach(xv=>{ const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.fillText(String(xv), x-10, T+plotH+20); });
       [0.01,0.1,1,10,100].forEach(yv=>{ const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.fillText(String(yv), L-50, y+4); });
       ctx.save(); ctx.translate(L-65, T+plotH/2); ctx.rotate(-Math.PI/2); ctx.font='13px system-ui'; ctx.fillText('RESISTENCIA (MPa)', 0, 0); ctx.restore();
       ctx.font='13px system-ui'; ctx.textAlign='center'; ctx.fillText('TIEMPO (h)', L+plotW/2, H-26);
+      ctx.textAlign='left';
 
-      // Anotación META (fecha, labor, nivel, robot)
+      // Cuadro de texto (meta) arriba‑derecha
       const metaLines=[], meta=e?.meta||{};
       if(meta?.fecha) metaLines.push(`Fecha: ${meta.fecha}`);
       if(meta?.labor) metaLines.push(`Labor: ${meta.labor}`);
@@ -707,8 +707,9 @@
         const padX=10,padY=8,lineH=16;
         const textW=Math.max(...metaLines.map(s=>ctx.measureText(s).width));
         const boxW=textW+padX*2, boxH=lineH*metaLines.length+padY*2;
-        const boxX=L+plotW-boxW-6, boxY=T+6;
-        ctx.fillStyle='rgba(255,255,255,0.85)';
+        const boxX=L+plotW-boxW-8, boxY=T+8;
+        // Fondo y borde
+        ctx.fillStyle='rgba(255,255,255,0.90)';
         ctx.strokeStyle='#888'; ctx.lineWidth=1; ctx.beginPath();
         const r=8;
         ctx.moveTo(boxX+r,boxY);
@@ -717,15 +718,16 @@
         ctx.lineTo(boxX+r,boxY+boxH); ctx.quadraticCurveTo(boxX,boxY+boxH,boxX,boxY+boxH-r);
         ctx.lineTo(boxX,boxY+r); ctx.quadraticCurveTo(boxX,boxY,boxX+r,boxY); ctx.closePath();
         ctx.fill(); ctx.stroke();
+        // Texto
         ctx.fillStyle='#111';
         metaLines.forEach((s,i)=>{ ctx.fillText(s, boxX+padX, boxY+padY+(i+1)*lineH-4); });
       }
 
-      // Datos del ensayo seleccionado
+      // Datos del ensayo
       let pts=[]; if(e?.penetracion){ pts=e.penetracion.map(r=>({x:r.h_acum,y:r.mpa})); } else if(e?.hilti_mpa){ pts=e.hilti_mpa.map(r=>({x:r.h,y:r.mpa})); }
       pts=pts.filter(p=>isFinite(p.x)&&isFinite(p.y)&&p.y>0).sort((a,b)=>a.x-b.x);
 
-      // Curva azul del ensayo
+      // Curva del ensayo (azul)
       if(pts.length){
         ctx.strokeStyle='#136BFB'; ctx.lineWidth=3; ctx.fillStyle='#136BFB';
         ctx.beginPath();
@@ -733,64 +735,68 @@
         ctx.stroke();
         ctx.font='bold 13px system-ui';
         pts.forEach(p=>{ const x=logMap(p.x,XMIN,XMAX,L,L+plotW), y=logMap(p.y,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.arc(x,y,3.5,0,Math.PI*2); ctx.fill(); ctx.fillText(p.y.toFixed(2), x+6, y-6); });
-      }else{
-        ctx.fillStyle='#666'; ctx.font='16px system-ui'; ctx.fillText('Sin puntos > 0. Guarda un ensayo.', L+20, T+40);
+      } else {
+        ctx.fillStyle='#666'; ctx.font='16px system-ui';
+        ctx.fillText('Sin puntos > 0. Guarda un ensayo.', L+20, T+40);
       }
 
-      // === Curvas J1/J2/J3 suavizadas (Bezier) ===
-      const J1_ANCHORS = [
-        {h:0.10, mpa:0.10},
-        {h:0.20, mpa:0.20},
-        {h:1.00, mpa:0.50},
-        {h:6.00, mpa:1.70},
-        {h:24.00,mpa:5.00}
-      ];
-      const J2_ANCHORS = [
-        {h:0.10, mpa:0.20},
-        {h:0.20, mpa:0.50},
-        {h:1.00, mpa:1.50},
-        {h:6.00, mpa:5.00},
-        {h:24.00,mpa:15.00}
-      ];
-      const J3_ANCHORS = [
-        {h:0.10, mpa:0.20},
-        {h:0.20, mpa:0.70},
-        {h:1.00, mpa:2.00},
-        {h:6.00, mpa:5.00},
-        {h:24.00,mpa:15.00}
-      ];
+      // Curvas J (anclas exactas + Bezier suavizado)
+      const J1 = [ {h:0.10,mpa:0.09}, {h:0.20,mpa:0.10}, {h:1.00,mpa:0.20}, {h:6.00,mpa:0.70}, {h:24.00,mpa:2.00} ];
+      const J2 = [ {h:0.10,mpa:0.20}, {h:0.20,mpa:0.24}, {h:1.00,mpa:0.50}, {h:6.00,mpa:1.70}, {h:24.00,mpa:5.00} ];
+      const J3 = [ {h:0.10,mpa:0.50}, {h:0.20,mpa:0.59}, {h:1.00,mpa:1.50}, {h:6.00,mpa:5.00}, {h:24.00,mpa:15.00} ];
 
-      function toCanvasXY(h, mpa){
-        return {
-          x: logMap(h,  XMIN, XMAX, L,      L+plotW),
-          y: logMap(mpa,YMIN, YMAX, T+plotH, T     )
-        };
-      }
-      function drawSmoothCurveFromAnchors(anchors, color, width, label){
+      const toXY = (h, m) => ({ x: logMap(h,XMIN,XMAX,L,L+plotW), y: logMap(m,YMIN,YMAX,T+plotH,T) });
+
+      function drawSmooth(anchors, color, width, label){
         if(!anchors || anchors.length<2) return;
-        const pts=anchors.map(a=>toCanvasXY(a.h,a.mpa));
-        // Pendientes tipo Catmull-Rom
+        const pts=anchors.map(a=>toXY(a.h,a.mpa));
+        // Pendientes estilo Catmull-Rom
         const m=new Array(pts.length).fill(0);
-        for(let i=0;i<pts.length;i++){
-          if(i===0){ const dx=(pts[1].x-pts[0].x)||1e-6; m[i]=(pts[1].y-pts[0].y)/dx; }
-          else if(i===pts.length-1){ const dx=(pts[i].x-pts[i-1].x)||1e-6; m[i]=(pts[i].y-pts[i-1].y)/dx; }
-          else{ const dx=(pts[i+1].x-pts[i-1].x)||1e-6; m[i]=(pts[i+1].y-pts[i-1].y)/dx; }
+        for(let k=0;k<pts.length;k++){
+          if(k===0){ const dx=(pts[1].x-pts[0].x)||1e-6; m[k]=(pts[1].y-pts[0].y)/dx; }
+          else if(k===pts.length-1){ const dx=(pts[k].x-pts[k-1].x)||1e-6; m[k]=(pts[k].y-pts[k-1].y)/dx; }
+          else{ const dx=(pts[k+1].x-pts[k-1].x)||1e-6; m[k]=(pts[k+1].y-pts[k-1].y)/dx; }
         }
-        ctx.strokeStyle=color; ctx.lineWidth=width; ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y);
-        for(let i=0;i<pts.length-1;i++){
-          const p0=pts[i], p1=pts[i+1]; const dx=p1.x-p0.x;
-          const c1={x:p0.x+dx/3, y:p0.y+m[i]*dx/3};
-          const c2={x:p1.x-dx/3, y:p1.y-m[i+1]*dx/3};
+        ctx.strokeStyle=color; ctx.lineWidth=width;
+        ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
+        for(let k=0;k<pts.length-1;k++){
+          const p0=pts[k], p1=pts[k+1], dx=p1.x-p0.x;
+          const c1={x:p0.x+dx/3, y:p0.y+m[k]*dx/3};
+          const c2={x:p1.x-dx/3, y:p1.y-m[k+1]*dx/3};
           ctx.bezierCurveTo(c1.x,c1.y,c2.x,c2.y,p1.x,p1.y);
         }
         ctx.stroke();
+        // Etiqueta Jx al final
         const last=pts[pts.length-1];
-        ctx.font='12px system-ui'; ctx.fillStyle=color; ctx.fillText(label, last.x+6, last.y-6);
+        ctx.font='12px system-ui'; ctx.fillStyle=color;
+        ctx.fillText(label, last.x+6, last.y-6);
+
+        // Caja A/B/C (si aplica) cerca del último punto
+        const labChar = (label==='J 1')?'A':(label==='J 2')?'B':'C';
+        drawLabelBox(Math.min(last.x+30, L+plotW-28), Math.max(last.y-10, T+18), labChar);
       }
 
-      drawSmoothCurveFromAnchors(J1_ANCHORS, '#222222', 3, 'J 1');
-      drawSmoothCurveFromAnchors(J2_ANCHORS, '#000000', 3, 'J 2');
-      drawSmoothCurveFromAnchors(J3_ANCHORS, '#111111', 3, 'J 3');
+      // Caja de etiqueta (pequeña) con bordes redondeados
+      function drawLabelBox(x, y, text){
+        const w=22,h=18,r=6;
+        ctx.fillStyle='rgba(255,255,255,0.95)';
+        ctx.strokeStyle='#000'; ctx.lineWidth=1;
+        ctx.beginPath();
+        ctx.moveTo(x+r,y);
+        ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+        ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+        ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+        ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle='#000'; ctx.font='12px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(text, x+w/2, y+h/2);
+        ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+      }
+
+      // Dibujar J1/J2/J3
+      drawSmooth(J1, '#222222', 3, 'J 1');
+      drawSmooth(J2, '#000000', 3, 'J 2');
+      drawSmooth(J3, '#111111', 3, 'J 3');
     }
 
     document.getElementById('btnRenderEnsayo')?.addEventListener('click', renderEnsayoChart);
@@ -977,7 +983,7 @@
     }
     renderEnsRes();
 
-    /* ===== Dashboard init ===== */
+    /* ===== Inicializar Dashboard ===== */
     function renderDashboard(){
       renderProduccionChart?.();
       populateEnsayoSelect?.();
