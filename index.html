@@ -17,23 +17,33 @@
 
   <style>
     :root{
-      /* Paleta naranja */
-      --brand:#ff6a00;      /* naranja principal (acento) */
-      --brand-2:#ff821a;    /* naranja secundario (degradado) */
+      /* Tema general naranja (UI) */
+      --brand:#ff6a00;
+      --brand-2:#ff821a;
+
+      /* Paleta profesional SOLO para el gráfico de Ensayos */
+      --ens-line:#007AFF;                     /* azul técnico para línea */
+      --ens-point:#007AFF;                    /* azul para puntos */
+      --ens-label:#007AFF;                    /* azul para texto */
+      --ens-label-halo:rgba(255,255,255,0.95);/* halo blanco (modo claro) */
+
+      /* Grillas y J (tenues, para no competir) */
+      --grid-major:rgba(120,120,120,0.40);    /* mayor más suave */
+      --grid-minor:rgba(200,200,200,0.25);    /* menor muy tenue */
+      --j-curve:rgba(150,150,150,0.45);       /* plomo tenue */
 
       /* Base */
       --bg:#ffffff; --fg:#0b0b0b; --muted:#667085; --card:#f6f8fa; --border:#d0d5dd;
 
-      /* Derivados para trazos finos y tenues */
-      --grid-major:#787878d9;   /* gris 0.85 opacidad */
-      --grid-minor:#c8c8c08c;   /* gris 0.55 opacidad */
-      --j-curve:#969696a6;      /* plomo tenue para J */
       color-scheme: light dark;
     }
     @media (prefers-color-scheme: dark){
       :root{
         --bg:#0b0b0b; --fg:#eee; --muted:#98a2b3; --card:#14171a; --border:#2a2e33;
-        --grid-major:#9a9a9ad9; --grid-minor:#cfcfcf66; --j-curve:#c0c0c0a6;
+        --grid-major:rgba(180,180,180,0.40);
+        --grid-minor:rgba(200,200,200,0.25);
+        --j-curve:rgba(190,190,190,0.45);
+        --ens-label-halo:rgba(0,0,0,0.65); /* halo oscuro para etiquetas en modo noche */
       }
     }
 
@@ -148,7 +158,8 @@
   <!-- ===== Splash / Loader ===== -->
   <div id="appLoader" aria-hidden="true">
     <div class="loader-card">
-      <img class="loader-icon" src="https://raw.githubusercontent.com/Clauramarcelo/shotcrete-calc/main/Mixer.jpg" alt="Icono de carga" />
+      <img class="loader-icon" alt="Mixer icon"
+           src="https://raw.githubusercontent.com/Clauramarcelo/shotcrete-calc/main/Mixer.jpg" />
       <div class="loader-spinner" aria-label="Cargando"></div>
       <div class="loader-text">Cargando…</div>
     </div>
@@ -796,7 +807,7 @@
 
     document.getElementById('btnRenderProduccion')?.addEventListener('click', renderProduccionChart);
 
-    /* ===== Ensayos (Fecha + Labor) ===== */
+    /* ===== Ensayo log‑log (Fecha + Labor) ===== */
     const logMap = (v, vmin, vmax, p0, p1) => {
       const lv=Math.log10(Math.max(v,1e-12)), lmin=Math.log10(vmin), lmax=Math.log10(vmax);
       return p0 + (lv-lmin)*(p1-p0)/(lmax-lmin);
@@ -831,11 +842,13 @@
       ctx.fillText('MPa vs Tiempo (h) — ejes logarítmicos', L+plotW/2, T-12);
       ctx.textAlign='left';
 
-      // Grillas
-      ctx.strokeStyle='var(--grid-major)'; ctx.lineWidth=1;
+      // Grillas (mayor/menor) con tonos suaves
+      ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--grid-major').trim() || 'rgba(120,120,120,0.40)';
+      ctx.lineWidth=1;
       [0.1,1,10,100].forEach(xv=>{ const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); });
       [0.01,0.1,1,10,100].forEach(yv=>{ const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+plotW,y); ctx.stroke(); });
-      ctx.strokeStyle='var(--grid-minor)';
+
+      ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--grid-minor').trim() || 'rgba(200,200,200,0.25)';
       for(let d=-1; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const xv=base*m; if(xv<XMIN||xv>XMAX) continue; const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); } }
       for(let d=-2; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const yv=base*m; if(yv<YMIN||yv>YMAX) continue; const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+plotW,y); ctx.stroke(); } }
 
@@ -869,18 +882,50 @@
         ]);
       }
 
-      // Datos del ensayo
+      // Datos del ensayo (pts)
       let pts=[]; if(e?.penetracion){ pts=e.penetracion.map(r=>({x:r.h_acum,y:r.mpa})); } else if(e?.hilti_mpa){ pts=e.hilti_mpa.map(r=>({x:r.h,y:r.mpa})); }
       pts=pts.filter(p=>isFinite(p.x)&&isFinite(p.y)&&p.y>0).sort((a,b)=>a.x-b.x);
 
-      // Curva del ensayo (naranja)
+      // Curva del ensayo — AZUL técnico con halo
       if(pts.length){
-        ctx.strokeStyle='#ff7a00'; ctx.lineWidth=3; ctx.fillStyle='#ff7a00';
+        const ENS_LINE = getComputedStyle(document.documentElement).getPropertyValue('--ens-line').trim() || '#007AFF';
+        const ENS_POINT = getComputedStyle(document.documentElement).getPropertyValue('--ens-point').trim() || '#007AFF';
+        const ENS_LABEL = getComputedStyle(document.documentElement).getPropertyValue('--ens-label').trim() || '#007AFF';
+        const ENS_LABEL_HALO = getComputedStyle(document.documentElement).getPropertyValue('--ens-label-halo').trim() || 'rgba(255,255,255,0.95)';
+
+        // Línea
+        ctx.strokeStyle=ENS_LINE;
+        ctx.lineWidth=3.5;
         ctx.beginPath();
-        pts.forEach((p,i)=>{ const x=logMap(p.x,XMIN,XMAX,L,L+plotW), y=logMap(p.y,YMIN,YMAX,T+plotH,T); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); });
+        pts.forEach((p,i)=>{ 
+          const x=logMap(p.x,XMIN,XMAX,L,L+plotW), y=logMap(p.y,YMIN,YMAX,T+plotH,T); 
+          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); 
+        });
         ctx.stroke();
+
+        // Puntos con halo
+        pts.forEach(p=>{
+          const x=logMap(p.x,XMIN,XMAX,L,L+plotW), y=logMap(p.y,YMIN,YMAX,T+plotH,T);
+          // disco principal
+          ctx.fillStyle=ENS_POINT;
+          ctx.beginPath(); ctx.arc(x,y,6,0,Math.PI*2); ctx.fill();
+          // contorno halo
+          ctx.strokeStyle=ENS_LABEL_HALO; ctx.lineWidth=1.5;
+          ctx.beginPath(); ctx.arc(x,y,6,0,Math.PI*2); ctx.stroke();
+        });
+
+        // Etiquetas MPa con halo + texto azul
         ctx.font='bold 13px system-ui';
-        pts.forEach(p=>{ const x=logMap(p.x,XMIN,XMAX,L,L+plotW), y=logMap(p.y,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.arc(x,y,3.5,0,Math.PI*2); ctx.fill(); ctx.fillText(p.y.toFixed(2), x+6, y-6); });
+        pts.forEach(p=>{
+          const x=logMap(p.x,XMIN,XMAX,L,L+plotW), y=logMap(p.y,YMIN,YMAX,T+plotH,T);
+          const label = p.y.toFixed(2);
+          // halo (debajo)
+          ctx.fillStyle=ENS_LABEL_HALO;
+          ctx.fillText(label, x+7, y-7);
+          // texto (encima)
+          ctx.fillStyle=ENS_LABEL;
+          ctx.fillText(label, x+7, y-7);
+        });
       } else {
         ctx.fillStyle='#666'; ctx.font='16px system-ui';
         ctx.fillText('Sin puntos > 0. Ajusta Fecha/Labor o guarda un ensayo.', L+20, T+40);
@@ -890,7 +935,7 @@
       const J1 = [ {h:0.10,mpa:0.09}, {h:0.20,mpa:0.10}, {h:1.00,mpa:0.20}, {h:6.00,mpa:0.70}, {h:24.00,mpa:2.00} ];
       const J2 = [ {h:0.10,mpa:0.20}, {h:0.20,mpa:0.24}, {h:1.00,mpa:0.50}, {h:6.00,mpa:1.70}, {h:24.00,mpa:5.00} ];
       const J3 = [ {h:0.10,mpa:0.50}, {h:0.20,mpa:0.59}, {h:1.00,mpa:1.50}, {h:6.00,mpa:5.00}, {h:24.00,mpa:15.00} ];
-      const J_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--j-curve').trim() || 'rgba(150,150,150,0.65)';
+      const J_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--j-curve').trim() || 'rgba(150,150,150,0.45)';
       const J_WIDTH = 1.5;
 
       const toXY = (h, m) => ({ x: logMap(h,XMIN,XMAX,L,L+plotW), y: logMap(m,YMIN,YMAX,T+plotH,T) });
@@ -943,6 +988,7 @@
       drawSmooth(J3, J_COLOR, J_WIDTH, 'J 3');
     }
 
+    // Redibuja ensayos al cambiar filtros (Fecha/Labor)
     document.getElementById('ensFecha')?.addEventListener('input', renderEnsayoChart);
     document.getElementById('ensLabor')?.addEventListener('input', renderEnsayoChart);
 
@@ -1137,3 +1183,4 @@
   </script>
 </body>
 </html>
+
