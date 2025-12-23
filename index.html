@@ -6,19 +6,37 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Shotcrete Calc</title>
 
-  <!-- PWA (GitHub Pages sub-path) -->
-  /shotcrete-calc/manifest.json
-  <meta name="theme-color" content="#0a84ff" />
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="/shotcrete-calc/manifest.json" />
+  <meta name="theme-color" content="#ff6a00" />
+
+  <!-- Apple PWA (opcional) -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="apple-touch-icon" href="/shotcrete-calc/icon-192.png" />
 
   <style>
     :root{
-      --brand:#0a84ff; --brand-2:#166ef2;
+      /* Paleta naranja */
+      --brand:#ff6a00;      /* naranja principal (acento) */
+      --brand-2:#ff821a;    /* naranja secundario (degradado) */
+
+      /* Base */
       --bg:#ffffff; --fg:#0b0b0b; --muted:#667085; --card:#f6f8fa; --border:#d0d5dd;
+
+      /* Derivados para trazos finos y tenues */
+      --grid-major:#787878d9;   /* gris 0.85 opacidad */
+      --grid-minor:#c8c8c08c;   /* gris 0.55 opacidad */
+      --j-curve:#969696a6;      /* plomo tenue para J */
       color-scheme: light dark;
     }
     @media (prefers-color-scheme: dark){
-      :root{ --bg:#0b0b0b; --fg:#eee; --muted:#98a2b3; --card:#14171a; --border:#2a2e33; }
+      :root{
+        --bg:#0b0b0b; --fg:#eee; --muted:#98a2b3; --card:#14171a; --border:#2a2e33;
+        --grid-major:#9a9a9ad9; --grid-minor:#cfcfcf66; --j-curve:#c0c0c0a6;
+      }
     }
+
     *{box-sizing:border-box}
     html,body{height:100%}
     body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.35;padding-bottom:env(safe-area-inset-bottom)}
@@ -44,30 +62,81 @@
     .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
     .btn{border:none;border-radius:.6rem;padding:.7rem 1rem;font-size:1rem;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer}
     .btn.primary{background:var(--brand);color:#fff}
-    .btn.secondary{background:#2f3b48;color:#fff}
+    .btn.secondary{background:#f28c2a;color:#fff}
     .btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
 
     .result{margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;text-align:center}
     @media (prefers-color-scheme: dark){ .result{background:#0e0e10} }
-    .result h2{margin:0;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:#0a84ff}
+    .result h2{margin:0;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:var(--brand)}
     .result small{display:block;color:var(--muted);margin-top:.25rem}
 
     table{width:100%;border-collapse:collapse}
     th,td{border:1px solid var(--border);padding:.55rem;text-align:left}
-    thead th{background:#eef3ff}
-    @media (prefers-color-scheme: dark){ thead th{background:#0f203a;color:#cfe0ff} }
+    thead th{background:#fff3e8} /* tono naranja muy claro */
+    @media (prefers-color-scheme: dark){ thead th{background:#24170a;color:#fed8b4} }
 
     .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:9999;background:var(--bg);border-top:1px solid var(--border);padding:.35rem calc(.6rem + env(safe-area-inset-bottom)) .35rem .6rem;display:grid;grid-template-columns:repeat(5,1fr);gap:.25rem}
     .tabbar button{appearance:none;border:none;background:transparent;color:#667085;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;padding:.5rem 0;border-radius:.5rem;cursor:pointer;font-size:.9rem}
-    .tabbar button.active{color:#0a84ff;font-weight:700;background:var(--card)}
+    .tabbar button.active{color:var(--brand);font-weight:700;background:#fff7ef}
+    @media (prefers-color-scheme: dark){ .tabbar button.active{background:#1b140c} }
+
     section.tab{display:none}
     section.tab.active{display:block}
 
     .hidden{display:none !important}
     .muted{color:var(--muted);font-size:.95rem}
 
-    /* Responsivo para los canvas */
+    /* Canvas responsivo */
     canvas.responsive { width: 100%; height: auto; display: block; }
+
+    /* ===== Loader estilo iPhone ===== */
+    #appLoader{
+      position:fixed; inset:0; z-index:99999;
+      display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(180deg, #fdf7f3, #fff2e5); /* fondo suave naranja */
+      transition:opacity .35s ease, visibility .35s ease;
+    }
+    @media (prefers-color-scheme: dark){
+      #appLoader{ background:linear-gradient(180deg, #0f0c08, #140f0a); }
+    }
+    #appLoader.hidden{ opacity:0; visibility:hidden; }
+
+    .loader-card{
+      width:min(280px, 70vw);
+      padding:28px 24px;
+      border-radius:24px;
+      background:rgba(255,255,255,0.88);
+      box-shadow:0 12px 40px rgba(0,0,0,.18);
+      display:flex; flex-direction:column; align-items:center; gap:16px;
+      backdrop-filter:saturate(140%) blur(6px);
+      border:1px solid #ffd2ad;
+    }
+    @media (prefers-color-scheme: dark){
+      .loader-card{ background:rgba(22,24,28,0.84); box-shadow:0 12px 40px rgba(0,0,0,.42); border-color:#3a2a18; }
+    }
+
+    .loader-icon{
+      width:84px; height:84px; object-fit:cover; border-radius:18px;
+      box-shadow:0 6px 16px rgba(0,0,0,.18);
+      transform:scale(.96);
+      animation:pop .5s cubic-bezier(.2,.8,.2,1) .1s both;
+      border:2px solid #fff6;
+    }
+    @keyframes pop{ from{ transform:scale(.92); opacity:.6; } to{ transform:scale(1.00); opacity:1; } }
+
+    .loader-spinner{
+      width:34px; height:34px; border-radius:50%;
+      border:3px solid rgba(120,120,120,.28);
+      border-top-color:var(--brand); /* naranja iOS-like */
+      animation:spin 0.9s linear infinite;
+    }
+    @keyframes spin{ to { transform:rotate(360deg); } }
+
+    .loader-text{
+      font:500 14px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:#333; letter-spacing:.2px;
+    }
+    @media (prefers-color-scheme: dark){ .loader-text{ color:#d8d8d8; } }
   </style>
 </head>
 <body>
@@ -75,6 +144,15 @@
     <span class="logo" aria-hidden="true"></span>
     <h1>Shotcrete Calc</h1>
   </header>
+
+  <!-- ===== Splash / Loader ===== -->
+  <div id="appLoader" aria-hidden="true">
+    <div class="loader-card">
+      <img class="loader-icon" src="https://raw.githubusercontent.com/Clauramarcelo/shotcrete-calc/main/Mixer.jpg" alt="Icono de carga" />
+      <div class="loader-spinner" aria-label="Cargando"></div>
+      <div class="loader-text">Cargando…</div>
+    </div>
+  </div>
 
   <main>
     <!-- ===== 1) CALCULO m3 ===== -->
@@ -218,7 +296,6 @@
       <fieldset>
         <legend>Producción (Labor vs m³)</legend>
 
-        <!-- Filtros: Fecha y Turno -->
         <div class="row2" style="margin-bottom:.6rem">
           <div>
             <label for="prodFecha">Fecha</label>
@@ -246,7 +323,7 @@
       <fieldset>
         <legend>Ensayos — Resistencia (MPa) vs Tiempo (h)</legend>
 
-        <!-- Filtros: Fecha y Labor (sin botón dibujar, ni dropdown de ensayo) -->
+        <!-- Filtros: Fecha y Labor -->
         <div class="row2" style="margin-bottom:.6rem">
           <div>
             <label for="ensFecha">Fecha</label>
@@ -596,7 +673,7 @@
     document.getElementById('tbl3Refrescar')?.addEventListener('click', ()=>{ renderTbl3(); });
     document.getElementById('tbl3BorrarTodo')?.addEventListener('click', ()=>{
       if(confirm('¿Borrar TODOS los registros?')){
-        localStorage.removeItem(LS_REGS); renderTbl3(); renderProduccionChart();
+        localStorage.removeItem('sc_registros'); renderTbl3(); renderProduccionChart();
       }
     });
 
@@ -674,7 +751,7 @@
         return;
       }
 
-      ctx.strokeStyle='#888'; ctx.lineWidth=1; ctx.beginPath();
+      ctx.strokeStyle='rgba(120,120,120,0.85)'; ctx.lineWidth=1; ctx.beginPath();
       ctx.moveTo(L,H-B); ctx.lineTo(W-R,H-B);
       ctx.moveTo(L,H-B); ctx.lineTo(L,T);
       ctx.stroke();
@@ -697,7 +774,8 @@
         const x=L + i*(barW+gapX);
         const h=(d.value/niceMax)*plotH;
         const y=H-B-h;
-        ctx.fillStyle='#0a84ff'; ctx.fillRect(x,y,barW,h);
+        ctx.fillStyle= '#ff7a00'; /* naranja barras */
+        ctx.fillRect(x,y,barW,h);
         ctx.fillStyle='#111'; ctx.font='12px system-ui';
         ctx.fillText(d.value.toFixed(1), x, y-6);
         ctx.save(); ctx.translate(x+barW/2, H-B+12); ctx.rotate(-Math.PI/6);
@@ -718,7 +796,7 @@
 
     document.getElementById('btnRenderProduccion')?.addEventListener('click', renderProduccionChart);
 
-    /* ===== Ensayo log‑log (filtrar por Fecha y Labor, sin botón) ===== */
+    /* ===== Ensayos (Fecha + Labor) ===== */
     const logMap = (v, vmin, vmax, p0, p1) => {
       const lv=Math.log10(Math.max(v,1e-12)), lmin=Math.log10(vmin), lmax=Math.log10(vmax);
       return p0 + (lv-lmin)*(p1-p0)/(lmax-lmin);
@@ -735,13 +813,11 @@
       const L=80, R=24, T=68, B=74;
       const plotW=W-L-R, plotH=H-T-B;
       const XMIN=0.1, XMAX=100, YMIN=0.01, YMAX=100;
-      const showMinors=true; // mantener grillas menores
 
       const ensayos=getEnsayos();
       const fFecha = document.getElementById('ensFecha')?.value || '';
       const fLabor = (document.getElementById('ensLabor')?.value || '').trim().toLowerCase();
 
-      // Seleccionar ensayo por Fecha + Labor
       const e = ensayos.find(en=>{
         const okFecha = fFecha ? (en.meta?.fecha === fFecha) : true;
         const okLabor = fLabor ? ((en.meta?.labor||'').trim().toLowerCase() === fLabor) : true;
@@ -755,17 +831,13 @@
       ctx.fillText('MPa vs Tiempo (h) — ejes logarítmicos', L+plotW/2, T-12);
       ctx.textAlign='left';
 
-      // Grillas mayor
-      ctx.strokeStyle='rgba(120,120,120,0.85)'; ctx.lineWidth=1;
+      // Grillas
+      ctx.strokeStyle='var(--grid-major)'; ctx.lineWidth=1;
       [0.1,1,10,100].forEach(xv=>{ const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); });
       [0.01,0.1,1,10,100].forEach(yv=>{ const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+plotW,y); ctx.stroke(); });
-
-      // Grillas menor tenue
-      if (showMinors){
-        ctx.strokeStyle='rgba(200,200,200,0.55)';
-        for(let d=-1; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const xv=base*m; if(xv<XMIN||xv>XMAX) continue; const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); } }
-        for(let d=-2; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const yv=base*m; if(yv<YMIN||yv>YMAX) continue; const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+plotW,y); ctx.stroke(); } }
-      }
+      ctx.strokeStyle='var(--grid-minor)';
+      for(let d=-1; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const xv=base*m; if(xv<XMIN||xv>XMAX) continue; const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); } }
+      for(let d=-2; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const yv=base*m; if(yv<YMIN||yv>YMAX) continue; const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+plotW,y); ctx.stroke(); } }
 
       // Ejes
       ctx.strokeStyle='#888'; ctx.lineWidth=1.5; ctx.beginPath();
@@ -781,7 +853,7 @@
       ctx.font='13px system-ui'; ctx.textAlign='center'; ctx.fillText('TIEMPO (h)', L+plotW/2, H-26);
       ctx.textAlign='left';
 
-      // Cuadro de texto (meta del ensayo, muestra Fecha y Turno)
+      // Cuadro meta (Fecha/Turno/Labor/Nivel/Robot)
       const metaLines=[], meta=e?.meta||{};
       if(meta?.fecha) metaLines.push(`Fecha: ${meta.fecha}`);
       if(meta?.turno) metaLines.push(`Turno: ${meta.turno}`);
@@ -801,9 +873,9 @@
       let pts=[]; if(e?.penetracion){ pts=e.penetracion.map(r=>({x:r.h_acum,y:r.mpa})); } else if(e?.hilti_mpa){ pts=e.hilti_mpa.map(r=>({x:r.h,y:r.mpa})); }
       pts=pts.filter(p=>isFinite(p.x)&&isFinite(p.y)&&p.y>0).sort((a,b)=>a.x-b.x);
 
-      // Curva del ensayo (azul)
+      // Curva del ensayo (naranja)
       if(pts.length){
-        ctx.strokeStyle='#136BFB'; ctx.lineWidth=3; ctx.fillStyle='#136BFB';
+        ctx.strokeStyle='#ff7a00'; ctx.lineWidth=3; ctx.fillStyle='#ff7a00';
         ctx.beginPath();
         pts.forEach((p,i)=>{ const x=logMap(p.x,XMIN,XMAX,L,L+plotW), y=logMap(p.y,YMIN,YMAX,T+plotH,T); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); });
         ctx.stroke();
@@ -818,7 +890,7 @@
       const J1 = [ {h:0.10,mpa:0.09}, {h:0.20,mpa:0.10}, {h:1.00,mpa:0.20}, {h:6.00,mpa:0.70}, {h:24.00,mpa:2.00} ];
       const J2 = [ {h:0.10,mpa:0.20}, {h:0.20,mpa:0.24}, {h:1.00,mpa:0.50}, {h:6.00,mpa:1.70}, {h:24.00,mpa:5.00} ];
       const J3 = [ {h:0.10,mpa:0.50}, {h:0.20,mpa:0.59}, {h:1.00,mpa:1.50}, {h:6.00,mpa:5.00}, {h:24.00,mpa:15.00} ];
-      const J_COLOR = 'rgba(150,150,150,0.65)';  // plomo tenue
+      const J_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--j-curve').trim() || 'rgba(150,150,150,0.65)';
       const J_WIDTH = 1.5;
 
       const toXY = (h, m) => ({ x: logMap(h,XMIN,XMAX,L,L+plotW), y: logMap(m,YMIN,YMAX,T+plotH,T) });
@@ -841,28 +913,27 @@
 
       function drawSmooth(anchors, color, width, label){
         if(!anchors || anchors.length<2) return;
-        const pts=anchors.map(a=>toXY(a.h,a.mpa));
+        const ptsA=anchors.map(a=>toXY(a.h,a.mpa));
         // Pendientes estilo Catmull-Rom
-        const m=new Array(pts.length).fill(0);
-        for(let k=0;k<pts.length;k++){
-          if(k===0){ const dx=(pts[1].x-pts[0].x)||1e-6; m[k]=(pts[1].y-pts[0].y)/dx; }
-          else if(k===pts.length-1){ const dx=(pts[k].x-pts[k-1].x)||1e-6; m[k]=(pts[k].y-pts[k-1].y)/dx; }
-          else{ const dx=(pts[k+1].x-pts[k-1].x)||1e-6; m[k]=(pts[k+1].y-pts[k-1].y)/dx; }
+        const m=new Array(ptsA.length).fill(0);
+        for(let k=0;k<ptsA.length;k++){
+          if(k===0){ const dx=(ptsA[1].x-ptsA[0].x)||1e-6; m[k]=(ptsA[1].y-ptsA[0].y)/dx; }
+          else if(k===ptsA.length-1){ const dx=(ptsA[k].x-ptsA[k-1].x)||1e-6; m[k]=(ptsA[k].y-ptsA[k-1].y)/dx; }
+          else{ const dx=(ptsA[k+1].x-ptsA[k-1].x)||1e-6; m[k]=(ptsA[k+1].y-ptsA[k-1].y)/dx; }
         }
         ctx.strokeStyle=color; ctx.lineWidth=width;
-        ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
-        for(let k=0;k<pts.length-1;k++){
-          const p0=pts[k], p1=pts[k+1], dx=p1.x-p0.x;
+        ctx.beginPath(); ctx.moveTo(ptsA[0].x, ptsA[0].y);
+        for(let k=0;k<ptsA.length-1;k++){
+          const p0=ptsA[k], p1=ptsA[k+1], dx=p1.x-p0.x;
           const c1={x:p0.x+dx/3, y:p0.y+m[k]*dx/3};
           const c2={x:p1.x-dx/3, y:p1.y-m[k+1]*dx/3};
           ctx.bezierCurveTo(c1.x,c1.y,c2.x,c2.y,p1.x,p1.y);
         }
         ctx.stroke();
-        const last=pts[pts.length-1];
+        const last=ptsA[ptsA.length-1];
         ctx.font='12px system-ui'; ctx.fillStyle=color;
         ctx.fillText(label, last.x+6, last.y-6);
 
-        // Caja A/B/C tenue (dentro del plot)
         const labChar = (label==='J 1')?'A':(label==='J 2')?'B':'C';
         drawLabelBox(Math.min(last.x+30, L+plotW-28), Math.max(last.y-10, T+18), labChar);
       }
@@ -872,7 +943,6 @@
       drawSmooth(J3, J_COLOR, J_WIDTH, 'J 3');
     }
 
-    // Redibuja ensayos al cambiar filtros (Fecha/Labor)
     document.getElementById('ensFecha')?.addEventListener('input', renderEnsayoChart);
     document.getElementById('ensLabor')?.addEventListener('input', renderEnsayoChart);
 
@@ -1037,11 +1107,31 @@
     }
     renderEnsRes();
 
-    /* ===== Inicialización y Responsivo ===== */
+    /* ===== Inicializar Dashboard ===== */
     function renderDashboard(){
       renderProduccionChart?.();
       renderEnsayoChart?.();
     }
+
+    /* ===== Loader control (ocultar al terminar primer render) ===== */
+    (function(){
+      const loader = document.getElementById('appLoader');
+      if (!loader) return;
+      const safetyHide = setTimeout(hideLoader, 6000);
+      const origRenderDashboard = window.renderDashboard;
+      window.renderDashboard = function(){
+        try { origRenderDashboard?.(); }
+        finally { hideLoader(); }
+      };
+      window.addEventListener('load', hideLoader);
+      function hideLoader(){
+        clearTimeout(safetyHide);
+        loader.classList.add('hidden');
+        setTimeout(()=>{ loader.style.display='none'; }, 400);
+      }
+    })();
+
+    /* Redibujar al cambiar tamaño si Dashboard está activo */
     window.addEventListener('resize', ()=>{ if(document.querySelector('#tab-dashboard').classList.contains('active')) renderDashboard(); });
     window.addEventListener('load', renderDashboard);
   </script>
