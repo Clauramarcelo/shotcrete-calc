@@ -65,6 +65,9 @@
 
     .hidden{display:none !important}
     .muted{color:var(--muted);font-size:.95rem}
+
+    /* Responsivo para los canvas */
+    canvas.responsive { width: 100%; height: auto; display: block; }
   </style>
 </head>
 <body>
@@ -214,34 +217,48 @@
       <!-- Producción -->
       <fieldset>
         <legend>Producción (Labor vs m³)</legend>
+
+        <!-- Filtros: Fecha y Turno -->
+        <div class="row2" style="margin-bottom:.6rem">
+          <div>
+            <label for="prodFecha">Fecha</label>
+            <input id="prodFecha" type="date" />
+          </div>
+          <div>
+            <label for="prodTurno">Turno</label>
+            <select id="prodTurno">
+              <option value="">(Todos)</option>
+              <option value="Día">Día</option>
+              <option value="Noche">Noche</option>
+            </select>
+          </div>
+        </div>
+
         <div class="actions">
           <button class="btn primary" id="btnRenderProduccion" type="button">Actualizar gráfico</button>
         </div>
-        <canvas id="chartProduccion" width="900" height="360"
-                style="max-width:100%; background:var(--card); border:1px solid var(--border); border-radius:.6rem;"></canvas>
-        <p class="muted" style="margin-top:.5rem">Suma de m³ por <strong>Labor</strong>.</p>
+
+        <canvas id="chartProduccion" class="responsive"></canvas>
+        <p class="muted" style="margin-top:.5rem">Suma de m³ por <strong>Labor</strong> (filtrable por Fecha y Turno).</p>
       </fieldset>
 
       <!-- Ensayos -->
       <fieldset>
         <legend>Ensayos — Resistencia (MPa) vs Tiempo (h)</legend>
-        <div class="row2" style="align-items:end;">
+
+        <!-- Filtros: Fecha y Labor (sin botón dibujar, ni dropdown de ensayo) -->
+        <div class="row2" style="margin-bottom:.6rem">
           <div>
-            <label for="ensayoSelect">Selecciona un ensayo</label>
-            <select id="ensayoSelect"></select>
-            <p class="muted" id="ensayoMeta" style="margin:.35rem 0 0;"></p>
+            <label for="ensFecha">Fecha</label>
+            <input id="ensFecha" type="date" />
           </div>
-          <div class="actions" style="justify-content:flex-end;">
-            <button class="btn primary" id="btnRenderEnsayo" type="button">Dibujar curva</button>
-            <label style="display:flex; align-items:center; gap:.35rem; margin-left:.5rem;">
-              <input type="checkbox" id="chkGuias" checked>
-              <span>Mostrar grillas menores</span>
-            </label>
+          <div>
+            <label for="ensLabor">Labor</label>
+            <input id="ensLabor" type="text" placeholder="Ej. 1300 N1 A"/>
           </div>
         </div>
 
-        <canvas id="chartEnsayo" width="900" height="420"
-                style="max-width:100%; background:#fff; border:1px solid var(--border); border-radius:.6rem; margin-top:.6rem;"></canvas>
+        <canvas id="chartEnsayo" class="responsive"></canvas>
 
         <!-- Panel: Curvas J (texto) -->
         <div id="panelCurvasJ" style="
@@ -266,10 +283,17 @@
           <div><label for="eNivel">Nivel</label><input id="eNivel" type="text"></div>
           <div><label for="eRobot">Robot</label><input id="eRobot" type="text"></div>
         </div>
-        <!-- Fecha del ensayo -->
+        <!-- Fecha y Turno del ensayo -->
         <div class="row2" style="margin-top:.6rem">
           <div><label for="eFecha">Fecha</label><input id="eFecha" type="date"></div>
-          <div class="muted" style="display:flex; align-items:end">Se mostrará en el gráfico del Dashboard.</div>
+          <div>
+            <label for="eTurno">Turno</label>
+            <select id="eTurno">
+              <option value="" selected disabled>Selecciona…</option>
+              <option value="Día">Día</option>
+              <option value="Noche">Noche</option>
+            </select>
+          </div>
         </div>
         <p class="muted" style="margin-top:.35rem">Temperatura y Slump se registran en <strong>Registros</strong>.</p>
       </fieldset>
@@ -387,7 +411,7 @@
     </section>
   </main>
 
-  <!-- Tab bar (onclick + switchTab) -->
+  <!-- Tab bar -->
   <nav class="tabbar" role="tablist" aria-label="Navegación">
     <button type="button" id="btn-calculo"   class="active" role="tab" aria-controls="tab-calculo"   aria-selected="true"
             onclick="switchTab('tab-calculo', this)">Calculo m3</button>
@@ -536,7 +560,8 @@
       tbl3Body.innerHTML='';
       regs.forEach((r,i)=>{
         const tr=document.createElement('tr');
-        const m3txt=(r.m3==null)?'—':fmt1(r.m3), constxt=(r.C??'—'), sactxt=(r.Sac??'—'), ahltxt=(r.A??'—')+'/'+(r.H??'—')+'/'+(r.L??'—');
+        const m3txt=(r.m3==null)?'—':fmt1(r.m3), constxt=(r.C??'—'), sactxt=(r.Sac??'—'),
+              ahltxt=(r.A??'—')+'/'+(r.H??'—')+'/'+(r.L??'—');
         tr.innerHTML=`
           <td>${i+1}</td><td>${r.fecha}</td><td>${r.nivel}</td><td>${r.labor}</td><td>${r.robot}</td>
           <td>${r.presion}</td><td>${r.uso??'—'}</td><td>${r.turno??'—'}</td><td>${r.obs||''}</td>
@@ -575,10 +600,22 @@
       }
     });
 
-    /* ===== Pestaña 4: Dashboard (Producción) ===== */
-    function aggregateM3PorLabor(){
+    /* ===== Dashboard Responsivo ===== */
+    function sizeCanvasToParent(canvas, aspect){
+      const parent = canvas.parentElement || document.body;
+      const cssW = Math.max(300, Math.min(parent.clientWidth - 2, 960));
+      const cssH = Math.round(cssW / aspect);
+      canvas.width = cssW; canvas.height = cssH;
+      return { W: cssW, H: cssH, ctx: canvas.getContext('2d') };
+    }
+
+    /* ===== Producción (Labor vs m³) ===== */
+    function aggregateM3PorLabor(filters){
+      const {fecha, turno} = (filters||{});
       const regs=getRegs(); const mapa=new Map();
       for(const r of regs){
+        if (fecha && r.fecha !== fecha) continue;
+        if (turno && r.turno !== turno) continue;
         const labor=(r.labor??'').trim(); const m3=(r.m3==null?0:Number(r.m3));
         if(!labor) continue;
         mapa.set(labor,(mapa.get(labor)??0)+(isFinite(m3)?m3:0));
@@ -586,22 +623,56 @@
       return [...mapa.entries()].map(([label,value])=>({label, value:Number(value.toFixed(1))}))
                                .sort((a,b)=>b.value-a.value);
     }
+
+    function drawInfoBox(ctx, L, T, plotW, title, lines){
+      ctx.font='12px system-ui';
+      const padX=10,padY=8,lineH=16;
+      const textW=Math.max(ctx.measureText(title).width, ...lines.map(s=>ctx.measureText(s).width));
+      const boxW=textW+padX*2, boxH=lineH*(lines.length+1)+padY*2;
+      const boxX=L+plotW-boxW-8, boxY=T+8;
+
+      ctx.fillStyle='rgba(255,255,255,0.90)';
+      ctx.strokeStyle='rgba(120,120,120,0.85)'; ctx.lineWidth=1;
+      const r=8; ctx.beginPath();
+      ctx.moveTo(boxX+r,boxY);
+      ctx.lineTo(boxX+boxW-r,boxY); ctx.quadraticCurveTo(boxX+boxW,boxY,boxX+boxW,boxY+r);
+      ctx.lineTo(boxX+boxW,boxY+boxH-r); ctx.quadraticCurveTo(boxX+boxW,boxY+boxH,boxX+boxW-r,boxY+boxH);
+      ctx.lineTo(boxX+r,boxY+boxH); ctx.quadraticCurveTo(boxX,boxY+boxH,boxX,boxY+boxH-r);
+      ctx.lineTo(boxX,boxY+r); ctx.quadraticCurveTo(boxX,boxY,boxX+r,boxY); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+
+      ctx.fillStyle='#111'; ctx.font='bold 12px system-ui';
+      ctx.fillText(title, boxX+padX, boxY+padY+lineH-4);
+      ctx.font='12px system-ui';
+      lines.forEach((s,i)=>ctx.fillText(s, boxX+padX, boxY+padY+lineH*(i+2)-4));
+    }
+
     function renderProduccionChart(){
-      const data=aggregateM3PorLabor();
-      const canvas=document.getElementById('chartProduccion');
-      if(!canvas) return;
-      const ctx=canvas.getContext('2d');
-      ctx.clearRect(0,0,canvas.width,canvas.height);
+      const canvas=document.getElementById('chartProduccion'); if(!canvas) return;
+      const {W,H,ctx} = sizeCanvasToParent(canvas, 2.5);
+      ctx.clearRect(0,0,W,H);
+
+      const L=70,R=20,T=50,B=60;
+      const plotW=W-L-R, plotH=H-T-B;
+
+      const fechaSel = document.getElementById('prodFecha')?.value || '';
+      const turnoSel = document.getElementById('prodTurno')?.value || '';
+
+      const data=aggregateM3PorLabor({fecha:fechaSel, turno:turnoSel});
+
+      ctx.fillStyle='#111'; ctx.font='bold 16px system-ui'; ctx.textAlign='center';
+      ctx.fillText('Producción (Labor vs m³)', L+plotW/2, T-22);
+      ctx.textAlign='left';
+
       if(!data.length){
         ctx.fillStyle='#666'; ctx.font='16px system-ui';
-        ctx.fillText('Sin datos para graficar — registra actividad en la pestaña 2.', 20, 40);
+        ctx.fillText('Sin datos para graficar (ajusta Fecha/Turno o registra actividad).', L+20, T+40);
+        drawInfoBox(ctx, L, T, plotW, 'Filtro producción', [
+          `Fecha: ${fechaSel || '—'}`,
+          `Turno: ${turnoSel || 'Todos'}`
+        ]);
         return;
       }
-      ctx.fillStyle='#111'; ctx.font='bold 18px system-ui';
-      ctx.fillText('Producción (Labor vs m³)', 20, 30);
-
-      const L=70,R=20,T=50,B=60,W=canvas.width,H=canvas.height;
-      const plotW=W-L-R, plotH=H-T-B;
 
       ctx.strokeStyle='#888'; ctx.lineWidth=1; ctx.beginPath();
       ctx.moveTo(L,H-B); ctx.lineTo(W-R,H-B);
@@ -609,12 +680,13 @@
       ctx.stroke();
 
       const maxVal=Math.max(...data.map(d=>d.value),1);
-      const niceMax=Math.ceil(maxVal/10)*10, ticks=5;
+      const niceMax=Math.ceil(maxVal/10)*10 || 1; const ticks=5;
+
       ctx.fillStyle='#333'; ctx.font='12px system-ui';
       for(let i=0;i<=ticks;i++){
         const val=(niceMax/ticks)*i;
         const y=H-B-(val/niceMax)*plotH;
-        ctx.strokeStyle= i===0 ? '#888' : '#eee';
+        ctx.strokeStyle= i===0 ? 'rgba(120,120,120,0.85)' : 'rgba(200,200,200,0.55)';
         ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(W-R,y); ctx.stroke();
         ctx.fillStyle='#333'; ctx.fillText(val.toFixed(0), L-40, y+4);
       }
@@ -636,48 +708,61 @@
       ctx.fillStyle='#333'; ctx.font='13px system-ui';
       ctx.fillText('m³', L-50, T-10); ctx.textAlign='center';
       ctx.fillText('Labor', L+plotW/2, H-20);
+      ctx.textAlign='left';
+
+      drawInfoBox(ctx, L, T, plotW, 'Filtro producción', [
+        `Fecha: ${fechaSel || '—'}`,
+        `Turno: ${turnoSel || 'Todos'}`
+      ]);
     }
+
     document.getElementById('btnRenderProduccion')?.addEventListener('click', renderProduccionChart);
 
-    /* ===== Ensayos: almacenamiento ===== */
+    /* ===== Ensayo log‑log (filtrar por Fecha y Labor, sin botón) ===== */
+    const logMap = (v, vmin, vmax, p0, p1) => {
+      const lv=Math.log10(Math.max(v,1e-12)), lmin=Math.log10(vmin), lmax=Math.log10(vmax);
+      return p0 + (lv-lmin)*(p1-p0)/(lmax-lmin);
+    };
+
     function getEnsayos(){ try{ return JSON.parse(localStorage.getItem(LS_ENSAYOS)) ?? []; }catch{ return []; } }
     function setEnsayos(arr){ localStorage.setItem(LS_ENSAYOS, JSON.stringify(arr)); }
 
-    function populateEnsayoSelect(){
-      const sel=document.getElementById('ensayoSelect'); const meta=document.getElementById('ensayoMeta'); if(!sel) return;
-      const ens=getEnsayos(); sel.innerHTML='';
-      if(!ens.length){ sel.innerHTML='<option value="" disabled selected>Sin ensayos</option>'; meta.textContent=''; return; }
-      ens.forEach((e,i)=>{ const opt=document.createElement('option'); opt.value=String(i); opt.textContent=`${e.meta?.labor||'—'} | ${e.meta?.nivel||'—'} | ${e.meta?.robot||'—'}`; sel.appendChild(opt); });
-      sel.value='0'; meta.textContent='';
-    }
-
-    /* ===== Pestaña 4: Ensayo log‑log (con J1/J2/J3 suavizadas) ===== */
-    const logMap = (v, vmin, vmax, p0, p1) => { const lv=Math.log10(Math.max(v,1e-12)), lmin=Math.log10(vmin), lmax=Math.log10(vmax); return p0 + (lv-lmin)*(p1-p0)/(lmax-lmin); };
-
     function renderEnsayoChart(){
       const canvas=document.getElementById('chartEnsayo'); if(!canvas) return;
-      const sel=document.getElementById('ensayoSelect'); const ens=getEnsayos(); const i=Number(sel?.value||'-1'); const e=ens[i];
-      const ctx=canvas.getContext('2d'); const W=canvas.width,H=canvas.height; ctx.clearRect(0,0,W,H);
+      const {W,H,ctx} = sizeCanvasToParent(canvas, 2.14);
+      ctx.clearRect(0,0,W,H);
 
-      // Márgenes y rango
       const L=80, R=24, T=68, B=74;
       const plotW=W-L-R, plotH=H-T-B;
       const XMIN=0.1, XMAX=100, YMIN=0.01, YMAX=100;
-      const showMinors=document.getElementById('chkGuias')?.checked ?? true;
+      const showMinors=true; // mantener grillas menores
 
-      // ===== Título centrado =====
+      const ensayos=getEnsayos();
+      const fFecha = document.getElementById('ensFecha')?.value || '';
+      const fLabor = (document.getElementById('ensLabor')?.value || '').trim().toLowerCase();
+
+      // Seleccionar ensayo por Fecha + Labor
+      const e = ensayos.find(en=>{
+        const okFecha = fFecha ? (en.meta?.fecha === fFecha) : true;
+        const okLabor = fLabor ? ((en.meta?.labor||'').trim().toLowerCase() === fLabor) : true;
+        return okFecha && okLabor;
+      });
+
+      // Título centrado
       ctx.font='bold 16px system-ui'; ctx.fillStyle='#111'; ctx.textAlign='center';
       ctx.fillText('EVOLUCIÓN DE RESISTENCIAS INICIALES Y TEMPRANAS', L+plotW/2, T-28);
       ctx.font='12px system-ui'; ctx.fillStyle='#333';
       ctx.fillText('MPa vs Tiempo (h) — ejes logarítmicos', L+plotW/2, T-12);
       ctx.textAlign='left';
 
-      // Grillas (mayor/menor)
-      ctx.strokeStyle='#ddd'; ctx.lineWidth=1;
+      // Grillas mayor
+      ctx.strokeStyle='rgba(120,120,120,0.85)'; ctx.lineWidth=1;
       [0.1,1,10,100].forEach(xv=>{ const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); });
       [0.01,0.1,1,10,100].forEach(yv=>{ const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+plotW,y); ctx.stroke(); });
+
+      // Grillas menor tenue
       if (showMinors){
-        ctx.strokeStyle='#eee';
+        ctx.strokeStyle='rgba(200,200,200,0.55)';
         for(let d=-1; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const xv=base*m; if(xv<XMIN||xv>XMAX) continue; const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); } }
         for(let d=-2; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const yv=base*m; if(yv<YMIN||yv>YMAX) continue; const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+plotW,y); ctx.stroke(); } }
       }
@@ -688,7 +773,7 @@
       ctx.moveTo(L,T+plotH); ctx.lineTo(L,T);
       ctx.stroke();
 
-      // Etiquetas de ejes
+      // Etiquetas ejes
       ctx.fillStyle='#111'; ctx.font='12px system-ui';
       [0.1,1,10,100].forEach(xv=>{ const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.fillText(String(xv), x-10, T+plotH+20); });
       [0.01,0.1,1,10,100].forEach(yv=>{ const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.fillText(String(yv), L-50, y+4); });
@@ -696,31 +781,20 @@
       ctx.font='13px system-ui'; ctx.textAlign='center'; ctx.fillText('TIEMPO (h)', L+plotW/2, H-26);
       ctx.textAlign='left';
 
-      // Cuadro de texto (meta) arriba‑derecha
+      // Cuadro de texto (meta del ensayo, muestra Fecha y Turno)
       const metaLines=[], meta=e?.meta||{};
       if(meta?.fecha) metaLines.push(`Fecha: ${meta.fecha}`);
+      if(meta?.turno) metaLines.push(`Turno: ${meta.turno}`);
       if(meta?.labor) metaLines.push(`Labor: ${meta.labor}`);
       if(meta?.nivel) metaLines.push(`Nivel: ${meta.nivel}`);
       if(meta?.robot) metaLines.push(`Robot: ${meta.robot}`);
       if(metaLines.length){
-        ctx.font='12px system-ui';
-        const padX=10,padY=8,lineH=16;
-        const textW=Math.max(...metaLines.map(s=>ctx.measureText(s).width));
-        const boxW=textW+padX*2, boxH=lineH*metaLines.length+padY*2;
-        const boxX=L+plotW-boxW-8, boxY=T+8;
-        // Fondo y borde
-        ctx.fillStyle='rgba(255,255,255,0.90)';
-        ctx.strokeStyle='#888'; ctx.lineWidth=1; ctx.beginPath();
-        const r=8;
-        ctx.moveTo(boxX+r,boxY);
-        ctx.lineTo(boxX+boxW-r,boxY); ctx.quadraticCurveTo(boxX+boxW,boxY,boxX+boxW,boxY+r);
-        ctx.lineTo(boxX+boxW,boxY+boxH-r); ctx.quadraticCurveTo(boxX+boxW,boxY+boxH,boxX+boxW-r,boxY+boxH);
-        ctx.lineTo(boxX+r,boxY+boxH); ctx.quadraticCurveTo(boxX,boxY+boxH,boxX,boxY+boxH-r);
-        ctx.lineTo(boxX,boxY+r); ctx.quadraticCurveTo(boxX,boxY,boxX+r,boxY); ctx.closePath();
-        ctx.fill(); ctx.stroke();
-        // Texto
-        ctx.fillStyle='#111';
-        metaLines.forEach((s,i)=>{ ctx.fillText(s, boxX+padX, boxY+padY+(i+1)*lineH-4); });
+        drawInfoBox(ctx, L, T, plotW, 'Ensayo seleccionado', metaLines);
+      } else {
+        drawInfoBox(ctx, L, T, plotW, 'Filtro ensayo', [
+          `Fecha: ${fFecha || '—'}`,
+          `Labor: ${fLabor || '—'}`
+        ]);
       }
 
       // Datos del ensayo
@@ -737,15 +811,33 @@
         pts.forEach(p=>{ const x=logMap(p.x,XMIN,XMAX,L,L+plotW), y=logMap(p.y,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.arc(x,y,3.5,0,Math.PI*2); ctx.fill(); ctx.fillText(p.y.toFixed(2), x+6, y-6); });
       } else {
         ctx.fillStyle='#666'; ctx.font='16px system-ui';
-        ctx.fillText('Sin puntos > 0. Guarda un ensayo.', L+20, T+40);
+        ctx.fillText('Sin puntos > 0. Ajusta Fecha/Labor o guarda un ensayo.', L+20, T+40);
       }
 
-      // Curvas J (anclas exactas + Bezier suavizado)
+      // Curvas J (anclas exactas + Bezier) — gris tenue y delgadas
       const J1 = [ {h:0.10,mpa:0.09}, {h:0.20,mpa:0.10}, {h:1.00,mpa:0.20}, {h:6.00,mpa:0.70}, {h:24.00,mpa:2.00} ];
       const J2 = [ {h:0.10,mpa:0.20}, {h:0.20,mpa:0.24}, {h:1.00,mpa:0.50}, {h:6.00,mpa:1.70}, {h:24.00,mpa:5.00} ];
       const J3 = [ {h:0.10,mpa:0.50}, {h:0.20,mpa:0.59}, {h:1.00,mpa:1.50}, {h:6.00,mpa:5.00}, {h:24.00,mpa:15.00} ];
+      const J_COLOR = 'rgba(150,150,150,0.65)';  // plomo tenue
+      const J_WIDTH = 1.5;
 
       const toXY = (h, m) => ({ x: logMap(h,XMIN,XMAX,L,L+plotW), y: logMap(m,YMIN,YMAX,T+plotH,T) });
+
+      function drawLabelBox(x, y, text){
+        const w=22,h=18,r=6;
+        ctx.fillStyle='rgba(255,255,255,0.92)';
+        ctx.strokeStyle='rgba(120,120,120,0.85)'; ctx.lineWidth=1;
+        ctx.beginPath();
+        ctx.moveTo(x+r,y);
+        ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+        ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+        ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+        ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle='#333'; ctx.font='12px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(text, x+w/2, y+h/2);
+        ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+      }
 
       function drawSmooth(anchors, color, width, label){
         if(!anchors || anchors.length<2) return;
@@ -766,77 +858,39 @@
           ctx.bezierCurveTo(c1.x,c1.y,c2.x,c2.y,p1.x,p1.y);
         }
         ctx.stroke();
-        // Etiqueta Jx al final
         const last=pts[pts.length-1];
         ctx.font='12px system-ui'; ctx.fillStyle=color;
         ctx.fillText(label, last.x+6, last.y-6);
 
-        // Caja A/B/C (si aplica) cerca del último punto
+        // Caja A/B/C tenue (dentro del plot)
         const labChar = (label==='J 1')?'A':(label==='J 2')?'B':'C';
         drawLabelBox(Math.min(last.x+30, L+plotW-28), Math.max(last.y-10, T+18), labChar);
       }
 
-      // Caja de etiqueta (pequeña) con bordes redondeados
-      function drawLabelBox(x, y, text){
-        const w=22,h=18,r=6;
-        ctx.fillStyle='rgba(255,255,255,0.95)';
-        ctx.strokeStyle='#000'; ctx.lineWidth=1;
-        ctx.beginPath();
-        ctx.moveTo(x+r,y);
-        ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-        ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-        ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-        ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle='#000'; ctx.font='12px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle';
-        ctx.fillText(text, x+w/2, y+h/2);
-        ctx.textAlign='left'; ctx.textBaseline='alphabetic';
-      }
-
-      // Dibujar J1/J2/J3
-      drawSmooth(J1, '#222222', 3, 'J 1');
-      drawSmooth(J2, '#000000', 3, 'J 2');
-      drawSmooth(J3, '#111111', 3, 'J 3');
+      drawSmooth(J1, J_COLOR, J_WIDTH, 'J 1');
+      drawSmooth(J2, J_COLOR, J_WIDTH, 'J 2');
+      drawSmooth(J3, J_COLOR, J_WIDTH, 'J 3');
     }
 
-    document.getElementById('btnRenderEnsayo')?.addEventListener('click', renderEnsayoChart);
-    document.getElementById('chkGuias')?.addEventListener('change', renderEnsayoChart);
+    // Redibuja ensayos al cambiar filtros (Fecha/Labor)
+    document.getElementById('ensFecha')?.addEventListener('input', renderEnsayoChart);
+    document.getElementById('ensLabor')?.addEventListener('input', renderEnsayoChart);
 
-    function renderDashboard(){
-      renderProduccionChart?.();
-      populateEnsayoSelect?.();
-      renderEnsayoChart?.();
-    }
-
-    /* ===== Pestaña 5: Ensayos (A — 4 cajetines) ===== */
-    const hhmmToDecHours = (hhmm) => {
-      if (!/^\d{1,2}:\d{2}$/.test(hhmm||'')) return NaN;
-      const [h,m] = hhmm.split(':').map(Number);
-      return h + m/60;
-    };
-    const decHoursToHHMM = (dec) => {
-      let d = dec % 24; if (d < 0) d += 24;
-      const h = Math.floor(d);
-      const m = Math.round((d - h) * 60);
-      const hh = String(h).padStart(2,'0');
-      const mm = String(m).padStart(2,'0');
-      return `${hh}:${mm}`;
-    };
-    const parseForces10 = (txt) => {
-      const arr = (txt||'').split(/[,\s]+/).map(Number).filter(v => isFinite(v));
-      return arr.length === 10 ? arr : null;
-    };
-    const avg = (arr) => arr.reduce((s,v)=>s+v,0)/arr.length;
-
+    /* ===== Ensayos (guardar/mostrar) ===== */
     function metaEns(){
-      const fecha = document.getElementById('eFecha')?.value || '';
       return {
         labor: document.getElementById('eLabor')?.value.trim() || '',
         nivel: document.getElementById('eNivel')?.value.trim() || '',
         robot: document.getElementById('eRobot')?.value.trim() || '',
-        fecha
+        fecha: document.getElementById('eFecha')?.value || '',
+        turno: document.getElementById('eTurno')?.value || ''
       };
     }
+
+    const hhmmToDecHours = (hhmm) => (/^\d{1,2}:\d{2}$/.test(hhmm||'')) ? ((h=Number(hhmm.split(':')[0])), (m=Number(hhmm.split(':')[1])), h + m/60) : NaN;
+    const decHoursToHHMM = (dec) => { let d = dec % 24; if (d < 0) d += 24; const h = Math.floor(d); const m = Math.round((d - h) * 60); return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`; };
+    const parseForces10 = (txt) => { const arr = (txt||'').split(/[,\s]+/).map(Number).filter(v => isFinite(v)); return arr.length === 10 ? arr : null; };
+    const avg = (arr) => arr.reduce((s,v)=>s+v,0)/arr.length;
 
     const pHoraIni = document.getElementById('pHoraIni');
     const pAgregado = document.getElementById('pAgregado');
@@ -911,7 +965,7 @@
       const filas=calcPenetracionA(); if(!filas) return;
       const ens=getEnsayos(); ens.push({ meta:metaEns(), penetracion:filas });
       setEnsayos(ens);
-      renderEnsRes?.(); populateEnsayoSelect?.(); renderEnsayoChart?.();
+      renderEnsRes?.(); renderEnsayoChart?.();
       alert('Ensayo (Penetración A) guardado (15–60 min).');
     });
     document.getElementById('pClearA')?.addEventListener('click', ()=>{
@@ -959,7 +1013,7 @@
 
       const ens = getEnsayos(); ens.push({ meta:metaEns(), hilti:filas, hilti_mpa: mpaByH, hilti_params:{offset:off, divisor:div} });
       setEnsayos(ens); renderEnsRes(); alert('Ensayo (Hilti) guardado.');
-      populateEnsayoSelect(); renderEnsayoChart();
+      renderEnsayoChart();
     });
 
     /* ===== Resumen ensayos ===== */
@@ -977,26 +1031,19 @@
         tblEnsResBody.appendChild(tr);
         tr.querySelector('.del')?.addEventListener('click', ()=>{
           const arr=getEnsayos(); arr.splice(i,1); setEnsayos(arr);
-          renderEnsRes(); populateEnsayoSelect(); renderEnsayoChart();
+          renderEnsRes(); renderEnsayoChart();
         });
       });
     }
     renderEnsRes();
 
-    /* ===== Inicializar Dashboard ===== */
+    /* ===== Inicialización y Responsivo ===== */
     function renderDashboard(){
       renderProduccionChart?.();
-      populateEnsayoSelect?.();
       renderEnsayoChart?.();
     }
-
-    /* ===== Service Worker ===== */
-    (function(){
-      if('serviceWorker' in navigator){
-        const swUrl='/shotcrete-calc/sw.js';
-        window.addEventListener('load',()=>{ navigator.serviceWorker.register(swUrl).catch(()=>{}); });
-      }
-    })();
+    window.addEventListener('resize', ()=>{ if(document.querySelector('#tab-dashboard').classList.contains('active')) renderDashboard(); });
+    window.addEventListener('load', renderDashboard);
   </script>
 </body>
 </html>
