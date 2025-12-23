@@ -1,7 +1,7 @@
 
 // --- Service Worker para GitHub Pages (sub-path /shotcrete-calc/) ---
 const REPO = '/shotcrete-calc';
-const CACHE_NAME = 'sc-v36'; // versión nueva
+const CACHE_NAME = 'sc-v38'; // versión nueva
 
 const ASSETS = [
   `${REPO}/`,
@@ -27,21 +27,18 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
-  // Navegaciones: servir index.html del caché (modo offline)
+  // Navegaciones: network-first con fallback a caché (evita servir index viejo)
   if (req.mode === 'navigate') {
     event.respondWith((async () => {
-      const cache = await caches.open(CACHE_NAME);
-      const cachedIndex = await cache.match(`${REPO}/index.html`);
-      if (cachedIndex) return cachedIndex;
-      try { return await fetch(req); }
-      catch {
-        return new Response(
-          `<!doctype html><meta charset="utf-8"><title>Offline</title>
-           <style>body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;padding:2rem}
-           h1{margin:0 0 .5rem}</style>
-           <h1>Sin conexión</h1><p>Abre la app con Internet al menos una vez.</p>`,
-          { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-        );
+      try {
+        const fresh = await fetch(req);
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(`${REPO}/index.html`, fresh.clone());
+        return fresh;
+      } catch {
+        const cache = await caches.open(CACHE_NAME);
+        return (await cache.match(`${REPO}/index.html`)) ||
+               new Response('<h1>Offline</h1>', { headers:{'Content-Type':'text/html'} });
       }
     })());
     return;
