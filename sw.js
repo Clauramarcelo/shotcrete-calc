@@ -1,7 +1,7 @@
 
 // --- Service Worker para GitHub Pages (sub-path /shotcrete-calc/) ---
 const REPO = '/shotcrete-calc';
-const CACHE_NAME = 'sc-v38'; // versión nueva
+const CACHE_NAME = 'sc-v34'; // versión nueva
 
 const ASSETS = [
   `${REPO}/`,
@@ -27,7 +27,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
-  // Navegaciones: network-first con fallback a caché (evita servir index viejo)
+  // Navegaciones: network-first con fallback a caché
   if (req.mode === 'navigate') {
     event.respondWith((async () => {
       try {
@@ -61,5 +61,4 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
-
 
