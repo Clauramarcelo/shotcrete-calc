@@ -7,7 +7,7 @@
   "scope": "/shotcrete-calc/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#0a84ff",
+  "theme_color": "#ff6a00",
   "icons": [
     {
       "src": "/shotcrete-calc/icon-192.png",
