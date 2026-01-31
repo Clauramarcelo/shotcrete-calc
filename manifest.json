@@ -1,7 +1,7 @@
 {
   "name": "Shotcrete Calc",
   "short_name": "ShotcreteCalc",
-  "description": "Cubicación, registros y ensayos de shotcrete — funciona offline.",
+  "description": "Cubicación, registros y reportes de shotcrete — funciona offline.",
   "start_url": "/shotcrete-calc/",
   "scope": "/shotcrete-calc/",
   "display": "standalone",
@@ -21,3 +21,4 @@
     }
   ]
 }
+``
