@@ -1,6 +1,6 @@
 // --- Service Worker para GitHub Pages (sub-path /shotcrete-calc/) ---
 const REPO = '/shotcrete-calc';
-const CACHE_NAME = 'sc-v57';
+const CACHE_NAME = 'sc-v60';
 
 const ASSETS = [
   `${REPO}/`,
@@ -21,11 +21,8 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    // Borra solo caches de esta app (prefijo sc-) para no afectar otros repos del mismo dominio
     await Promise.all(
-      keys
-        .filter(k => k.startsWith('sc-') && k !== CACHE_NAME)
-        .map(k => caches.delete(k))
+      keys.filter(k => k.startsWith('sc-') && k !== CACHE_NAME).map(k => caches.delete(k))
     );
     await self.clients.claim();
   })());
@@ -34,7 +31,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
-  // Navegaciones: network-first con fallback fuerte a cache (offline)
+  // Navegaciones: network-first con fallback fuerte a caché
   if (req.mode === 'navigate') {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_NAME);
