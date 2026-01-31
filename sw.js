@@ -1,6 +1,6 @@
 // --- Service Worker para GitHub Pages (sub-path /shotcrete-calc/) ---
 const REPO = '/shotcrete-calc';
-const CACHE_NAME = 'sc-v48';
+const CACHE_NAME = 'sc-v49';
 
 const ASSETS = [
   `${REPO}/`,
@@ -30,7 +30,6 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
-  // Navegaciones: network-first con fallback a caché
   if (req.mode === 'navigate') {
     event.respondWith((async () => {
       try {
@@ -41,26 +40,8 @@ self.addEventListener('fetch', (event) => {
       } catch {
         const cache = await caches.open(CACHE_NAME);
         return (await cache.match(`${REPO}/index.html`)) || new Response(
-          `<!doctype html>
-          <html lang="es">
-            <head>
-              <meta charset="utf-8"/>
-              <meta name="viewport" content="width=device-width,initial-scale=1"/>
-              <title>Offline</title>
-              <style>
-                body{font-family:system-ui;margin:0;display:grid;place-items:center;height:100vh;padding:24px}
-                .card{max-width:520px;border:1px solid #ddd;border-radius:14px;padding:18px}
-                h1{margin:0 0 8px}
-                p{margin:0;color:#555}
-              </style>
-            </head>
-            <body>
-              <div class="card">
-                <h1>Sin conexión</h1>
-                <p>La app está offline. Vuelve a intentar cuando tengas internet.</p>
-              </div>
-            </body>
-          </html>`,
+          `<!doctype html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Offline</title></head>
+           <body style="font-family:system-ui;display:grid;place-items:center;height:100vh;margin:0">Sin conexión</body></html>`,
           { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
         );
       }
@@ -68,7 +49,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Recursos: cache-first con fallback a red + cacheo runtime
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;
