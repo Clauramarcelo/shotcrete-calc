@@ -6,13 +6,13 @@
   <title>Shotcrete Calc</title>
 
   <!-- Manifest PWA -->
-  /shotcrete-calc/manifest.json
+  <link rel="manifest" href="/shotcrete-calc/manifest.json" />
   <meta name="theme-color" content="#ff6a00" />
 
   <!-- Apple PWA (opcional) -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  /shotcrete-calc/icon-192.png
+  <link rel="apple-touch-icon" href="/shotcrete-calc/icon-192.png" />
 
   <style>
     :root{
@@ -130,6 +130,13 @@
     thead th{background:#fff3e8}
     @media (prefers-color-scheme: dark){ thead th{background:#24170a;color:#fed8b4} }
 
+    /* Tabla compacta estilo “cuadro” */
+    .mini-table th,.mini-table td{padding:.45rem;font-size:.95rem}
+    .mini-table thead th{background:#fff3e8}
+    @media (prefers-color-scheme: dark){
+      .mini-table thead th{background:#24170a;color:#fed8b4}
+    }
+
     /* Tabbar (3 pestañas) */
     .tabbar{
       position:fixed;left:0;right:0;bottom:0;z-index:9999;
@@ -148,10 +155,8 @@
 
     section.tab{display:none}
     section.tab.active{display:block}
-
     .hidden{display:none !important}
 
-    /* Checks sumables */
     .checkline{
       display:inline-flex; align-items:center; gap:.45rem;
       user-select:none;
@@ -163,7 +168,6 @@
     @media (prefers-color-scheme: dark){ .checkline{background:rgba(0,0,0,0.18)} }
     .checkline input{width:auto;margin:0;transform:scale(1.05)}
 
-    /* Panel base */
     .pane{
       margin-top:.75rem;
       padding:.75rem;
@@ -173,7 +177,6 @@
     }
     .pane-title{font-weight:800;margin:.1rem 0 .4rem}
 
-    /* Plomos distintos por apartado */
     .pane.pane-avance{
       background: var(--plomo-avance-bg);
       border-color: var(--plomo-avance-br);
@@ -190,7 +193,6 @@
       box-shadow: inset 3px 0 0 var(--accent-soft);
     }
 
-    /* Subpanel para cada banda */
     .subpane{
       border:1px solid var(--border);
       border-radius:.7rem;
@@ -258,7 +260,8 @@
 
   <div id="appLoader" aria-hidden="true">
     <div class="loader-card">
-      https://raw.githubusercontent.com/Clauramarcelo/shotcrete-calc/main/Mixer.jpg
+      <img class="loader-icon" alt="Shotcrete icon"
+        src="https://raw.githubusercontent.com/Clauramarcelo/shotcrete-calc/main/Mixer.jpg" />
       <div class="loader-spinner" aria-label="Cargando"></div>
       <div class="loader-text">Cargando…</div>
     </div>
@@ -271,20 +274,9 @@
         <legend>Calculo m3</legend>
 
         <div class="actions" style="margin-bottom:.35rem">
-          <label class="checkline">
-            <input id="chkAvance" type="checkbox" />
-            Avance + Frente de sacrificio
-          </label>
-
-          <label class="checkline">
-            <input id="chkBandas" type="checkbox" />
-            Calc. Bandas
-          </label>
-
-          <label class="checkline">
-            <input id="chkResane" type="checkbox" />
-            Calc. Resanes
-          </label>
+          <label class="checkline"><input id="chkAvance" type="checkbox" />Avance + Frente de sacrificio</label>
+          <label class="checkline"><input id="chkBandas" type="checkbox" />Calc. Bandas</label>
+          <label class="checkline"><input id="chkResane" type="checkbox" />Calc. Resanes</label>
         </div>
 
         <div id="paneAvance" class="pane pane-avance hidden">
@@ -295,14 +287,8 @@
             <div><label for="aL">Longitud (L) — m</label><input id="aL" type="text" inputmode="decimal"></div>
           </div>
           <div class="row2" style="margin-top:.6rem">
-            <div>
-              <label for="aSac">Frente de sacrificio — m³</label>
-              <input id="aSac" type="text" inputmode="decimal" readonly>
-            </div>
-            <div>
-              <label for="aConst">Constante</label>
-              <input id="aConst" type="text" inputmode="decimal" value="11.5">
-            </div>
+            <div><label for="aSac">Frente de sacrificio — m³</label><input id="aSac" type="text" inputmode="decimal" readonly></div>
+            <div><label for="aConst">Constante</label><input id="aConst" type="text" inputmode="decimal" value="11.5"></div>
           </div>
         </div>
 
@@ -351,31 +337,20 @@
         </div>
 
         <div id="qOut" class="result" aria-live="polite">
-          <h2>—</h2>
-          <small id="qMode"></small>
+          <h2>—</h2><small id="qMode"></small>
         </div>
       </fieldset>
     </section>
 
-    <!-- ===== 2) REGISTROS (NUEVO: mismo esquema que Calculo m3 + datos Fecha/Labor/Nivel/Ejecutor) ===== -->
+    <!-- ===== 2) REGISTROS ===== -->
     <section id="tab-registros" class="tab" aria-labelledby="btn-registros">
       <fieldset>
         <legend>Registros</legend>
 
-        <!-- Datos de entrada solicitados -->
         <div class="row4">
-          <div>
-            <label for="regFecha">Fecha</label>
-            <input id="regFecha" type="date" />
-          </div>
-          <div>
-            <label for="regLabor">Labor</label>
-            <input id="regLabor" type="text" />
-          </div>
-          <div>
-            <label for="regNivel">Nivel</label>
-            <input id="regNivel" type="text" />
-          </div>
+          <div><label for="regFecha">Fecha</label><input id="regFecha" type="date" /></div>
+          <div><label for="regLabor">Labor</label><input id="regLabor" type="text" /></div>
+          <div><label for="regNivel">Nivel</label><input id="regNivel" type="text" /></div>
           <div>
             <label for="regEjecutor">Ejecutor</label>
             <select id="regEjecutor">
@@ -386,25 +361,12 @@
           </div>
         </div>
 
-        <!-- Checkboxes sumables (igual que Calculo m3) -->
         <div class="actions" style="margin-top:.8rem">
-          <label class="checkline">
-            <input id="rChkAvance" type="checkbox" />
-            Avance + Frente de sacrificio
-          </label>
-
-          <label class="checkline">
-            <input id="rChkBandas" type="checkbox" />
-            Calc. Bandas
-          </label>
-
-          <label class="checkline">
-            <input id="rChkResane" type="checkbox" />
-            Calc. Resanes
-          </label>
+          <label class="checkline"><input id="rChkAvance" type="checkbox" />Avance + Frente de sacrificio</label>
+          <label class="checkline"><input id="rChkBandas" type="checkbox" />Calc. Bandas</label>
+          <label class="checkline"><input id="rChkResane" type="checkbox" />Calc. Resanes</label>
         </div>
 
-        <!-- Avance + Frente -->
         <div id="rPaneAvance" class="pane pane-avance hidden">
           <div class="pane-title">Avance + Frente de sacrificio</div>
           <div class="row3">
@@ -413,18 +375,11 @@
             <div><label for="rAL">Longitud (L) — m</label><input id="rAL" type="text" inputmode="decimal"></div>
           </div>
           <div class="row2" style="margin-top:.6rem">
-            <div>
-              <label for="rASac">Frente de sacrificio — m³</label>
-              <input id="rASac" type="text" inputmode="decimal" readonly>
-            </div>
-            <div>
-              <label for="rAConst">Constante</label>
-              <input id="rAConst" type="text" inputmode="decimal" value="11.5">
-            </div>
+            <div><label for="rASac">Frente de sacrificio — m³</label><input id="rASac" type="text" inputmode="decimal" readonly></div>
+            <div><label for="rAConst">Constante</label><input id="rAConst" type="text" inputmode="decimal" value="11.5"></div>
           </div>
         </div>
 
-        <!-- Bandas 1..3 -->
         <div id="rPaneBandas" class="pane pane-bandas hidden">
           <div class="pane-title">Calc. Bandas</div>
 
@@ -456,7 +411,6 @@
           </div>
         </div>
 
-        <!-- Resanes -->
         <div id="rPaneResane" class="pane pane-resanes hidden">
           <div class="pane-title">Calc. Resanes</div>
           <div class="row2">
@@ -468,12 +422,42 @@
         <div class="actions">
           <button class="btn primary" id="rCalcularTotal" type="button">Calcular total</button>
           <button class="btn secondary" id="rGuardarRegistro" type="button">Registrar</button>
+          <button class="btn ghost" id="rExportPDF" type="button">Exportar PDF</button>
         </div>
 
         <div id="rOut" class="result" aria-live="polite">
           <h2>—</h2>
           <small id="rOutDetail"></small>
         </div>
+
+        <!-- ✅ CUADRO (como tu imagen) -->
+        <fieldset style="margin-top:1rem">
+          <legend>Cuadro de registro</legend>
+          <table class="mini-table" id="regCuadro">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Labor / Nivel</th>
+                <th>Ejecutor</th>
+                <th>m3(Total)</th>
+                <th>Avance + frente</th>
+                <th>Bandas</th>
+                <th>Resanes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td id="cFecha">—</td>
+                <td id="cLaborNivel">—</td>
+                <td id="cEjecutor">—</td>
+                <td id="cTotal">—</td>
+                <td id="cAvance">—</td>
+                <td id="cBandas">—</td>
+                <td id="cResanes">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </fieldset>
       </fieldset>
     </section>
 
@@ -488,16 +472,16 @@
           <button class="btn secondary" id="tbl3BorrarTodo" type="button">Borrar todo</button>
         </div>
 
-        <table id="tbl3">
+        <table id="tbl3" class="mini-table">
           <thead>
             <tr>
               <th>#</th>
               <th>Fecha</th>
-              <th>Nivel</th>
               <th>Labor</th>
+              <th>Nivel</th>
               <th>Ejecutor</th>
-              <th>m³ Total</th>
-              <th>Avance+Frente</th>
+              <th>m3(Total)</th>
+              <th>Avance + frente</th>
               <th>Bandas</th>
               <th>Resanes</th>
               <th>Acciones</th>
@@ -535,7 +519,7 @@
     const todayStr = () => new Date().toISOString().slice(0,10);
     function isFilled(v){ return String(v ?? '').trim() !== ''; }
 
-    /* ==================== Navegación Tabs ==================== */
+    /* ==================== Tabs ==================== */
     function switchTab(targetId, btnEl){
       document.querySelectorAll('.tabbar button').forEach(b=>{
         const active = (b === btnEl);
@@ -549,32 +533,29 @@
     }
 
     /* ==================== Fórmulas ==================== */
-    // Frente: ((A*(H-2))*0.9)/14
     function calcFrente(A, H){
       const hEff = Math.max(0, H - 2);
       return (A * hEff * 0.9) / 14;
     }
-    // Avance base: (((H*2)+A)*0.9*L)/C
     function calcAvanceBase(A, H, L, C){
       const pp = (H * 2) + A;
       const pa = pp * 0.9;
       const al = pa * L;
       return al / C;
     }
-    // Bandas: ((((H*2)+A)*0.9)*L)/11.5
     function calcBandas(A, H, L){
       return ((((H * 2) + A) * 0.9) * L) / 11.5;
     }
-    // Resane: (H*A)/11.5
     function calcResane(A, H){
       return (H * A) / 11.5;
     }
 
-    /* ==================== CALCULO m3 (se mantiene) ==================== */
+    function togglePane(chk, pane){ pane.classList.toggle('hidden', !chk.checked); }
+
+    /* ==================== CALCULO m3 (mantener) ==================== */
     const chkAvance = document.getElementById('chkAvance');
     const chkBandas = document.getElementById('chkBandas');
     const chkResane = document.getElementById('chkResane');
-
     const paneAvance = document.getElementById('paneAvance');
     const paneBandas = document.getElementById('paneBandas');
     const paneResane = document.getElementById('paneResane');
@@ -595,187 +576,183 @@
     const qOutH2 = document.querySelector('#qOut h2');
     const qMode = document.getElementById('qMode');
 
-    function togglePane(chk, pane){ pane.classList.toggle('hidden', !chk.checked); }
-
-    function sumBandas3(prefix){
-      let sum = 0;
+    function sumBandas3From(a1,h1,l1,a2,h2,l2,a3,h3,l3){
+      let sum=0;
       const bands = [
-        {A:document.getElementById(prefix+'1A').value, H:document.getElementById(prefix+'1H').value, L:document.getElementById(prefix+'1L').value},
-        {A:document.getElementById(prefix+'2A').value, H:document.getElementById(prefix+'2H').value, L:document.getElementById(prefix+'2L').value},
-        {A:document.getElementById(prefix+'3A').value, H:document.getElementById(prefix+'3H').value, L:document.getElementById(prefix+'3L').value},
+        {A:a1.value,H:h1.value,L:l1.value},
+        {A:a2.value,H:h2.value,L:l2.value},
+        {A:a3.value,H:h3.value,L:l3.value},
       ];
-      for (const bx of bands){
-        const any = isFilled(bx.A) || isFilled(bx.H) || isFilled(bx.L);
-        if (!any) continue;
-        const A = parseDec(bx.A), H = parseDec(bx.H), L = parseDec(bx.L);
-        if (isFinite(A) && isFinite(H) && isFinite(L)){
-          sum += calcBandas(A,H,L);
-        }
+      for(const bx of bands){
+        const any = isFilled(bx.A)||isFilled(bx.H)||isFilled(bx.L);
+        if(!any) continue;
+        const A=parseDec(bx.A), H=parseDec(bx.H), L=parseDec(bx.L);
+        if(isFinite(A)&&isFinite(H)&&isFinite(L)) sum += calcBandas(A,H,L);
       }
       return sum;
     }
 
     function calcTotalCalculo(){
-      let total = 0;
-      const lines = [];
-
-      if (!chkAvance.checked && !chkBandas.checked && !chkResane.checked){
-        qOutH2.textContent = '—';
-        qMode.textContent = '';
-        aSac.value = '';
-        return;
+      let total=0;
+      const lines=[];
+      if(!chkAvance.checked && !chkBandas.checked && !chkResane.checked){
+        qOutH2.textContent='—'; qMode.textContent=''; aSac.value=''; return;
       }
 
-      if (chkAvance.checked){
-        const A = parseDec(aA.value), H = parseDec(aH.value), L = parseDec(aL.value), C = parseDec(aConst.value || '11.5');
-        if (isFinite(A) && isFinite(H) && isFinite(L) && isFinite(C) && C>0){
-          const base = calcAvanceBase(A,H,L,C);
-          const sac = calcFrente(A,H);
-          aSac.value = sac.toFixed(2);
-          const part = base + sac;
-          total += part;
+      if(chkAvance.checked){
+        const A=parseDec(aA.value),H=parseDec(aH.value),L=parseDec(aL.value),C=parseDec(aConst.value||'11.5');
+        if(isFinite(A)&&isFinite(H)&&isFinite(L)&&isFinite(C)&&C>0){
+          const base=calcAvanceBase(A,H,L,C);
+          const sac=calcFrente(A,H);
+          aSac.value=sac.toFixed(2);
+          const part=base+sac; total+=part;
           lines.push(`Avance + Frente: ${fmt1(part)} m³`);
-        } else {
-          aSac.value = '';
-        }
-      } else { aSac.value = ''; }
+        } else aSac.value='';
+      } else aSac.value='';
 
-      if (chkBandas.checked){
-        const sumB = sumBandas3('b');
-        total += sumB;
-        lines.push(`Bandas: ${fmt1(sumB)} m³`);
+      if(chkBandas.checked){
+        const sumB = sumBandas3From(b1A,b1H,b1L,b2A,b2H,b2L,b3A,b3H,b3L);
+        total+=sumB; lines.push(`Bandas: ${fmt1(sumB)} m³`);
       }
 
-      if (chkResane.checked){
-        const A = parseDec(sA.value), H = parseDec(sH.value);
-        if (isFinite(A) && isFinite(H)){
-          const part = calcResane(A,H);
-          total += part;
+      if(chkResane.checked){
+        const A=parseDec(sA.value),H=parseDec(sH.value);
+        if(isFinite(A)&&isFinite(H)){
+          const part=calcResane(A,H); total+=part;
           lines.push(`Resanes: ${fmt1(part)} m³`);
         }
       }
 
-      qOutH2.textContent = `TOTAL: ${fmt1(total)} m³`;
-      qMode.textContent = lines.join('\n');
+      qOutH2.textContent=`TOTAL: ${fmt1(total)} m³`;
+      qMode.textContent=lines.join('\n');
     }
 
     function onCheckChangeCalculo(){
-      togglePane(chkAvance, paneAvance);
-      togglePane(chkBandas, paneBandas);
-      togglePane(chkResane, paneResane);
+      togglePane(chkAvance,paneAvance);
+      togglePane(chkBandas,paneBandas);
+      togglePane(chkResane,paneResane);
       calcTotalCalculo();
     }
-
-    [chkAvance, chkBandas, chkResane].forEach(chk => chk.addEventListener('change', onCheckChangeCalculo));
-    [aA,aH,aL,aConst,b1A,b1H,b1L,b2A,b2H,b2L,b3A,b3H,b3L,sA,sH].forEach(inp=>{
-      inp.addEventListener('input', calcTotalCalculo);
-      inp.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter') calcTotalCalculo(); });
+    [chkAvance,chkBandas,chkResane].forEach(c=>c.addEventListener('change',onCheckChangeCalculo));
+    [aA,aH,aL,aConst,b1A,b1H,b1L,b2A,b2H,b2L,b3A,b3H,b3L,sA,sH].forEach(i=>{
+      i.addEventListener('input',calcTotalCalculo);
     });
-    document.getElementById('qCalcular').addEventListener('click', calcTotalCalculo);
-    document.getElementById('qLimpiar').addEventListener('click', ()=>{
+    document.getElementById('qCalcular').addEventListener('click',calcTotalCalculo);
+    document.getElementById('qLimpiar').addEventListener('click',()=>{
       chkAvance.checked=false; chkBandas.checked=false; chkResane.checked=false;
-      [aA,aH,aL,sA,sH,b1A,b1H,b1L,b2A,b2H,b2L,b3A,b3H,b3L].forEach(i=>i.value='');
+      [aA,aH,aL,b1A,b1H,b1L,b2A,b2H,b2L,b3A,b3H,b3L,sA,sH].forEach(i=>i.value='');
       aConst.value='11.5'; aSac.value='';
       onCheckChangeCalculo();
     });
     onCheckChangeCalculo();
 
-    /* ==================== REGISTROS (nuevo) ==================== */
-    const regFecha = document.getElementById('regFecha');
-    const regLabor = document.getElementById('regLabor');
-    const regNivel = document.getElementById('regNivel');
-    const regEjecutor = document.getElementById('regEjecutor');
+    /* ==================== REGISTROS: cálculo + cuadro + PDF ==================== */
+    const regFecha=document.getElementById('regFecha');
+    const regLabor=document.getElementById('regLabor');
+    const regNivel=document.getElementById('regNivel');
+    const regEjecutor=document.getElementById('regEjecutor');
 
-    // defaults
     regFecha.value = todayStr();
 
-    const rChkAvance = document.getElementById('rChkAvance');
-    const rChkBandas = document.getElementById('rChkBandas');
-    const rChkResane = document.getElementById('rChkResane');
+    const rChkAvance=document.getElementById('rChkAvance');
+    const rChkBandas=document.getElementById('rChkBandas');
+    const rChkResane=document.getElementById('rChkResane');
 
-    const rPaneAvance = document.getElementById('rPaneAvance');
-    const rPaneBandas = document.getElementById('rPaneBandas');
-    const rPaneResane = document.getElementById('rPaneResane');
+    const rPaneAvance=document.getElementById('rPaneAvance');
+    const rPaneBandas=document.getElementById('rPaneBandas');
+    const rPaneResane=document.getElementById('rPaneResane');
 
-    const rAA = document.getElementById('rAA');
-    const rAH = document.getElementById('rAH');
-    const rAL = document.getElementById('rAL');
-    const rAConst = document.getElementById('rAConst');
-    const rASac = document.getElementById('rASac');
+    const rAA=document.getElementById('rAA');
+    const rAH=document.getElementById('rAH');
+    const rAL=document.getElementById('rAL');
+    const rAConst=document.getElementById('rAConst');
+    const rASac=document.getElementById('rASac');
 
-    const rb1A = document.getElementById('rb1A'), rb1H = document.getElementById('rb1H'), rb1L = document.getElementById('rb1L');
-    const rb2A = document.getElementById('rb2A'), rb2H = document.getElementById('rb2H'), rb2L = document.getElementById('rb2L');
-    const rb3A = document.getElementById('rb3A'), rb3H = document.getElementById('rb3H'), rb3L = document.getElementById('rb3L');
+    const rb1A=document.getElementById('rb1A'), rb1H=document.getElementById('rb1H'), rb1L=document.getElementById('rb1L');
+    const rb2A=document.getElementById('rb2A'), rb2H=document.getElementById('rb2H'), rb2L=document.getElementById('rb2L');
+    const rb3A=document.getElementById('rb3A'), rb3H=document.getElementById('rb3H'), rb3L=document.getElementById('rb3L');
 
-    const rsA = document.getElementById('rsA');
-    const rsH = document.getElementById('rsH');
+    const rsA=document.getElementById('rsA');
+    const rsH=document.getElementById('rsH');
 
-    const rOutH2 = document.querySelector('#rOut h2');
-    const rOutDetail = document.getElementById('rOutDetail');
+    const rOutH2=document.querySelector('#rOut h2');
+    const rOutDetail=document.getElementById('rOutDetail');
 
-    function onCheckChangeReg(){
-      togglePane(rChkAvance, rPaneAvance);
-      togglePane(rChkBandas, rPaneBandas);
-      togglePane(rChkResane, rPaneResane);
-      calcTotalReg();
-    }
+    // Cuadro (celdas)
+    const cFecha=document.getElementById('cFecha');
+    const cLaborNivel=document.getElementById('cLaborNivel');
+    const cEjecutor=document.getElementById('cEjecutor');
+    const cTotal=document.getElementById('cTotal');
+    const cAvance=document.getElementById('cAvance');
+    const cBandas=document.getElementById('cBandas');
+    const cResanes=document.getElementById('cResanes');
+
+    const LS_REGS='sc_registros';
+    function getRegs(){ try{ return JSON.parse(localStorage.getItem(LS_REGS)) ?? []; }catch{ return []; } }
+    function setRegs(arr){ localStorage.setItem(LS_REGS, JSON.stringify(arr)); }
+
+    let lastReg=null;
 
     function sumBandas3Reg(){
-      let sum = 0;
-      const bands = [
-        {A:rb1A.value, H:rb1H.value, L:rb1L.value},
-        {A:rb2A.value, H:rb2H.value, L:rb2L.value},
-        {A:rb3A.value, H:rb3H.value, L:rb3L.value},
-      ];
-      for (const bx of bands){
-        const any = isFilled(bx.A) || isFilled(bx.H) || isFilled(bx.L);
-        if (!any) continue;
-        const A = parseDec(bx.A), H = parseDec(bx.H), L = parseDec(bx.L);
-        if (isFinite(A) && isFinite(H) && isFinite(L)){
-          sum += calcBandas(A,H,L);
-        }
-      }
-      return sum;
+      return sumBandas3From(rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L);
     }
 
-    let lastReg = null;
+    function updateCuadro(obj){
+      if(!obj){
+        cFecha.textContent='—';
+        cLaborNivel.textContent='—';
+        cEjecutor.textContent='—';
+        cTotal.textContent='—';
+        cAvance.textContent='—';
+        cBandas.textContent='—';
+        cResanes.textContent='—';
+        return;
+      }
+      cFecha.textContent = obj.fecha || '—';
+      cLaborNivel.textContent = `${obj.labor || ''} / ${obj.nivel || ''}`.trim() || '—';
+      cEjecutor.textContent = obj.ejecutor || '—';
+      cTotal.textContent = fmt1(obj.m3_total || 0);
+      cAvance.textContent = fmt1(obj.m3_avance || 0);
+      cBandas.textContent = fmt1(obj.m3_bandas || 0);
+      cResanes.textContent = fmt1(obj.m3_resanes || 0);
+    }
 
     function calcTotalReg(){
-      let total = 0;
-      let partAv = 0, partBa = 0, partRe = 0;
-      const lines = [];
+      let total=0, partAv=0, partBa=0, partRe=0;
+      const lines=[];
 
-      if (!rChkAvance.checked && !rChkBandas.checked && !rChkResane.checked){
-        rOutH2.textContent = '—';
-        rOutDetail.textContent = '';
-        rASac.value = '';
-        lastReg = null;
+      if(!rChkAvance.checked && !rChkBandas.checked && !rChkResane.checked){
+        rOutH2.textContent='—';
+        rOutDetail.textContent='';
+        rASac.value='';
+        lastReg=null;
+        updateCuadro(null);
         return;
       }
 
-      if (rChkAvance.checked){
-        const A = parseDec(rAA.value), H = parseDec(rAH.value), L = parseDec(rAL.value), C = parseDec(rAConst.value || '11.5');
-        if (isFinite(A) && isFinite(H) && isFinite(L) && isFinite(C) && C>0){
-          const base = calcAvanceBase(A,H,L,C);
-          const sac = calcFrente(A,H);
-          rASac.value = sac.toFixed(2);
-          partAv = base + sac;
+      if(rChkAvance.checked){
+        const A=parseDec(rAA.value),H=parseDec(rAH.value),L=parseDec(rAL.value),C=parseDec(rAConst.value||'11.5');
+        if(isFinite(A)&&isFinite(H)&&isFinite(L)&&isFinite(C)&&C>0){
+          const base=calcAvanceBase(A,H,L,C);
+          const sac=calcFrente(A,H);
+          rASac.value=sac.toFixed(2);
+          partAv = base+sac;
           total += partAv;
           lines.push(`Avance + Frente: ${fmt1(partAv)} m³`);
         } else {
-          rASac.value = '';
+          rASac.value='';
         }
-      } else { rASac.value = ''; }
+      } else rASac.value='';
 
-      if (rChkBandas.checked){
+      if(rChkBandas.checked){
         partBa = sumBandas3Reg();
         total += partBa;
         lines.push(`Bandas: ${fmt1(partBa)} m³`);
       }
 
-      if (rChkResane.checked){
-        const A = parseDec(rsA.value), H = parseDec(rsH.value);
-        if (isFinite(A) && isFinite(H)){
+      if(rChkResane.checked){
+        const A=parseDec(rsA.value),H=parseDec(rsH.value);
+        if(isFinite(A)&&isFinite(H)){
           partRe = calcResane(A,H);
           total += partRe;
           lines.push(`Resanes: ${fmt1(partRe)} m³`);
@@ -787,44 +764,47 @@
 
       lastReg = {
         fecha: regFecha.value || todayStr(),
-        labor: (regLabor.value || '').trim(),
-        nivel: (regNivel.value || '').trim(),
+        labor: (regLabor.value||'').trim(),
+        nivel: (regNivel.value||'').trim(),
         ejecutor: regEjecutor.value || '',
         m3_total: Number(fmt1(total)),
         m3_avance: Number(fmt1(partAv)),
         m3_bandas: Number(fmt1(partBa)),
         m3_resanes: Number(fmt1(partRe))
       };
+
+      updateCuadro(lastReg);
     }
 
-    [rChkAvance, rChkBandas, rChkResane].forEach(chk => chk.addEventListener('change', onCheckChangeReg));
-    [rAA,rAH,rAL,rAConst,rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L,rsA,rsH,regFecha,regLabor,regNivel,regEjecutor].forEach(inp=>{
-      inp.addEventListener('input', calcTotalReg);
-      inp.addEventListener('change', calcTotalReg);
+    function onCheckChangeReg(){
+      togglePane(rChkAvance,rPaneAvance);
+      togglePane(rChkBandas,rPaneBandas);
+      togglePane(rChkResane,rPaneResane);
+      calcTotalReg();
+    }
+
+    [rChkAvance,rChkBandas,rChkResane].forEach(c=>c.addEventListener('change',onCheckChangeReg));
+    [rAA,rAH,rAL,rAConst,rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L,rsA,rsH,regFecha,regLabor,regNivel,regEjecutor].forEach(i=>{
+      i.addEventListener('input', calcTotalReg);
+      i.addEventListener('change', calcTotalReg);
     });
 
     document.getElementById('rCalcularTotal').addEventListener('click', calcTotalReg);
 
-    const LS_REGS = 'sc_registros';
-    function getRegs(){ try{ return JSON.parse(localStorage.getItem(LS_REGS)) ?? []; }catch{ return []; } }
-    function setRegs(arr){ localStorage.setItem(LS_REGS, JSON.stringify(arr)); }
-
     document.getElementById('rGuardarRegistro').addEventListener('click', ()=>{
-      // Validar datos base
       const fecha = regFecha.value || todayStr();
-      const labor = (regLabor.value || '').trim();
-      const nivel = (regNivel.value || '').trim();
+      const labor = (regLabor.value||'').trim();
+      const nivel = (regNivel.value||'').trim();
       const ejecutor = regEjecutor.value || '';
 
-      if (!fecha || !labor || !nivel || !ejecutor){
+      if(!fecha || !labor || !nivel || !ejecutor){
         alert('Completa Fecha, Labor, Nivel y Ejecutor.');
         return;
       }
 
-      // Asegurar cálculo actualizado
       calcTotalReg();
-      if (!lastReg || !isFinite(lastReg.m3_total) || lastReg.m3_total <= 0){
-        alert('Realiza el cálculo (m³ total) antes de registrar.');
+      if(!lastReg || !isFinite(lastReg.m3_total) || lastReg.m3_total <= 0){
+        alert('Calcula el m³ total antes de registrar.');
         return;
       }
 
@@ -833,25 +813,97 @@
       setRegs(regs);
 
       alert('Registro guardado.');
-      // Opcional: ir a tablas automáticamente
-      // switchTab('tab-tablas', document.getElementById('btn-tablas'));
+      renderTbl3();
     });
 
+    /* ===== Exportar PDF offline (Print -> Guardar como PDF) ===== */
+    function exportCuadroPDF(){
+      // Asegura que el cuadro esté actualizado
+      calcTotalReg();
+
+      // Construir HTML imprimible
+      const title = 'SHOTCRETE CALC - CUADRO DE REGISTRO';
+      const html = `
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Export PDF</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;margin:24px;color:#111}
+  h1{font-size:16px;margin:0 0 10px}
+  .meta{font-size:12px;margin:0 0 14px;color:#333}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th,td{border:1px solid #333;padding:6px;text-align:left}
+  thead th{background:#f2f2f2}
+  @page{size:A4;margin:14mm}
+</style>
+</head>
+<body>
+  <h1>${title}</h1>
+  <div class="meta">Generado: ${new Date().toLocaleString()}</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Labor / Nivel</th>
+        <th>Ejecutor</th>
+        <th>m3(Total)</th>
+        <th>Avance + frente</th>
+        <th>Bandas</th>
+        <th>Resanes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>${escapeHtml(cFecha.textContent)}</td>
+        <td>${escapeHtml(cLaborNivel.textContent)}</td>
+        <td>${escapeHtml(cEjecutor.textContent)}</td>
+        <td>${escapeHtml(cTotal.textContent)}</td>
+        <td>${escapeHtml(cAvance.textContent)}</td>
+        <td>${escapeHtml(cBandas.textContent)}</td>
+        <td>${escapeHtml(cResanes.textContent)}</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>`;
+
+      const w = window.open('', '_blank');
+      if(!w){ alert('Permite ventanas emergentes para exportar PDF.'); return; }
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+      w.focus();
+      // da tiempo a renderizar
+      setTimeout(()=>w.print(), 250);
+    }
+
+    function escapeHtml(s){
+      return String(s ?? '')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+    }
+
+    document.getElementById('rExportPDF').addEventListener('click', exportCuadroPDF);
+
     onCheckChangeReg();
+    updateCuadro(null);
 
     /* ==================== TABLAS + CSV ==================== */
-    const tbl3Body = document.querySelector('#tbl3 tbody');
+    const tbl3Body=document.querySelector('#tbl3 tbody');
 
     function renderTbl3(){
-      const regs = getRegs();
-      tbl3Body.innerHTML = '';
+      const regs=getRegs();
+      tbl3Body.innerHTML='';
       regs.forEach((r,i)=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+        const tr=document.createElement('tr');
+        tr.innerHTML=`
           <td>${i+1}</td>
           <td>${r.fecha ?? ''}</td>
-          <td>${r.nivel ?? ''}</td>
           <td>${r.labor ?? ''}</td>
+          <td>${r.nivel ?? ''}</td>
           <td>${r.ejecutor ?? ''}</td>
           <td>${(r.m3_total!=null)?fmt1(r.m3_total):''}</td>
           <td>${(r.m3_avance!=null)?fmt1(r.m3_avance):''}</td>
@@ -861,7 +913,7 @@
         `;
         tbl3Body.appendChild(tr);
         tr.querySelector('button').addEventListener('click', ()=>{
-          const arr = getRegs();
+          const arr=getRegs();
           arr.splice(i,1);
           setRegs(arr);
           renderTbl3();
@@ -870,12 +922,12 @@
     }
 
     function toCSV(regs){
-      const headers=['N','Fecha','Nivel','Labor','Ejecutor','m3_total','m3_avance','m3_bandas','m3_resanes'];
+      const headers=['N','Fecha','Labor','Nivel','Ejecutor','m3_total','avance_frente','bandas','resanes'];
       const esc=(v)=>{ const s=(v==null)?'':String(v); return '"' + s.replace(/"/g,'""') + '"'; };
       const lines=[headers.join(',')];
       regs.forEach((r,i)=>{
         lines.push([
-          i+1, r.fecha, r.nivel, r.labor, r.ejecutor,
+          i+1, r.fecha, r.labor, r.nivel, r.ejecutor,
           r.m3_total, r.m3_avance, r.m3_bandas, r.m3_resanes
         ].map(esc).join(','));
       });
@@ -917,7 +969,7 @@
       }
     })();
 
-    /* SW register */
+    /* SW register (offline) */
     (function(){
       if('serviceWorker' in navigator){
         const swUrl='/shotcrete-calc/sw.js';
