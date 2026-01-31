@@ -1,6 +1,6 @@
 // --- Service Worker para GitHub Pages (sub-path /shotcrete-calc/) ---
 const REPO = '/shotcrete-calc';
-const CACHE_NAME = 'sc-v55';
+const CACHE_NAME = 'sc-v57';
 
 const ASSETS = [
   `${REPO}/`,
@@ -21,8 +21,11 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
+    // Borra solo caches de esta app (prefijo sc-) para no afectar otros repos del mismo dominio
     await Promise.all(
-      keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : Promise.resolve()))
+      keys
+        .filter(k => k.startsWith('sc-') && k !== CACHE_NAME)
+        .map(k => caches.delete(k))
     );
     await self.clients.claim();
   })());
@@ -31,17 +34,25 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
-  // Navegaciones: network-first con fallback a caché
+  // Navegaciones: network-first con fallback fuerte a cache (offline)
   if (req.mode === 'navigate') {
     event.respondWith((async () => {
+      const cache = await caches.open(CACHE_NAME);
       try {
         const fresh = await fetch(req);
-        const cache = await caches.open(CACHE_NAME);
         cache.put(`${REPO}/index.html`, fresh.clone());
         return fresh;
       } catch {
-        const cache = await caches.open(CACHE_NAME);
-        return (await cache.match(`${REPO}/index.html`)) || new Response(
+        const cachedNav = await cache.match(req, { ignoreSearch: true });
+        if (cachedNav) return cachedNav;
+
+        const cachedIndex = await cache.match(`${REPO}/index.html`, { ignoreSearch: true });
+        if (cachedIndex) return cachedIndex;
+
+        const cachedRoot = await cache.match(`${REPO}/`, { ignoreSearch: true });
+        if (cachedRoot) return cachedRoot;
+
+        return new Response(
           `<!doctype html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Offline</title></head>
            <body style="font-family:system-ui;display:grid;place-items:center;height:100vh;margin:0">Sin conexión</body></html>`,
           { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
@@ -51,21 +62,18 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Recursos: cache-first con fallback a red + cacheo runtime
+  // Recursos: cache-first + runtime caching
   event.respondWith(
-    caches.match(req).then((cached) => {
+    caches.match(req, { ignoreSearch: true }).then((cached) => {
       if (cached) return cached;
 
-      return fetch(req)
-        .then((resp) => {
-          const okToCache = resp && resp.status === 200 && resp.type === 'basic';
-          if (okToCache) {
-            const respClone = resp.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, respClone));
-          }
-          return resp;
-        })
-        .catch(() => cached);
+      return fetch(req).then((resp) => {
+        if (resp && resp.status === 200) {
+          const clone = resp.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
+        }
+        return resp;
+      }).catch(() => cached);
     })
   );
 });
