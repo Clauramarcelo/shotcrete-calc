@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="es">
 <head>
@@ -17,56 +16,57 @@
 
   <style>
     :root{
-      /* Tema general naranja (UI) */
       --brand:#ff6a00;
       --brand-2:#ff821a;
 
-      /* Paleta profesional SOLO para el gráfico de Ensayos */
-      --ens-line:#007AFF;                     /* azul técnico para línea */
-      --ens-point:#007AFF;                    /* azul para puntos */
-      --ens-label:#007AFF;                    /* azul para texto */
-      --ens-label-halo:rgba(255,255,255,0.95);/* halo blanco (modo claro) */
-      --ens-canvas-bg:#ffffff;                /* fondo del canvas en modo claro */
-
-      /* Grillas y J (tenues, para no competir) */
-      --grid-major:rgba(120,120,120,0.40);    /* mayor suave */
-      --grid-minor:rgba(200,200,200,0.25);    /* menor muy tenue */
-      --j-curve:rgba(150,150,150,0.45);       /* plomo tenue */
-
-      /* Base UI */
       --bg:#ffffff; --fg:#0b0b0b; --muted:#667085; --card:#f6f8fa; --border:#d0d5dd;
-
       color-scheme: light dark;
     }
     @media (prefers-color-scheme: dark){
       :root{
         --bg:#0b0b0b; --fg:#eee; --muted:#98a2b3; --card:#14171a; --border:#2a2e33;
-
-        /* Ensayos en dark */
-        --ens-canvas-bg:#0f0f12;                 /* fondo canvas Ensayos en iPhone dark */
-        --ens-label-halo:rgba(0,0,0,0.85);       /* halo oscuro bajo el texto MPa */
-        --grid-major:rgba(180,180,180,0.32);     /* grilla mayor más tenue */
-        --grid-minor:rgba(200,200,200,0.18);     /* grilla menor muy tenue */
-        --j-curve:rgba(180,180,180,0.35);        /* J en gris suave y delgada */
       }
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.35;padding-bottom:env(safe-area-inset-bottom)}
+    body{
+      margin:0;background:var(--bg);color:var(--fg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      line-height:1.35;
+      padding-bottom:env(safe-area-inset-bottom)
+    }
 
-    header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#fff;padding:calc(.6rem + env(safe-area-inset-top)) 1rem .6rem 1rem;display:flex;align-items:center;gap:.75rem;box-shadow:0 2px 12px rgba(0,0,0,.12)}
+    header{
+      position:sticky;top:0;z-index:50;
+      background:linear-gradient(180deg,var(--brand),var(--brand-2));
+      color:#fff;
+      padding:calc(.6rem + env(safe-area-inset-top)) 1rem .6rem 1rem;
+      display:flex;align-items:center;gap:.75rem;
+      box-shadow:0 2px 12px rgba(0,0,0,.12)
+    }
     header .logo{width:28px;height:28px;border-radius:6px;background:#fff2;display:inline-block}
     header h1{margin:0;font-size:1.1rem}
 
     main{max-width:960px;margin:0 auto;padding:1rem;padding-bottom:4.5rem}
 
-    fieldset{border:1px solid var(--border);border-radius:.8rem;background:var(--card);padding:1rem;margin:0 0 1rem}
+    fieldset{
+      border:1px solid var(--border);
+      border-radius:.8rem;
+      background:var(--card);
+      padding:1rem;margin:0 0 1rem
+    }
     legend{font-weight:700;padding:0 .5rem}
-    label{display:block;margin:.55rem 0 .25rem}
 
-    input,select{width:100%;padding:.65rem .75rem;font-size:1rem;border:1px solid var(--border);border-radius:.6rem;background:#fff;outline:none}
-    @media (prefers-color-scheme: dark){ input,select{background:#0e0e10;color:var(--fg)} }
+    label{display:block;margin:.55rem 0 .25rem}
+    input,select{
+      width:100%;padding:.65rem .75rem;font-size:1rem;
+      border:1px solid var(--border);
+      border-radius:.6rem;background:#fff;outline:none
+    }
+    @media (prefers-color-scheme: dark){
+      input,select{background:#0e0e10;color:var(--fg)}
+    }
 
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
     .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
@@ -74,12 +74,19 @@
     @media (max-width:560px){ .row3{grid-template-columns:1fr} .row2{grid-template-columns:1fr} }
 
     .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
-    .btn{border:none;border-radius:.6rem;padding:.7rem 1rem;font-size:1rem;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer}
+    .btn{
+      border:none;border-radius:.6rem;padding:.7rem 1rem;font-size:1rem;
+      display:inline-flex;align-items:center;gap:.5rem;cursor:pointer
+    }
     .btn.primary{background:var(--brand);color:#fff}
     .btn.secondary{background:#f28c2a;color:#fff}
     .btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
 
-    .result{margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;text-align:center}
+    .result{
+      margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;
+      border:1px dashed var(--border);
+      display:flex;align-items:center;justify-content:center;text-align:center
+    }
     @media (prefers-color-scheme: dark){ .result{background:#0e0e10} }
     .result h2{margin:0;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:var(--brand)}
     .result small{display:block;color:var(--muted);margin-top:.25rem}
@@ -89,8 +96,19 @@
     thead th{background:#fff3e8}
     @media (prefers-color-scheme: dark){ thead th{background:#24170a;color:#fed8b4} }
 
-    .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:9999;background:var(--bg);border-top:1px solid var(--border);padding:.35rem calc(.6rem + env(safe-area-inset-bottom)) .35rem .6rem;display:grid;grid-template-columns:repeat(5,1fr);gap:.25rem}
-    .tabbar button{appearance:none;border:none;background:transparent;color:#667085;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;padding:.5rem 0;border-radius:.5rem;cursor:pointer;font-size:.9rem}
+    /* Tabbar (3 pestañas) */
+    .tabbar{
+      position:fixed;left:0;right:0;bottom:0;z-index:9999;
+      background:var(--bg);
+      border-top:1px solid var(--border);
+      padding:.35rem calc(.6rem + env(safe-area-inset-bottom)) .35rem .6rem;
+      display:grid;grid-template-columns:repeat(3,1fr);gap:.25rem
+    }
+    .tabbar button{
+      appearance:none;border:none;background:transparent;color:#667085;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:.25rem;padding:.5rem 0;border-radius:.5rem;cursor:pointer;font-size:.9rem
+    }
     .tabbar button.active{color:var(--brand);font-weight:700;background:#fff7ef}
     @media (prefers-color-scheme: dark){ .tabbar button.active{background:#1b140c} }
 
@@ -99,9 +117,6 @@
 
     .hidden{display:none !important}
     .muted{color:var(--muted);font-size:.95rem}
-
-    /* Canvas responsivo */
-    canvas.responsive { width: 100%; height: auto; display: block; }
 
     /* ===== Loader estilo iPhone ===== */
     #appLoader{
@@ -114,7 +129,6 @@
       #appLoader{ background:linear-gradient(180deg, #0f0c08, #140f0a); }
     }
     #appLoader.hidden{ opacity:0; visibility:hidden; }
-
     .loader-card{
       width:min(280px, 70vw);
       padding:28px 24px;
@@ -128,7 +142,6 @@
     @media (prefers-color-scheme: dark){
       .loader-card{ background:rgba(22,24,28,0.84); box-shadow:0 12px 40px rgba(0,0,0,.42); border-color:#3a2a18; }
     }
-
     .loader-icon{
       width:84px; height:84px; object-fit:cover; border-radius:18px;
       box-shadow:0 6px 16px rgba(0,0,0,.18);
@@ -137,7 +150,6 @@
       border:2px solid #fff6;
     }
     @keyframes pop{ from{ transform:scale(.92); opacity:.6; } to{ transform:scale(1.00); opacity:1; } }
-
     .loader-spinner{
       width:34px; height:34px; border-radius:50%;
       border:3px solid rgba(120,120,120,.28);
@@ -145,7 +157,6 @@
       animation:spin 0.9s linear infinite;
     }
     @keyframes spin{ to { transform:rotate(360deg); } }
-
     .loader-text{
       font:500 14px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:#333; letter-spacing:.2px;
@@ -153,6 +164,7 @@
     @media (prefers-color-scheme: dark){ .loader-text{ color:#d8d8d8; } }
   </style>
 </head>
+
 <body>
   <header>
     <span class="logo" aria-hidden="true"></span>
@@ -190,9 +202,16 @@
           <div><label for="qH">Altura (H) — m</label><input id="qH" type="text" inputmode="decimal"></div>
           <div><label for="qL">Largo (L) — m</label><input id="qL" type="text" inputmode="decimal"></div>
         </div>
+
         <div class="row2" style="margin-top:.6rem">
-          <div><label for="qSac">Frente de sacrificio — m³</label><input id="qSac" type="text" inputmode="decimal"></div>
-          <div><label for="qConst">Constante (m²/m³)</label><input id="qConst" type="text" inputmode="decimal" value="11.5"></div>
+          <div>
+            <label for="qSac">Frente de sacrificio — m³ (auto)</label>
+            <input id="qSac" type="text" inputmode="decimal" readonly>
+          </div>
+          <div>
+            <label for="qConst">Constante (m²/m³)</label>
+            <input id="qConst" type="text" inputmode="decimal" value="11.5">
+          </div>
         </div>
 
         <div class="actions">
@@ -226,9 +245,16 @@
           <div><label for="rH">Altura (H) — m</label><input id="rH" type="text" inputmode="decimal"></div>
           <div><label for="rL">Largo (L) — m</label><input id="rL" type="text" inputmode="decimal"></div>
         </div>
+
         <div class="row2" style="margin-top:.6rem">
-          <div><label for="rSac">Frente de sacrificio — m³</label><input id="rSac" type="text" inputmode="decimal"></div>
-          <div><label for="rConst">Constante (m²/m³)</label><input id="rConst" type="text" inputmode="decimal" value="11.5"></div>
+          <div>
+            <label for="rSac">Frente de sacrificio — m³ (auto)</label>
+            <input id="rSac" type="text" inputmode="decimal" readonly>
+          </div>
+          <div>
+            <label for="rConst">Constante (m²/m³)</label>
+            <input id="rConst" type="text" inputmode="decimal" value="11.5">
+          </div>
         </div>
 
         <div class="actions">
@@ -243,15 +269,18 @@
       <!-- Formulario de registro -->
       <fieldset id="regForm" class="hidden">
         <legend>Registro de actividad</legend>
+
         <div class="row3">
           <div><label for="regFecha">Fecha</label><input id="regFecha" type="date" /></div>
           <div><label for="regNivel">Nivel</label><input id="regNivel" type="text" /></div>
           <div><label for="regLabor">Labor</label><input id="regLabor" type="text" /></div>
         </div>
+
         <div class="row3" style="margin-top:.6rem">
           <div><label for="regRobot">N° Robot</label><input id="regRobot" type="text" /></div>
           <div><label for="regPresion">Presión de aire (bar)</label><input id="regPresion" type="text" inputmode="decimal" placeholder="Ej. xx bar" /></div>
-          <div><label for="regUso">USO</label>
+          <div>
+            <label for="regUso">USO</label>
             <select id="regUso">
               <option value="" selected disabled>Selecciona…</option>
               <option value="NIC">NIC</option>
@@ -261,6 +290,7 @@
             </select>
           </div>
         </div>
+
         <div class="row2" style="margin-top:.6rem">
           <div>
             <label for="regTurno">Turno</label>
@@ -275,10 +305,12 @@
             <input id="regObs" type="text" />
           </div>
         </div>
+
         <div class="actions" style="align-items:end; justify-content:flex-end;">
           <button class="btn primary" id="regGuardarBtn" type="button">Registrar</button>
           <button class="btn secondary" id="goTablasBtn" type="button">Ir a Tablas</button>
         </div>
+
         <p id="regMsg" class="muted" style="margin-top:.4rem"></p>
       </fieldset>
     </section>
@@ -287,11 +319,13 @@
     <section id="tab-tablas" class="tab" aria-labelledby="btn-tablas">
       <fieldset>
         <legend>Tabla de registros (CSV)</legend>
+
         <div class="actions">
-          <button class="btn primary"  id="tbl3ExportCSV" type="button">Exportar a CSV</button>
-          <button class="btn ghost"    id="tbl3Refrescar"  type="button">Refrescar</button>
-          <button class="btn secondary"id="tbl3BorrarTodo" type="button">Borrar todo</button>
+          <button class="btn primary" id="tbl3ExportCSV" type="button">Exportar a CSV</button>
+          <button class="btn ghost" id="tbl3Refrescar" type="button">Refrescar</button>
+          <button class="btn secondary" id="tbl3BorrarTodo" type="button">Borrar todo</button>
         </div>
+
         <table id="tbl3">
           <thead>
             <tr>
@@ -304,231 +338,25 @@
         </table>
       </fieldset>
     </section>
-
-    <!-- ===== 4) DASHBOARD ===== -->
-    <section id="tab-dashboard" class="tab" aria-labelledby="btn-dashboard">
-      <!-- Producción -->
-      <fieldset>
-        <legend>Producción (Labor vs m³)</legend>
-
-        <div class="row2" style="margin-bottom:.6rem">
-          <div>
-            <label for="prodFecha">Fecha</label>
-            <input id="prodFecha" type="date" />
-          </div>
-          <div>
-            <label for="prodTurno">Turno</label>
-            <select id="prodTurno">
-              <option value="">(Todos)</option>
-              <option value="Día">Día</option>
-              <option value="Noche">Noche</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn primary" id="btnRenderProduccion" type="button">Actualizar gráfico</button>
-        </div>
-
-        <canvas id="chartProduccion" class="responsive"></canvas>
-        <div class="actions" style="margin-top:.6rem">
-          <button class="btn ghost" id="btnExportProdPNG">Exportar Producción (PNG 2x)</button>
-        </div>
-        <p class="muted" style="margin-top:.5rem">Suma de m³ por <strong>Labor</strong> (filtrable por Fecha y Turno).</p>
-      </fieldset>
-
-      <!-- Ensayos -->
-      <fieldset>
-        <legend>Ensayos — Resistencia (MPa) vs Tiempo (h)</legend>
-
-        <!-- Filtros: Fecha y Labor -->
-        <div class="row2" style="margin-bottom:.6rem">
-          <div>
-            <label for="ensFecha">Fecha</label>
-            <input id="ensFecha" type="date" />
-          </div>
-          <div>
-            <label for="ensLabor">Labor</label>
-            <input id="ensLabor" type="text" placeholder="Ej. 1300 N1 A"/>
-          </div>
-        </div>
-
-        <canvas id="chartEnsayo" class="responsive"></canvas>
-        <div class="actions" style="margin-top:.6rem">
-          <button class="btn ghost" id="btnExportEnsPNG">Exportar Ensayos (PNG 2x)</button>
-        </div>
-
-        <!-- Panel: Curvas J (texto) -->
-        <div id="panelCurvasJ" style="
-          margin-top:.8rem; padding:.9rem; border:1px solid var(--border);
-          border-radius:.6rem; background:var(--card); font-size:.95rem; line-height:1.45;">
-          <strong>Curvas J (ÖBV, 2013):</strong>
-          <ul style="margin:.4rem 0 .6rem .9rem">
-            <li><b>J1</b>: Capas delgadas sobre sustrato seco; sin soporte especial; menor polvo y rebote.</li>
-            <li><b>J2</b>: Desarrollo más rápido para condiciones exigentes (agua, vibraciones, anclajes, cargas por gravedad).</li>
-            <li><b>J3</b>: Circunstancias especiales (p. ej., fuerte entrada de agua o sustrato desfavorable) con mayores resistencias en pocos minutos.</li>
-          </ul>
-        </div>
-      </fieldset>
-    </section>
-
-    <!-- ===== 5) ENSAYOS ===== -->
-    <section id="tab-ensayos" class="tab" aria-labelledby="btn-ensayos">
-      <fieldset>
-        <legend>Datos del ensayo</legend>
-        <div class="row3">
-          <div><label for="eLabor">Labor</label><input id="eLabor" type="text"></div>
-          <div><label for="eNivel">Nivel</label><input id="eNivel" type="text"></div>
-          <div><label for="eRobot">Robot</label><input id="eRobot" type="text"></div>
-        </div>
-        <!-- Fecha y Turno del ensayo -->
-        <div class="row2" style="margin-top:.6rem">
-          <div><label for="eFecha">Fecha</label><input id="eFecha" type="date"></div>
-          <div>
-            <label for="eTurno">Turno</label>
-            <select id="eTurno">
-              <option value="" selected disabled>Selecciona…</option>
-              <option value="Día">Día</option>
-              <option value="Noche">Noche</option>
-            </select>
-          </div>
-        </div>
-        <p class="muted" style="margin-top:.35rem">Temperatura y Slump se registran en <strong>Registros</strong>.</p>
-      </fieldset>
-
-      <!-- Penetración (A) — 4 cajetines -->
-      <fieldset>
-        <legend>Penetración (método A) — 10 fuerzas (N) por tiempo</legend>
-
-        <div class="row2">
-          <div>
-            <label for="pHoraIni">Hora inicial (H₀) — hh:mm</label>
-            <input id="pHoraIni" type="text" placeholder="ej. 23:00">
-          </div>
-          <div class="row2" style="gap:.6rem; align-items:end">
-            <div>
-              <label for="pAgregado">Tamaño máximo del agregado</label>
-              <select id="pAgregado">
-                <option value="8" selected>≤ 8 mm</option>
-                <option value="16">≤ 16 mm</option>
-              </select>
-            </div>
-            <div class="muted" style="display:flex; align-items:end">
-              Fórmula Mecmesin según el tamaño del agregado.
-            </div>
-          </div>
-        </div>
-
-        <div class="row2" style="margin-top:.6rem">
-          <div>
-            <label for="pN15">15 min — 10 fuerzas (N)</label>
-            <input id="pN15" type="text" placeholder="145,134,175,180,210,150,152,152,164,134">
-            <small id="pOut15" class="muted">Prom: — N | MPa: — | Hora lectura: —</small>
-          </div>
-          <div>
-            <label for="pN30">30 min — 10 fuerzas (N)</label>
-            <input id="pN30" type="text" placeholder="195,234,271,252,212,243,280,243,243,285">
-            <small id="pOut30" class="muted">Prom: — N | MPa: — | Hora lectura: —</small>
-          </div>
-        </div>
-        <div class="row2" style="margin-top:.6rem">
-          <div>
-            <label for="pN45">45 min — 10 fuerzas (N)</label>
-            <input id="pN45" type="text" placeholder="384,380,312,300,400,215,310,400,410,381">
-            <small id="pOut45" class="muted">Prom: — N | MPa: — | Hora lectura: —</small>
-          </div>
-          <div>
-            <label for="pN60">60 min — 10 fuerzas (N)</label>
-            <input id="pN60" type="text" placeholder="518,500,515,521,523,522,500,512,491,490">
-            <small id="pOut60" class="muted">Prom: — N | MPa: — | Hora lectura: —</small>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn primary" id="pCalc" type="button">Calcular MPa (15–60 min)</button>
-          <button class="btn secondary" id="pSaveA" type="button">Guardar ensayo (Penetración A)</button>
-          <button class="btn ghost" id="pClearA" type="button">Limpiar</button>
-        </div>
-
-        <!-- Vista previa (4 filas) -->
-        <table id="tblPenA" style="margin-top:.6rem">
-          <thead>
-            <tr>
-              <th>#</th><th>Tiempo (min)</th><th>Hora lectura</th><th>h acumulada (h)</th>
-              <th>Fuerzas (10)</th><th>Promedio (N)</th><th>MPa</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </fieldset>
-
-      <!-- Hilti B -->
-      <fieldset>
-        <legend>Pull‑out (método Hilti B)</legend>
-        <div class="row3">
-          <div><label for="hHora">Hora lectura (hh:mm)</label><input id="hHora" type="text" placeholder="01:00"></div>
-          <div><label for="hHoraAc">Hora acumulada (h)</label><input id="hHoraAc" type="text" inputmode="decimal" placeholder="1.00"></div>
-          <div><label for="hPerforada">Parte perforada (mm)</label><input id="hPerforada" type="text" inputmode="decimal"></div>
-        </div>
-        <div class="row2" style="margin-top:.6rem">
-          <div><label for="hPullN">Lectura pull‑out (N)</label><input id="hPullN" type="text" inputmode="decimal"></div>
-          <div><label for="hOffset">Offset (+)</label><input id="hOffset" type="text" inputmode="decimal" value="2.7"></div>
-          <div><label for="hDivisor">Divisor (/) → MPa</label><input id="hDivisor" type="text" inputmode="decimal" value="7.69"></div>
-        </div>
-        <div class="actions">
-          <button class="btn primary" id="hAdd" type="button">Añadir fila</button>
-          <button class="btn ghost" id="hClear" type="button">Limpiar</button>
-          <button class="btn secondary" id="hSave" type="button">Guardar ensayo (Hilti)</button>
-        </div>
-
-        <table id="tblHilti">
-          <thead>
-            <tr>
-              <th>#</th><th>Hora</th><th>h acumulada</th><th>Perforada (mm)</th><th>Pull‑out (N)</th>
-              <th>Relación (N/mm)</th><th>Grupo h</th><th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <p class="muted" style="margin-top:.35rem">MPa (por grupo h) = (PROM(Relación N/mm) + 2.7) / 7.69.</p>
-      </fieldset>
-
-      <!-- Resumen ensayos -->
-      <fieldset>
-        <legend>Ensayos guardados (resumen)</legend>
-        <table id="tblEnsRes">
-          <thead>
-            <tr>
-              <th>#</th><th>Tipo</th><th>Labor | Nivel | Robot</th>
-              <th>MPa 1h</th><th>MPa 2h</th><th>MPa 3h</th><th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </fieldset>
-    </section>
   </main>
 
-  <!-- Tab bar -->
+  <!-- Tab bar (solo 3 pestañas) -->
   <nav class="tabbar" role="tablist" aria-label="Navegación">
-    <button type="button" id="btn-calculo"   class="active" role="tab" aria-controls="tab-calculo"   aria-selected="true"
-            onclick="switchTab('tab-calculo', this)">Calculo m3</button>
-    <button type="button" id="btn-registros" role="tab" aria-controls="tab-registros" aria-selected="false"
-            onclick="switchTab('tab-registros', this)">Registros</button>
-    <button type="button" id="btn-tablas"    role="tab" aria-controls="tab-tablas"    aria-selected="false"
-            onclick="switchTab('tab-tablas', this)">Tablas</button>
-    <button type="button" id="btn-dashboard" role="tab" aria-controls="tab-dashboard" aria-selected="false"
-            onclick="switchTab('tab-dashboard', this)">Dashboard</button>
-    <button type="button" id="btn-ensayos"   role="tab" aria-controls="tab-ensayos"   aria-selected="false"
-            onclick="switchTab('tab-ensayos', this)">Ensayos</button>
+    <button type="button" id="btn-calculo" class="active" role="tab"
+      aria-controls="tab-calculo" aria-selected="true"
+      onclick="switchTab('tab-calculo', this)">Calculo m3</button>
+
+    <button type="button" id="btn-registros" role="tab"
+      aria-controls="tab-registros" aria-selected="false"
+      onclick="switchTab('tab-registros', this)">Registros</button>
+
+    <button type="button" id="btn-tablas" role="tab"
+      aria-controls="tab-tablas" aria-selected="false"
+      onclick="switchTab('tab-tablas', this)">Tablas</button>
   </nav>
 
-  <!-- ======= JavaScript ======= -->
   <script>
-    /* ===== Globales y Tabs ===== */
-    window.LS_ENSAYOS ||= 'sc_ensayos2';
-    const LS_ENSAYOS = window.LS_ENSAYOS;
-
+    /* ===== Tabs ===== */
     function switchTab(targetId, btnEl){
       try{
         document.querySelectorAll('.tabbar button').forEach(b=>{
@@ -536,45 +364,37 @@
           b.classList.toggle('active', active);
           b.setAttribute('aria-selected', active ? 'true' : 'false');
         });
+
         document.querySelectorAll('section.tab').forEach(sec=>{
           sec.classList.toggle('active', sec.id === targetId);
         });
-        if (targetId === 'tab-calculo')   { document.getElementById('qA')?.focus({preventScroll:true}); }
+
+        if (targetId === 'tab-calculo') { document.getElementById('qA')?.focus({preventScroll:true}); }
         if (targetId === 'tab-registros'){ document.getElementById('rA')?.focus({preventScroll:true}); }
-        if (targetId === 'tab-tablas')    { renderTbl3?.(); }
-        if (targetId === 'tab-dashboard') { renderDashboard?.(); }
-        if (targetId === 'tab-ensayos')   { renderEnsRes?.(); }
+        if (targetId === 'tab-tablas') { renderTbl3(); }
       }catch(err){
         console.error('switchTab error:', err);
         alert('Ocurrió un error al cambiar de pestaña. Revisa la consola (F12).');
       }
     }
 
-    /* ===== Canvas responsivo con soporte Retina (iPhone 12) ===== */
-    function sizeCanvasToParent(canvas, aspectMobile=1.70, aspectDesktop=2.40){
-      const parent = canvas.parentElement || document.body;
-      const cssW = Math.max(320, Math.min(parent.clientWidth - 2, 960));
-      const isMobile = cssW <= 480;
-      const aspect = isMobile ? aspectMobile : aspectDesktop;
-      const cssH = Math.round(cssW / aspect);
-
-      const pr = Math.max(1, Math.min(window.devicePixelRatio || 1, 3)); // iPhone 12 ~3
-
-      canvas.style.width  = cssW + 'px';
-      canvas.style.height = cssH + 'px';
-      canvas.width  = Math.round(cssW * pr);
-      canvas.height = Math.round(cssH * pr);
-
-      const ctx = canvas.getContext('2d');
-      ctx.setTransform(pr, 0, 0, pr, 0, 0);
-
-      return { W: cssW, H: cssH, pixelRatio: pr, ctx };
-    }
-
     /* ===== Utilidades ===== */
-    function parseDec(txt){ if (typeof txt !== 'string') return NaN; const s = txt.trim().replace(',', '.'); if (s==='') return NaN; return Number(s); }
+    function parseDec(txt){
+      if (typeof txt !== 'string') return NaN;
+      const s = txt.trim().replace(',', '.');
+      if (s === '') return NaN;
+      return Number(s);
+    }
     const fmt1 = (n) => Number(n).toFixed(1);
     const todayStr = () => new Date().toISOString().slice(0,10);
+
+    /* ===== Frente de sacrificio (AUTO)
+       Fórmula: ((A * (H - 2)) * 0.9) / 14
+    */
+    function calcFrenteSacrificio(A, H){
+      const hEff = Math.max(0, H - 2);
+      return (A * hEff * 0.9) / 14;
+    }
 
     /* ===== Pestaña 1: Calculo m3 ===== */
     const qA=document.getElementById('qA'), qH=document.getElementById('qH'), qL=document.getElementById('qL');
@@ -582,29 +402,77 @@
     const qOutH2=document.querySelector('#qOut h2'), qOutMode=document.getElementById('qMode');
     const qRadios=document.querySelectorAll('input[name="modoQuick"]');
 
-    function nombreModoQuick(){ const m=[...qRadios].find(r=>r.checked)?.value||'tunnel'; return m==='tunnel'?'Avance':'Resane'; }
-    function calcularQuick(){
-      const A=parseDec(qA?.value??''), H=parseDec(qH?.value??''), L=parseDec(qL?.value??''), Sac=parseDec(qSac?.value??'0'), C=parseDec(qConst?.value??'11.5');
-      const m=[...qRadios].find(r=>r.checked)?.value||'tunnel';
-      if(!isFinite(L)||!isFinite(H)||!isFinite(C)||C<=0){ qOutH2.textContent='—'; qOutMode.textContent='Completa los datos.'; return; }
-      if(m==='tunnel'&&!isFinite(A)){ qOutH2.textContent='—'; qOutMode.textContent='Completa A, H y L.'; return; }
-      let m3_base=0; if(m==='tunnel'){ const pp=(H*2)+A, pa=pp*0.9, al=pa*L; m3_base=al/C; } else { m3_base=(L*H)/C; }
-      const m3_total=m3_base+(isFinite(Sac)?Sac:0);
-      qOutH2.textContent=`${nombreModoQuick()}: ${fmt1(m3_total)} m³`; qOutMode.textContent='';
+    function nombreModoQuick(){
+      const m=[...qRadios].find(r=>r.checked)?.value ?? 'tunnel';
+      return m==='tunnel' ? 'Avance' : 'Resane';
     }
+
+    function calcularQuick(){
+      const A=parseDec(qA.value), H=parseDec(qH.value), L=parseDec(qL.value);
+      const C=parseDec(qConst.value || '11.5');
+      const m=[...qRadios].find(r=>r.checked)?.value ?? 'tunnel';
+
+      if (!isFinite(L) || !isFinite(H) || !isFinite(C) || C<=0){
+        qOutH2.textContent='—';
+        qOutMode.textContent='Completa los datos.';
+        qSac.value='';
+        return;
+      }
+      if (m==='tunnel' && !isFinite(A)){
+        qOutH2.textContent='—';
+        qOutMode.textContent='Completa A, H y L.';
+        qSac.value='';
+        return;
+      }
+
+      // Sacrificio AUTO solo para túnel
+      let Sac=0;
+      if (m==='tunnel' && isFinite(A) && isFinite(H)){
+        Sac = calcFrenteSacrificio(A,H);
+        qSac.value = Sac.toFixed(2);
+      } else {
+        qSac.value='';
+        Sac=0;
+      }
+
+      // Cálculo base original
+      let m3_base=0;
+      if (m==='tunnel'){
+        const pp=(H*2)+A, pa=pp*0.9, al=pa*L;
+        m3_base=al/C;
+      } else {
+        m3_base=(L*H)/C;
+      }
+
+      const m3_total=m3_base + Sac;
+      qOutH2.textContent = `${nombreModoQuick()}: ${fmt1(m3_total)} m³`;
+      qOutMode.textContent = '';
+    }
+
     document.getElementById('qCalcular')?.addEventListener('click', calcularQuick);
+
     document.getElementById('qLimpiar')?.addEventListener('click', ()=>{
-      [qA,qH,qL,qSac].forEach(i=>i.value=''); qConst.value='11.5';
+      qA.value=''; qH.value=''; qL.value='';
+      qSac.value='';
+      qConst.value='11.5';
       document.querySelector('input[name="modoQuick"][value="tunnel"]').checked=true;
-      qOutH2.textContent='—'; qOutMode.textContent='Selecciona modo y completa los datos.'; qA?.focus();
+      qOutH2.textContent='—';
+      qOutMode.textContent='Selecciona modo y completa los datos.';
+      qA.focus();
     });
-    [qA,qH,qL,qSac,qConst,...qRadios].forEach(el=>{
+
+    [qA,qH,qL,qConst,...qRadios].forEach(el=>{
       el?.addEventListener('input', ()=>{
-        const m=[...qRadios].find(r=>r.checked)?.value||'tunnel';
-        const wallReady=qH?.value.trim()&&qL?.value.trim();
-        const tunnelReady=qA?.value.trim()&&wallReady;
-        const ready=(m==='wall')?wallReady:tunnelReady;
-        if(ready) calcularQuick(); else { qOutH2.textContent='—'; qOutMode.textContent='Selecciona modo y completa los datos.'; }
+        const m=[...qRadios].find(r=>r.checked)?.value ?? 'tunnel';
+        const wallReady=qH.value.trim() && qL.value.trim();
+        const tunnelReady=qA.value.trim() && wallReady;
+        const ready=(m==='wall') ? wallReady : tunnelReady;
+        if (ready) calcularQuick();
+        else {
+          qOutH2.textContent='—';
+          qOutMode.textContent='Selecciona modo y completa los datos.';
+          qSac.value='';
+        }
       });
       el?.addEventListener('keydown', ev=>{ if(ev.key==='Enter') calcularQuick(); });
     });
@@ -617,23 +485,73 @@
     const rCalcBtn=document.getElementById('rCalcBtn');
     const regForm=document.getElementById('regForm'), regMsg=document.getElementById('regMsg');
 
-    function nombreModoReg(){ const m=[...rRadios].find(r=>r.checked)?.value||'tunnel'; return m==='tunnel'?'Avance':'Resane'; }
+    function nombreModoReg(){
+      const m=[...rRadios].find(r=>r.checked)?.value ?? 'tunnel';
+      return m==='tunnel' ? 'Avance' : 'Resane';
+    }
+
     let lastRegCalc=null;
 
     function calcularReg(){
-      const A=parseDec(rA?.value??''), H=parseDec(rH?.value??''), L=parseDec(rL?.value??''), Sac=parseDec(rSac?.value??'0'), C=parseDec(rConst?.value??'11.5');
-      const m=[...rRadios].find(r=>r.checked)?.value||'tunnel';
-      if(!isFinite(L)||!isFinite(H)||!isFinite(C)||C<=0){ rOutH2.textContent='—'; rOutMode.textContent='Completa los datos.'; regForm.classList.add('hidden'); lastRegCalc=null; return false; }
-      if(m==='tunnel'&&!isFinite(A)){ rOutH2.textContent='—'; rOutMode.textContent='Completa A, H y L.'; regForm.classList.add('hidden'); lastRegCalc=null; return false; }
-      let m3_base=0; if(m==='tunnel'){ const pp=(H*2)+A, pa=pp*0.9, al=pa*L; m3_base=al/C; } else { m3_base=(L*H)/C; }
-      const m3_total=m3_base+(isFinite(Sac)?Sac:0);
-      rOutH2.textContent=`${nombreModoReg()}: ${fmt1(m3_total)} m³`; rOutMode.textContent='';
-      lastRegCalc={modo:nombreModoReg(), m3:Number(fmt1(m3_total)), A:isFinite(A)?A:null, H, L, C, Sac:isFinite(Sac)?Sac:0};
-      regForm.classList.remove('hidden'); 
+      const A=parseDec(rA.value), H=parseDec(rH.value), L=parseDec(rL.value);
+      const C=parseDec(rConst.value || '11.5');
+      const m=[...rRadios].find(r=>r.checked)?.value ?? 'tunnel';
+
+      if (!isFinite(L) || !isFinite(H) || !isFinite(C) || C<=0){
+        rOutH2.textContent='—';
+        rOutMode.textContent='Completa los datos.';
+        regForm.classList.add('hidden');
+        lastRegCalc=null;
+        rSac.value='';
+        return false;
+      }
+      if (m==='tunnel' && !isFinite(A)){
+        rOutH2.textContent='—';
+        rOutMode.textContent='Completa A, H y L.';
+        regForm.classList.add('hidden');
+        lastRegCalc=null;
+        rSac.value='';
+        return false;
+      }
+
+      // Sacrificio AUTO solo para túnel
+      let Sac=0;
+      if (m==='tunnel' && isFinite(A) && isFinite(H)){
+        Sac = calcFrenteSacrificio(A,H);
+        rSac.value = Sac.toFixed(2);
+      } else {
+        rSac.value='';
+        Sac=0;
+      }
+
+      // Cálculo base original
+      let m3_base=0;
+      if (m==='tunnel'){
+        const pp=(H*2)+A, pa=pp*0.9, al=pa*L;
+        m3_base=al/C;
+      } else {
+        m3_base=(L*H)/C;
+      }
+
+      const m3_total=m3_base + Sac;
+      rOutH2.textContent = `${nombreModoReg()}: ${fmt1(m3_total)} m³`;
+      rOutMode.textContent='';
+
+      lastRegCalc={
+        modo:nombreModoReg(),
+        m3:Number(fmt1(m3_total)),
+        A:(m==='tunnel' && isFinite(A)) ? A : null,
+        H, L, C,
+        Sac:Number(Sac.toFixed(2))
+      };
+
+      regForm.classList.remove('hidden');
       return true;
     }
+
     rCalcBtn?.addEventListener('click', calcularReg);
 
+    /* ===== Guardar Registros (localStorage) ===== */
     const LS_REGS='sc_registros';
     function getRegs(){ try{ return JSON.parse(localStorage.getItem(LS_REGS)) ?? []; }catch{ return []; } }
     function setRegs(arr){ localStorage.setItem(LS_REGS, JSON.stringify(arr)); }
@@ -644,52 +562,77 @@
     const regGuardarBtn=document.getElementById('regGuardarBtn'), goTablasBtn=document.getElementById('goTablasBtn');
 
     function limpiarFormularioRegistro(){
-      regFecha.value=todayStr(); regNivel.value=''; regLabor.value=''; regRobot.value='';
-      regPresion.value=''; regUso.value=''; regTurno.value=''; regObs.value=''; regMsg.textContent='';
+      regFecha.value=todayStr();
+      regNivel.value=''; regLabor.value=''; regRobot.value='';
+      regPresion.value=''; regUso.value=''; regTurno.value=''; regObs.value='';
+      regMsg.textContent='';
     }
     limpiarFormularioRegistro();
 
     regGuardarBtn?.addEventListener('click', ()=>{
       if(!lastRegCalc){ alert('Primero realiza el cálculo.'); return; }
-      const fecha=regFecha.value||todayStr(), nivel=regNivel.value.trim(), labor=regLabor.value.trim(), robot=regRobot.value.trim();
-      const presionRaw=regPresion.value.trim(); let presion=parseFloat(presionRaw.replace(/[^0-9.,-]/g,'')); presion=isNaN(presion)?NaN:presion;
-      const uso=regUso.value, turno=regTurno.value, obs=regObs.value.trim();
 
-      if(!fecha||!nivel||!labor||!robot||!isFinite(presion)||!uso||!turno){
-        alert('Completa Fecha, Nivel, Labor, N° Robot, Presión (bar), USO y Turno.'); return;
+      const fecha=regFecha.value || todayStr();
+      const nivel=regNivel.value.trim();
+      const labor=regLabor.value.trim();
+      const robot=regRobot.value.trim();
+
+      const presionRaw=regPresion.value.trim();
+      let presion=parseFloat(presionRaw.replace(/[^0-9.,-]/g,''));
+      presion=isNaN(presion)?NaN:presion;
+
+      const uso=regUso.value;
+      const turno=regTurno.value;
+      const obs=regObs.value.trim();
+
+      if(!fecha || !nivel || !labor || !robot || !isFinite(presion) || !uso || !turno){
+        alert('Completa Fecha, Nivel, Labor, N° Robot, Presión (bar), USO y Turno.');
+        return;
       }
 
       const regs=getRegs();
       regs.push({
         fecha, nivel, labor, robot,
-        presion:Number(presion.toFixed(2)), uso, turno, obs,
+        presion:Number(presion.toFixed(2)),
+        uso, turno, obs,
         modo:lastRegCalc.modo, m3:lastRegCalc.m3, C:lastRegCalc.C, Sac:lastRegCalc.Sac,
         A:lastRegCalc.A, H:lastRegCalc.H, L:lastRegCalc.L
       });
+
       setRegs(regs);
       regMsg.textContent='Registro guardado. Revisa la pestaña “Tablas”.';
-      renderProduccionChart();
     });
-    goTablasBtn?.addEventListener('click', ()=>{ switchTab('tab-tablas', document.getElementById('btn-tablas')); });
 
-    /* ===== Pestaña 3: Tabla y CSV ===== */
+    goTablasBtn?.addEventListener('click', ()=>{
+      switchTab('tab-tablas', document.getElementById('btn-tablas'));
+    });
+
+    /* ===== Tablas + CSV ===== */
     const tbl3Body=document.querySelector('#tbl3 tbody');
+
     function renderTbl3(){
       const regs=getRegs();
       tbl3Body.innerHTML='';
       regs.forEach((r,i)=>{
         const tr=document.createElement('tr');
-        const m3txt=(r.m3==null)?'—':fmt1(r.m3), constxt=(r.C??'—'), sactxt=(r.Sac??'—'),
-              ahltxt=(r.A??'—')+'/'+(r.H??'—')+'/'+(r.L??'—');
+        const m3txt=(r.m3==null)?'—':fmt1(r.m3);
+        const constxt=(r.C??'—');
+        const sactxt=(r.Sac??'—');
+        const ahltxt=(r.A??'—')+'/'+(r.H??'—')+'/'+(r.L??'—');
+
         tr.innerHTML=`
           <td>${i+1}</td><td>${r.fecha}</td><td>${r.nivel}</td><td>${r.labor}</td><td>${r.robot}</td>
-          <td>${r.presion}</td><td>${r.uso??'—'}</td><td>${r.turno??'—'}</td><td>${r.obs||''}</td>
+          <td>${r.presion}</td><td>${r.uso??'—'}</td><td>${r.turno??'—'}</td><td>${r.obs??''}</td>
           <td>${r.modo??'—'}</td><td>${m3txt}</td><td>${constxt}</td><td>${sactxt}</td><td>${ahltxt}</td>
-          <td><button class="btn ghost" type="button" data-i="${i}">Eliminar</button></td>`;
+          <td><button class="btn ghost" type="button" data-i="${i}">Eliminar</button></td>
+        `;
         tbl3Body.appendChild(tr);
+
         tr.querySelector('button')?.addEventListener('click', ()=>{
-          const arr=getRegs(); arr.splice(i,1); setRegs(arr);
-          renderTbl3(); renderProduccionChart();
+          const arr=getRegs();
+          arr.splice(i,1);
+          setRegs(arr);
+          renderTbl3();
         });
       });
     }
@@ -699,539 +642,41 @@
       const esc=(v)=>{ const s=(v==null)?'':String(v); return '"' + s.replace(/"/g,'""') + '"'; };
       const lines=[headers.join(',')];
       regs.forEach((r,i)=>{
-        lines.push([i+1,r.fecha,r.nivel,r.labor,r.robot,r.presion,r.uso,r.turno,r.obs||'',r.modo,(r.m3==null?'':fmt1(r.m3)),r.C,r.Sac,r.A,r.H,r.L]
-          .map(esc).join(','));
+        lines.push([
+          i+1,r.fecha,r.nivel,r.labor,r.robot,r.presion,r.uso,r.turno,r.obs??'',r.modo,
+          (r.m3==null?'':fmt1(r.m3)),r.C,r.Sac,r.A,r.H,r.L
+        ].map(esc).join(','));
       });
       return lines.join('\r\n');
     }
+
     document.getElementById('tbl3ExportCSV')?.addEventListener('click', ()=>{
-      const regs=getRegs(); if(!regs.length){ alert('No hay registros para exportar.'); return; }
+      const regs=getRegs();
+      if(!regs.length){ alert('No hay registros para exportar.'); return; }
       const csv=toCSV(regs);
       const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
       const url=URL.createObjectURL(blob);
-      const a=document.createElement('a'); a.href=url; a.download=`shotcrete-registros-${Date.now()}.csv`; a.click();
+      const a=document.createElement('a');
+      a.href=url;
+      a.download=`shotcrete-registros-${Date.now()}.csv`;
+      a.click();
       URL.revokeObjectURL(url);
     });
+
     document.getElementById('tbl3Refrescar')?.addEventListener('click', ()=>{ renderTbl3(); });
+
     document.getElementById('tbl3BorrarTodo')?.addEventListener('click', ()=>{
       if(confirm('¿Borrar TODOS los registros?')){
-        localStorage.removeItem('sc_registros'); renderTbl3(); renderProduccionChart();
+        localStorage.removeItem(LS_REGS);
+        renderTbl3();
       }
     });
 
-    /* ===== Dashboard: Producción (Labor vs m³) ===== */
-    function aggregateM3PorLabor(filters){
-      const {fecha, turno} = (filters||{});
-      const regs=getRegs(); const mapa=new Map();
-      for(const r of regs){
-        if (fecha && r.fecha !== fecha) continue;
-        if (turno && r.turno !== turno) continue;
-        const labor=(r.labor??'').trim(); const m3=(r.m3==null?0:Number(r.m3));
-        if(!labor) continue;
-        mapa.set(labor,(mapa.get(labor)??0)+(isFinite(m3)?m3:0));
-      }
-      return [...mapa.entries()].map(([label,value])=>({label, value:Number(value.toFixed(1))}))
-                               .sort((a,b)=>b.value-a.value);
-    }
-
-    function drawInfoBox(ctx, L, T, plotW, title, lines){
-      ctx.font='12px system-ui';
-      const padX=10,padY=8,lineH=16;
-      const textW=Math.max(ctx.measureText(title).width, ...lines.map(s=>ctx.measureText(s).width));
-      const boxW=textW+padX*2, boxH=lineH*(lines.length+1)+padY*2;
-      const boxX=L+plotW-boxW-8, boxY=T+8;
-      const dark = matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
-
-      ctx.fillStyle = dark ? 'rgba(18,18,22,0.88)' : 'rgba(255,255,255,0.90)';
-      ctx.strokeStyle= dark ? 'rgba(255,255,255,0.25)' : 'rgba(120,120,120,0.85)';
-      ctx.lineWidth=1;
-
-      const r=8; ctx.beginPath();
-      ctx.moveTo(boxX+r,boxY);
-      ctx.lineTo(boxX+boxW-r,boxY); ctx.quadraticCurveTo(boxX+boxW,boxY,boxX+boxW,boxY+r);
-      ctx.lineTo(boxX+boxW,boxY+boxH-r); ctx.quadraticCurveTo(boxX+boxW,boxY+boxH,boxX+boxW-r,boxY+boxH);
-      ctx.lineTo(boxX+r,boxY+boxH); ctx.quadraticCurveTo(boxX,boxY+boxH,boxX,boxY+boxH-r);
-      ctx.lineTo(boxX,boxY+r); ctx.quadraticCurveTo(boxX,boxY,boxX+r,boxY); ctx.closePath();
-      ctx.fill(); ctx.stroke();
-
-      ctx.fillStyle = dark ? '#f1f1f3' : '#111';
-      ctx.font='bold 12px system-ui';
-      ctx.fillText(title, boxX+padX, boxY+padY+lineH-4);
-      ctx.font='12px system-ui';
-      lines.forEach((s,i)=>ctx.fillText(s, boxX+padX, boxY+padY+lineH*(i+2)-4));
-    }
-
-    function renderProduccionChart(){
-      const canvas=document.getElementById('chartProduccion'); if(!canvas) return;
-      const {W,H,ctx} = sizeCanvasToParent(canvas, 2.00, 2.50);
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-
-      const L=70,R=20,T=50,B=60;
-      const plotW=W-L-R, plotH=H-T-B;
-
-      const fechaSel = document.getElementById('prodFecha')?.value || '';
-      const turnoSel = document.getElementById('prodTurno')?.value || '';
-
-      const data=aggregateM3PorLabor({fecha:fechaSel, turno:turnoSel});
-
-      ctx.fillStyle='#111'; ctx.font='bold 16px -apple-system, system-ui'; ctx.textAlign='center';
-      ctx.fillText('Producción (Labor vs m³)', L+plotW/2, T-22);
-      ctx.textAlign='left';
-
-      if(!data.length){
-        ctx.fillStyle='#666'; ctx.font='16px -apple-system, system-ui';
-        ctx.fillText('Sin datos para graficar (ajusta Fecha/Turno o registra actividad).', L+20, T+40);
-        drawInfoBox(ctx, L, T, plotW, 'Filtro producción', [
-          `Fecha: ${fechaSel || '—'}`,
-          `Turno: ${turnoSel || 'Todos'}`
-        ]);
-        return;
-      }
-
-      ctx.strokeStyle='rgba(120,120,120,0.85)'; ctx.lineWidth=1; ctx.beginPath();
-      ctx.moveTo(L,H-B); ctx.lineTo(W-R,H-B);
-      ctx.moveTo(L,H-B); ctx.lineTo(L,T);
-      ctx.stroke();
-
-      const maxVal=Math.max(...data.map(d=>d.value),1);
-      const niceMax=Math.ceil(maxVal/10)*10 || 1; const ticks=5;
-
-      ctx.fillStyle='#333'; ctx.font='12px -apple-system, system-ui';
-      for(let i=0;i<=ticks;i++){
-        const val=(niceMax/ticks)*i;
-        const y=H-B-(val/niceMax)*plotH;
-        ctx.strokeStyle= i===0 ? 'rgba(120,120,120,0.85)' : 'rgba(200,200,200,0.55)';
-        ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(W-R,y); ctx.stroke();
-        ctx.fillStyle='#333'; ctx.fillText(val.toFixed(0), L-40, y+4);
-      }
-
-      const n=data.length, gapX=20;
-      const barW=Math.max(24, Math.floor((plotW - gapX*(n-1))/n));
-      data.forEach((d,i)=>{
-        const x=L + i*(barW+gapX);
-        const h=(d.value/niceMax)*plotH;
-        const y=H-B-h;
-        ctx.fillStyle= '#ff7a00';
-        ctx.fillRect(x,y,barW,h);
-        ctx.fillStyle='#111'; ctx.font='12px -apple-system, system-ui';
-        ctx.fillText(d.value.toFixed(1), x, y-6);
-        ctx.save(); ctx.translate(x+barW/2, H-B+12); ctx.rotate(-Math.PI/6);
-        ctx.fillStyle='#333'; ctx.textAlign='left'; ctx.fillText(d.label, 0, 0);
-        ctx.restore();
-      });
-
-      ctx.fillStyle='#333'; ctx.font='13px -apple-system, system-ui';
-      ctx.fillText('m³', L-50, T-10); ctx.textAlign='center';
-      ctx.fillText('Labor', L+plotW/2, H-20);
-      ctx.textAlign='left';
-
-      drawInfoBox(ctx, L, T, plotW, 'Filtro producción', [
-        `Fecha: ${fechaSel || '—'}`,
-        `Turno: ${turnoSel || 'Todos'}`
-      ]);
-    }
-
-    document.getElementById('btnRenderProduccion')?.addEventListener('click', renderProduccionChart);
-
-    /* ===== Ensayo log‑log (Fecha + Labor) ===== */
-    const logMap = (v, vmin, vmax, p0, p1) => {
-      const lv=Math.log10(Math.max(v,1e-12)), lmin=Math.log10(vmin), lmax=Math.log10(vmax);
-      return p0 + (lv-lmin)*(p1-p0)/(lmax-lmin);
-    };
-
-    function getEnsayos(){ try{ return JSON.parse(localStorage.getItem(LS_ENSAYOS)) ?? []; }catch{ return []; } }
-    function setEnsayos(arr){ localStorage.setItem(LS_ENSAYOS, JSON.stringify(arr)); }
-
-    function renderEnsayoChart(){
-      const canvas=document.getElementById('chartEnsayo'); if(!canvas) return;
-      const {W,H,ctx} = sizeCanvasToParent(canvas, 1.70, 2.14);
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-
-      const L=80, R=24, T=68, B=74;
-      const plotW=W-L-R, plotH=H-T-B;
-      const XMIN=0.1, XMAX=100, YMIN=0.01, YMAX=100;
-
-      const ensayos=getEnsayos();
-      const fFecha = document.getElementById('ensFecha')?.value || '';
-      const fLabor = (document.getElementById('ensLabor')?.value || '').trim().toLowerCase();
-
-      const e = ensayos.find(en=>{
-        const okFecha = fFecha ? (en.meta?.fecha === fFecha) : true;
-        const okLabor = fLabor ? ((en.meta?.labor||'').trim().toLowerCase() === fLabor) : true;
-        return okFecha && okLabor;
-      });
-
-      /* Fondo canvas (claro/oscuro) */
-      const CANVAS_BG = getComputedStyle(document.documentElement).getPropertyValue('--ens-canvas-bg').trim() || '#ffffff';
-      ctx.fillStyle = CANVAS_BG;
-      ctx.fillRect(0, 0, W, H);
-
-      // Título centrado
-      ctx.font=(W<420?'bold 14px -apple-system, system-ui':'bold 16px -apple-system, system-ui'); ctx.fillStyle='#111'; ctx.textAlign='center';
-      ctx.fillText('EVOLUCIÓN DE RESISTENCIAS INICIALES Y TEMPRANAS', L+plotW/2, T- (W<420?24:28));
-      ctx.font=(W<420?'12px -apple-system, system-ui':'12px -apple-system, system-ui'); ctx.fillStyle='#333';
-      ctx.fillText('MPa vs Tiempo (h) — ejes logarítmicos', L+plotW/2, T- (W<420?10:12));
-      ctx.textAlign='left';
-
-      // Grillas (mayor/menor) con tonos suaves
-      ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--grid-major').trim() || 'rgba(120,120,120,0.40)';
-      ctx.lineWidth=1;
-      [0.1,1,10,100].forEach(xv=>{ const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); });
-      [0.01,0.1,1,10,100].forEach(yv=>{ const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+plotW,y); ctx.stroke(); });
-
-      ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--grid-minor').trim() || 'rgba(200,200,200,0.25)';
-      ctx.lineWidth=0.8;
-      for(let d=-1; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const xv=base*m; if(xv<XMIN||xv>XMAX) continue; const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.beginPath(); ctx.moveTo(x,T); ctx.lineTo(x,T+plotH); ctx.stroke(); } }
-      for(let d=-2; d<=2; d++){ const base=Math.pow(10,d); for(let m=2;m<=9;m++){ const yv=base*m; if(yv<YMIN||yv>YMAX) continue; const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(L+plotW,y); ctx.stroke(); } }
-
-      // Ejes
-      ctx.strokeStyle='#888'; ctx.lineWidth=1.5; ctx.beginPath();
-      ctx.moveTo(L,T+plotH); ctx.lineTo(L+plotW,T+plotH);
-      ctx.moveTo(L,T+plotH); ctx.lineTo(L,T);
-      ctx.stroke();
-
-      // Etiquetas ejes
-      ctx.fillStyle='#111'; ctx.font='12px -apple-system, system-ui';
-      [0.1,1,10,100].forEach(xv=>{ const x=logMap(xv,XMIN,XMAX,L,L+plotW); ctx.fillText(String(xv), x-10, T+plotH+20); });
-      [0.01,0.1,1,10,100].forEach(yv=>{ const y=logMap(yv,YMIN,YMAX,T+plotH,T); ctx.fillText(String(yv), L-50, y+4); });
-      ctx.save(); ctx.translate(L-65, T+plotH/2); ctx.rotate(-Math.PI/2); ctx.font='13px -apple-system, system-ui'; ctx.fillText('RESISTENCIA (MPa)', 0, 0); ctx.restore();
-      ctx.font='13px -apple-system, system-ui'; ctx.textAlign='center'; ctx.fillText('TIEMPO (h)', L+plotW/2, H-26);
-      ctx.textAlign='left';
-
-      // Cuadro meta (Fecha/Turno/Labor/Nivel/Robot)
-      const metaLines=[], meta=e?.meta||{};
-      if(meta?.fecha) metaLines.push(`Fecha: ${meta.fecha}`);
-      if(meta?.turno) metaLines.push(`Turno: ${meta.turno}`);
-      if(meta?.labor) metaLines.push(`Labor: ${meta.labor}`);
-      if(meta?.nivel) metaLines.push(`Nivel: ${meta.nivel}`);
-      if(meta?.robot) metaLines.push(`Robot: ${meta.robot}`);
-      if(metaLines.length){
-        drawInfoBox(ctx, L, T, plotW, 'Ensayo seleccionado', metaLines);
-      } else {
-        drawInfoBox(ctx, L, T, plotW, 'Filtro ensayo', [
-          `Fecha: ${fFecha || '—'}`,
-          `Labor: ${fLabor || '—'}`
-        ]);
-      }
-
-      // Datos del ensayo
-      let pts=[]; if(e?.penetracion){ pts=e.penetracion.map(r=>({x:r.h_acum,y:r.mpa})); } else if(e?.hilti_mpa){ pts=e.hilti_mpa.map(r=>({x:r.h,y:r.mpa})); }
-      pts=pts.filter(p=>isFinite(p.x)&&isFinite(p.y)&&p.y>0).sort((a,b)=>a.x-b.x);
-
-      // Curva del ensayo — AZUL técnico con halo
-      const ENS_LINE   = getComputedStyle(document.documentElement).getPropertyValue('--ens-line').trim()   || '#007AFF';
-      const ENS_POINT  = getComputedStyle(document.documentElement).getPropertyValue('--ens-point').trim()  || '#007AFF';
-      const ENS_LABEL  = getComputedStyle(document.documentElement).getPropertyValue('--ens-label').trim()  || '#007AFF';
-      const ENS_HALO   = getComputedStyle(document.documentElement).getPropertyValue('--ens-label-halo').trim() || 'rgba(255,255,255,0.95)';
-
-      if(pts.length){
-        // Línea (un poco más gruesa en móvil)
-        ctx.strokeStyle=ENS_LINE;
-        ctx.lineWidth=(W < 420 ? 4.2 : 3.8);
-        ctx.beginPath();
-        pts.forEach((p,i)=>{ 
-          const x=logMap(p.x,XMIN,XMAX,L,L+plotW), y=logMap(p.y,YMIN,YMAX,T+plotH,T); 
-          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); 
-        });
-        ctx.stroke();
-
-        // Puntos más grandes con borde blanco
-        pts.forEach(p=>{
-          const x=logMap(p.x,XMIN,XMAX,L,L+plotW), y=logMap(p.y,YMIN,YMAX,T+plotH,T);
-          ctx.fillStyle=ENS_POINT;
-          ctx.beginPath(); ctx.arc(x,y,(W<420?7:6),0,Math.PI*2); ctx.fill();
-          ctx.strokeStyle='rgba(255,255,255,0.98)'; ctx.lineWidth=(W<420?2.2:1.8);
-          ctx.beginPath(); ctx.arc(x,y,(W<420?7:6),0,Math.PI*2); ctx.stroke();
-        });
-
-        // Etiquetas MPa con halo (oscuro en dark mode)
-        ctx.font=(W<420?'bold 12px -apple-system, system-ui':'bold 13px -apple-system, system-ui');
-        pts.forEach(p=>{
-          const x=logMap(p.x,XMIN,XMAX,L,L+plotW), y=logMap(p.y,YMIN,YMAX,T+plotH,T);
-          const label = p.y.toFixed(2);
-          ctx.fillStyle=ENS_HALO;                   // halo
-          ctx.fillText(label, x+8, y-8);
-          ctx.strokeStyle='rgba(255,255,255,0.95)'; // contorno blanco fino
-          ctx.lineWidth=2.5;
-          ctx.strokeText(label, x+8, y-8);
-          ctx.fillStyle=ENS_LABEL;                  // texto azul
-          ctx.fillText(label, x+8, y-8);
-        });
-      } else {
-        ctx.fillStyle=(matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? '#ddd' : '#666');
-        ctx.font='16px -apple-system, system-ui';
-        ctx.fillText('Sin puntos > 0. Ajusta Fecha/Labor o guarda un ensayo.', L+20, T+40);
-      }
-
-      // Curvas J (anclas exactas + Bezier) — gris tenue y delgadas
-      const J1 = [ {h:0.10,mpa:0.09}, {h:0.20,mpa:0.10}, {h:1.00,mpa:0.20}, {h:6.00,mpa:0.70}, {h:24.00,mpa:2.00} ];
-      const J2 = [ {h:0.10,mpa:0.20}, {h:0.20,mpa:0.24}, {h:1.00,mpa:0.50}, {h:6.00,mpa:1.70}, {h:24.00,mpa:5.00} ];
-      const J3 = [ {h:0.10,mpa:0.50}, {h:0.20,mpa:0.59}, {h:1.00,mpa:1.50}, {h:6.00,mpa:5.00}, {h:24.00,mpa:15.00} ];
-      const J_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--j-curve').trim() || 'rgba(180,180,180,0.35)';
-      const J_WIDTH = (W<420?1.1:1.3);
-
-      const toXY = (h, m) => ({ x: logMap(h,XMIN,XMAX,L,L+plotW), y: logMap(m,YMIN,YMAX,T+plotH,T) });
-
-      function drawLabelBox(x, y, text){
-        const w=22,h=18,r=6;
-        const dark = matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
-        ctx.fillStyle= dark ? 'rgba(18,18,22,0.88)' : 'rgba(255,255,255,0.92)';
-        ctx.strokeStyle= dark ? 'rgba(255,255,255,0.25)' : 'rgba(120,120,120,0.85)';
-        ctx.lineWidth=1;
-        ctx.beginPath();
-        ctx.moveTo(x+r,y);
-        ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-        ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-        ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-        ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle= dark ? '#f1f1f3' : '#333'; ctx.font='12px -apple-system, system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle';
-        ctx.fillText(text, x+w/2, y+h/2);
-        ctx.textAlign='left'; ctx.textBaseline='alphabetic';
-      }
-
-      function drawSmooth(anchors, color, width, label){
-        if(!anchors || anchors.length<2) return;
-        const ptsA=anchors.map(a=>toXY(a.h,a.mpa));
-        // Pendientes estilo Catmull-Rom
-        const m=new Array(ptsA.length).fill(0);
-        for(let k=0;k<ptsA.length;k++){
-          if(k===0){ const dx=(ptsA[1].x-ptsA[0].x)||1e-6; m[k]=(ptsA[1].y-ptsA[0].y)/dx; }
-          else if(k===ptsA.length-1){ const dx=(ptsA[k].x-ptsA[k-1].x)||1e-6; m[k]=(ptsA[k].y-ptsA[k-1].y)/dx; }
-          else{ const dx=(ptsA[k+1].x-ptsA[k-1].x)||1e-6; m[k]=(ptsA[k+1].y-ptsA[k-1].y)/dx; }
-        }
-        ctx.strokeStyle=color; ctx.lineWidth=width;
-        ctx.beginPath(); ctx.moveTo(ptsA[0].x, ptsA[0].y);
-        for(let k=0;k<ptsA.length-1;k++){
-          const p0=ptsA[k], p1=ptsA[k+1], dx=p1.x-p0.x;
-          const c1={x:p0.x+dx/3, y:p0.y+m[k]*dx/3};
-          const c2={x:p1.x-dx/3, y:p1.y-m[k+1]*dx/3};
-          ctx.bezierCurveTo(c1.x,c1.y,c2.x,c2.y,p1.x,p1.y);
-        }
-        ctx.stroke();
-        const last=ptsA[ptsA.length-1];
-        ctx.font='12px -apple-system, system-ui'; ctx.fillStyle=color;
-        ctx.fillText(label, last.x+6, last.y-6);
-
-        const labChar = (label==='J 1')?'A':(label==='J 2')?'B':'C';
-        drawLabelBox(Math.min(last.x+30, L+plotW-28), Math.max(last.y-10, T+18), labChar);
-      }
-
-      drawSmooth(J1, J_COLOR, J_WIDTH, 'J 1');
-      drawSmooth(J2, J_COLOR, J_WIDTH, 'J 2');
-      drawSmooth(J3, J_COLOR, J_WIDTH, 'J 3');
-    }
-
-    // Redibuja ensayos al cambiar filtros (Fecha/Labor)
-    document.getElementById('ensFecha')?.addEventListener('input', renderEnsayoChart);
-    document.getElementById('ensLabor')?.addEventListener('input', renderEnsayoChart);
-
-    /* ===== Ensayos (guardar/mostrar) ===== */
-    function metaEns(){
-      return {
-        labor: document.getElementById('eLabor')?.value.trim() || '',
-        nivel: document.getElementById('eNivel')?.value.trim() || '',
-        robot: document.getElementById('eRobot')?.value.trim() || '',
-        fecha: document.getElementById('eFecha')?.value || '',
-        turno: document.getElementById('eTurno')?.value || ''
-      };
-    }
-
-    const hhmmToDecHours = (hhmm) => (/^\d{1,2}:\d{2}$/.test(hhmm||'')) ? ((h=Number(hhmm.split(':')[0])), (m=Number(hhmm.split(':')[1])), h + m/60) : NaN;
-    const decHoursToHHMM = (dec) => { let d = dec % 24; if (d < 0) d += 24; const h = Math.floor(d); const m = Math.round((d - h) * 60); return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`; };
-    const parseForces10 = (txt) => { const arr = (txt||'').split(/[,\s]+/).map(Number).filter(v => isFinite(v)); return arr.length === 10 ? arr : null; };
-    const avg = (arr) => arr.reduce((s,v)=>s+v,0)/arr.length;
-
-    const pHoraIni = document.getElementById('pHoraIni');
-    const pAgregado = document.getElementById('pAgregado');
-    const pN15 = document.getElementById('pN15');
-    const pN30 = document.getElementById('pN30');
-    const pN45 = document.getElementById('pN45');
-    const pN60 = document.getElementById('pN60');
-    const pOut15 = document.getElementById('pOut15');
-    const pOut30 = document.getElementById('pOut30');
-    const pOut45 = document.getElementById('pOut45');
-    const pOut60 = document.getElementById('pOut60');
-    const tblPenABody = document.querySelector('#tblPenA tbody');
-
-    function calcPenetracionA() {
-      const H0 = pHoraIni.value.trim();
-      const h0 = hhmmToDecHours(H0);
-      const agg = pAgregado?.value || '8'; // '8'|'16'
-      if (!isFinite(h0)){ alert('Ingresa H₀ válida (hh:mm).'); return null; }
-
-      const offsets = [
-        {min:15,  input:pN15,  out:pOut15},
-        {min:30,  input:pN30,  out:pOut30},
-        {min:45,  input:pN45,  out:pOut45},
-        {min:60,  input:pN60,  out:pOut60},
-      ];
-
-      const filas = [];
-      for (const item of offsets) {
-        const arr = parseForces10(item.input.value);
-        if (!arr) { alert(`A ${item.min} min deben ser exactamente 10 fuerzas (N).`); return null; }
-        const promN = avg(arr);
-        const mpa = (agg==='8') ? ((promN - 37)/526) : ((promN + 17.5)/687);
-
-        const h_acum = item.min/60; // 0.25,0.50,0.75,1.00
-        const horaLectura = decHoursToHHMM(h0 + h_acum);
-
-        item.out.textContent = `Prom: ${promN.toFixed(1)} N | MPa: ${mpa.toFixed(3)} | Hora lectura: ${horaLectura}`;
-
-        filas.push({
-          tipo       : 'penetracion',
-          tiempo_min : item.min,
-          hora       : horaLectura,
-          h_acum     : Number(h_acum.toFixed(2)),
-          fuerzas    : arr.join(', '),
-          promN      : Number(promN.toFixed(1)),
-          mpa        : Number(mpa.toFixed(3)),
-          agregado_mm: agg==='8' ? 8 : 16
-        });
-      }
-
-      // Vista previa
-      tblPenABody.innerHTML='';
-      filas.forEach((f,i)=>{
-        const tr=document.createElement('tr');
-        tr.innerHTML=`
-          <td>${i+1}</td>
-          <td>${f.tiempo_min}</td>
-          <td>${f.hora}</td>
-          <td>${f.h_acum.toFixed(2)}</td>
-          <td>${f.fuerzas}</td>
-          <td>${f.promN.toFixed(1)}</td>
-          <td>${f.mpa.toFixed(3)}</td>
-        `;
-        tblPenABody.appendChild(tr);
-      });
-
-      return filas;
-    }
-
-    document.getElementById('pCalc')?.addEventListener('click', ()=>{ calcPenetracionA(); });
-    document.getElementById('pSaveA')?.addEventListener('click', ()=>{
-      const filas=calcPenetracionA(); if(!filas) return;
-      const ens=getEnsayos(); ens.push({ meta:metaEns(), penetracion:filas });
-      setEnsayos(ens);
-      renderEnsRes?.(); renderEnsayoChart?.();
-      alert('Ensayo (Penetración A) guardado (15–60 min).');
-    });
-    document.getElementById('pClearA')?.addEventListener('click', ()=>{
-      [pN15,pN30,pN45,pN60].forEach(i=>i.value='');
-      [pOut15,pOut30,pOut45,pOut60].forEach(o=>o.textContent='Prom: — N | MPa: — | Hora lectura: —');
-      tblPenABody.innerHTML='';
-    });
-    pAgregado?.addEventListener('change', ()=>{
-      if([pN15,pN30,pN45,pN60].some(i=>i.value.trim())) calcPenetracionA();
-    });
-
-    /* ===== Hilti B ===== */
-    const tblHiltiBody = document.querySelector('#tblHilti tbody');
-    function renum(tbody){ [...tbody.querySelectorAll('tr')].forEach((tr,i)=>tr.children[0].textContent=i+1); }
-
-    document.getElementById('hAdd')?.addEventListener('click', ()=>{
-      const hora = document.getElementById('hHora').value.trim();
-      const h = Number(document.getElementById('hHoraAc').value||'');
-      const perforada = Number(document.getElementById('hPerforada').value||'');
-      const pullN = Number(document.getElementById('hPullN').value||'');
-      if (!/^\d{1,2}:\d{2}$/.test(hora) || !isFinite(h) || !isFinite(perforada) || !isFinite(pullN)){ alert('Completa hora, h acumulada, perforada y N.'); return; }
-      const rel = perforada>0 ? (pullN/perforada) : NaN; if (!isFinite(rel)){ alert('Perforada debe ser > 0.'); return; }
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td></td><td>${hora}</td><td>${h.toFixed(3)}</td><td>${perforada.toFixed(1)}</td><td>${pullN.toFixed(1)}</td><td>${rel.toFixed(3)}</td><td>${h.toFixed(2)} h</td><td><button class="btn ghost del" type="button">Eliminar</button></td>`;
-      tblHiltiBody.appendChild(tr); renum(tblHiltiBody);
-      tr.querySelector('.del')?.addEventListener('click', ()=>{ tr.remove(); renum(tblHiltiBody); });
-    });
-    document.getElementById('hClear')?.addEventListener('click', ()=>{ tblHiltiBody.innerHTML=''; });
-
-    document.getElementById('hSave')?.addEventListener('click', ()=>{
-      const off = Number(document.getElementById('hOffset').value || '2.7');
-      const div = Number(document.getElementById('hDivisor').value || '7.69');
-      const filas = [...tblHiltiBody.querySelectorAll('tr')].map(tr => {
-        const td = tr.querySelectorAll('td');
-        return { tipo:'hilti', hora:td[1].textContent, h_acum:Number(td[2].textContent), perforada_mm:Number(td[3].textContent), pullN:Number(td[4].textContent), rel_Nmm:Number(td[5].textContent) };
-      });
-      if (!filas.length){ alert('Añade filas Hilti.'); return; }
-
-      const byH = {}; filas.forEach(f=>{ const key = f.h_acum.toFixed(2); (byH[key] ||= []).push(f.rel_Nmm); });
-      const mpaByH = Object.entries(byH).map(([h, arr])=>{
-        const promRel = arr.reduce((s,v)=>s+v,0)/arr.length;
-        const mpa = (promRel + off) / div;
-        return { h:Number(h), mpa:Number(mpa.toFixed(3)) };
-      });
-
-      const ens = getEnsayos(); ens.push({ meta:metaEns(), hilti:filas, hilti_mpa: mpaByH, hilti_params:{offset:off, divisor:div} });
-      setEnsayos(ens); renderEnsRes(); alert('Ensayo (Hilti) guardado.');
-      renderEnsayoChart();
-    });
-
-    /* ===== Resumen ensayos ===== */
-    const tblEnsResBody = document.querySelector('#tblEnsRes tbody');
-    function renderEnsRes(){
-      const ens = getEnsayos(); tblEnsResBody.innerHTML='';
-      ens.forEach((e,i)=>{
-        const pickPen = (h) => e.penetracion?.find(r => Math.abs(r.h_acum - h) < 0.01)?.mpa;
-        const pickHil = (h) => e.hilti_mpa?.find(r => Math.abs(r.h - h) < 0.01)?.mpa;
-        const m1 = pickPen(1.0) ?? pickHil(1.0);
-        const m2 = pickPen(2.0) ?? pickHil(2.0);
-        const m3 = pickPen(3.0) ?? pickHil(3.0);
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i+1}</td><td>${e.penetracion?'Penetración':'Hilti B'}</td><td>${e.meta?.labor||'—'} | ${e.meta?.nivel||'—'} | ${e.meta?.robot||'—'}</td><td>${m1?.toFixed?.(3) ?? '—'}</td><td>${m2?.toFixed?.(3) ?? '—'}</td><td>${m3?.toFixed?.(3) ?? '—'}</td><td><button class="btn ghost del" type="button">Eliminar</button></td>`;
-        tblEnsResBody.appendChild(tr);
-        tr.querySelector('.del')?.addEventListener('click', ()=>{
-          const arr=getEnsayos(); arr.splice(i,1); setEnsayos(arr);
-          renderEnsRes(); renderEnsayoChart();
-        });
-      });
-    }
-    renderEnsRes();
-
-    /* ===== Export PNG 2x (WhatsApp) ===== */
-    function exportCanvasPNG2x(canvasId, baseName){
-      const c = document.getElementById(canvasId);
-      if(!c) return alert('Canvas no encontrado: ' + canvasId);
-
-      const pr = Math.max(1, Math.min(window.devicePixelRatio || 1, 3));
-      const exportScale = 2; // Fuerza 2x para WhatsApp
-
-      const wCss = c.clientWidth, hCss = c.clientHeight;
-      const w = Math.round(wCss * exportScale * pr);
-      const h = Math.round(hCss * exportScale * pr);
-
-      const tmp = document.createElement('canvas');
-      tmp.width = w; tmp.height = h;
-      tmp.style.width = wCss + 'px';
-      tmp.style.height = hCss + 'px';
-      const ctx = tmp.getContext('2d');
-      ctx.setTransform(exportScale * pr, 0, 0, exportScale * pr, 0, 0);
-
-      // Copia del bitmap del canvas actual
-      ctx.drawImage(c, 0, 0, w, h);
-
-      const url = tmp.toDataURL('image/png');
-      const a = document.createElement('a'); a.href=url; a.download=`${baseName}-${Date.now()}.png`; a.click();
-      setTimeout(()=>URL.revokeObjectURL?.(url), 0);
-    }
-    document.getElementById('btnExportProdPNG')?.addEventListener('click', ()=> exportCanvasPNG2x('chartProduccion', 'produccion'));
-    document.getElementById('btnExportEnsPNG')?.addEventListener('click', ()=> exportCanvasPNG2x('chartEnsayo', 'ensayos'));
-
-    /* ===== Inicializar Dashboard ===== */
-    function renderDashboard(){
-      renderProduccionChart?.();
-      renderEnsayoChart?.();
-    }
-
-    /* ===== Loader control (ocultar al terminar primer render) ===== */
+    /* ===== Loader control ===== */
     (function(){
       const loader = document.getElementById('appLoader');
-      if (!loader) return;
+      if(!loader) return;
       const safetyHide = setTimeout(hideLoader, 6000);
-      const origRenderDashboard = window.renderDashboard;
-      window.renderDashboard = function(){
-        try { origRenderDashboard?.(); }
-        finally { hideLoader(); }
-      };
       window.addEventListener('load', hideLoader);
       function hideLoader(){
         clearTimeout(safetyHide);
@@ -1240,20 +685,15 @@
       }
     })();
 
-    /* Redibujar al cambiar tamaño si Dashboard está activo */
-    window.addEventListener('resize', ()=>{ if(document.querySelector('#tab-dashboard').classList.contains('active')) renderDashboard(); });
-
-    /* SW register */
+    /* ===== SW register ===== */
     (function(){
       if('serviceWorker' in navigator){
         const swUrl='/shotcrete-calc/sw.js';
-        window.addEventListener('load',()=>{ navigator.serviceWorker.register(swUrl).catch(()=>{}); });
+        window.addEventListener('load', ()=> {
+          navigator.serviceWorker.register(swUrl).catch(()=>{});
+        });
       }
     })();
-
-    /* Auto-render al cargar */
-    window.addEventListener('load', renderDashboard);
   </script>
 </body>
 </html>
-
