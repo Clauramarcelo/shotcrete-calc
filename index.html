@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Shotcrete Calc</title>
 
-  <!-- Manifest PWA -->
+  <!-- ✅ Manifest PWA (corregido) -->
   <link rel="manifest" href="/shotcrete-calc/manifest.json" />
   <meta name="theme-color" content="#ff6a00" />
 
-  <!-- Apple PWA (opcional) -->
+  <!-- ✅ Apple PWA (corregido) -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <link rel="apple-touch-icon" href="/shotcrete-calc/icon-192.png" />
@@ -130,12 +130,7 @@
     thead th{background:#fff3e8}
     @media (prefers-color-scheme: dark){ thead th{background:#24170a;color:#fed8b4} }
 
-    /* Tabla compacta estilo “cuadro” */
     .mini-table th,.mini-table td{padding:.45rem;font-size:.95rem}
-    .mini-table thead th{background:#fff3e8}
-    @media (prefers-color-scheme: dark){
-      .mini-table thead th{background:#24170a;color:#fed8b4}
-    }
 
     /* Tabbar (3 pestañas) */
     .tabbar{
@@ -261,14 +256,14 @@
   <div id="appLoader" aria-hidden="true">
     <div class="loader-card">
       <img class="loader-icon" alt="Shotcrete icon"
-        src="https://raw.githubusercontent.com/Clauramarcelo/shotcrete-calc/main/Mixer.jpg" />
+           src="https://raw.githubusercontent.com/Clauramarcelo/shotcrete-calc/main/Mixer.jpg" />
       <div class="loader-spinner" aria-label="Cargando"></div>
       <div class="loader-text">Cargando…</div>
     </div>
   </div>
 
   <main>
-    <!-- ===== 1) CALCULO m3 ===== -->
+    <!-- ================= CALCULO m3 ================= -->
     <section id="tab-calculo" class="tab active" aria-labelledby="btn-calculo">
       <fieldset>
         <legend>Calculo m3</legend>
@@ -342,7 +337,7 @@
       </fieldset>
     </section>
 
-    <!-- ===== 2) REGISTROS ===== -->
+    <!-- ================= REGISTROS ================= -->
     <section id="tab-registros" class="tab" aria-labelledby="btn-registros">
       <fieldset>
         <legend>Registros</legend>
@@ -422,16 +417,22 @@
         <div class="actions">
           <button class="btn primary" id="rCalcularTotal" type="button">Calcular total</button>
           <button class="btn secondary" id="rGuardarRegistro" type="button">Registrar</button>
-          <button class="btn ghost" id="rExportPDF" type="button">Exportar PDF</button>
         </div>
 
         <div id="rOut" class="result" aria-live="polite">
           <h2>—</h2>
           <small id="rOutDetail"></small>
         </div>
+      </fieldset>
+    </section>
 
-        <!-- ✅ CUADRO (como tu imagen) -->
-        <fieldset style="margin-top:1rem">
+    <!-- ================= REPORTE (ANTES TABLAS) ================= -->
+    <section id="tab-reporte" class="tab" aria-labelledby="btn-reporte">
+      <fieldset>
+        <legend>Reporte</legend>
+
+        <!-- ✅ CUADRO (movido aquí) -->
+        <fieldset style="margin:0 0 1rem">
           <legend>Cuadro de registro</legend>
           <table class="mini-table" id="regCuadro">
             <thead>
@@ -457,42 +458,45 @@
               </tr>
             </tbody>
           </table>
+
+          <div class="actions">
+            <button class="btn ghost" id="repExportPDF" type="button">Exportar PDF (Cuadro)</button>
+          </div>
         </fieldset>
-      </fieldset>
-    </section>
 
-    <!-- ===== 3) TABLAS ===== -->
-    <section id="tab-tablas" class="tab" aria-labelledby="btn-tablas">
-      <fieldset>
-        <legend>Tabla de registros (CSV)</legend>
+        <!-- ✅ HISTORIAL -->
+        <fieldset>
+          <legend>Historial (CSV)</legend>
 
-        <div class="actions">
-          <button class="btn primary" id="tbl3ExportCSV" type="button">Exportar a CSV</button>
-          <button class="btn ghost" id="tbl3Refrescar" type="button">Refrescar</button>
-          <button class="btn secondary" id="tbl3BorrarTodo" type="button">Borrar todo</button>
-        </div>
+          <div class="actions">
+            <button class="btn primary" id="tbl3ExportCSV" type="button">Exportar a CSV</button>
+            <button class="btn ghost" id="tbl3Refrescar" type="button">Refrescar</button>
+            <button class="btn secondary" id="tbl3BorrarTodo" type="button">Borrar todo</button>
+          </div>
 
-        <table id="tbl3" class="mini-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Fecha</th>
-              <th>Labor</th>
-              <th>Nivel</th>
-              <th>Ejecutor</th>
-              <th>m3(Total)</th>
-              <th>Avance + frente</th>
-              <th>Bandas</th>
-              <th>Resanes</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+          <table id="tbl3" class="mini-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Fecha</th>
+                <th>Labor</th>
+                <th>Nivel</th>
+                <th>Ejecutor</th>
+                <th>m3(Total)</th>
+                <th>Avance + frente</th>
+                <th>Bandas</th>
+                <th>Resanes</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </fieldset>
       </fieldset>
     </section>
   </main>
 
+  <!-- ✅ Tab bar (Tablas -> Reporte) -->
   <nav class="tabbar" role="tablist" aria-label="Navegación">
     <button type="button" id="btn-calculo" class="active" role="tab"
       aria-controls="tab-calculo" aria-selected="true"
@@ -502,13 +506,13 @@
       aria-controls="tab-registros" aria-selected="false"
       onclick="switchTab('tab-registros', this)">Registros</button>
 
-    <button type="button" id="btn-tablas" role="tab"
-      aria-controls="tab-tablas" aria-selected="false"
-      onclick="switchTab('tab-tablas', this)">Tablas</button>
+    <button type="button" id="btn-reporte" role="tab"
+      aria-controls="tab-reporte" aria-selected="false"
+      onclick="switchTab('tab-reporte', this)">Reporte</button>
   </nav>
 
   <script>
-    /* ==================== Utilidades ==================== */
+    /* ===== Utilidades ===== */
     function parseDec(txt){
       if (typeof txt !== 'string') return NaN;
       const s = txt.trim().replace(',', '.');
@@ -519,20 +523,30 @@
     const todayStr = () => new Date().toISOString().slice(0,10);
     function isFilled(v){ return String(v ?? '').trim() !== ''; }
 
-    /* ==================== Tabs ==================== */
+    /* ===== Tabs ===== */
     function switchTab(targetId, btnEl){
-      document.querySelectorAll('.tabbar button').forEach(b=>{
-        const active = (b === btnEl);
-        b.classList.toggle('active', active);
-        b.setAttribute('aria-selected', active ? 'true' : 'false');
-      });
-      document.querySelectorAll('section.tab').forEach(sec=>{
-        sec.classList.toggle('active', sec.id === targetId);
-      });
-      if (targetId === 'tab-tablas') renderTbl3();
+      try{
+        document.querySelectorAll('.tabbar button').forEach(b=>{
+          const active = (b === btnEl);
+          b.classList.toggle('active', active);
+          b.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+
+        document.querySelectorAll('section.tab').forEach(sec=>{
+          sec.classList.toggle('active', sec.id === targetId);
+        });
+
+        if (targetId === 'tab-reporte') {
+          loadLastCuadro();
+          renderTbl3();
+        }
+      }catch(err){
+        console.error(err);
+        alert('Error al cambiar de pestaña.');
+      }
     }
 
-    /* ==================== Fórmulas ==================== */
+    /* ===== Fórmulas ===== */
     function calcFrente(A, H){
       const hEff = Math.max(0, H - 2);
       return (A * hEff * 0.9) / 14;
@@ -552,7 +566,23 @@
 
     function togglePane(chk, pane){ pane.classList.toggle('hidden', !chk.checked); }
 
-    /* ==================== CALCULO m3 (mantener) ==================== */
+    function sumBandas3From(a1,h1,l1,a2,h2,l2,a3,h3,l3){
+      let sum=0;
+      const bands = [
+        {A:a1.value,H:h1.value,L:l1.value},
+        {A:a2.value,H:h2.value,L:l2.value},
+        {A:a3.value,H:h3.value,L:l3.value},
+      ];
+      for(const bx of bands){
+        const any = isFilled(bx.A)||isFilled(bx.H)||isFilled(bx.L);
+        if(!any) continue;
+        const A=parseDec(bx.A), H=parseDec(bx.H), L=parseDec(bx.L);
+        if(isFinite(A)&&isFinite(H)&&isFinite(L)) sum += calcBandas(A,H,L);
+      }
+      return sum;
+    }
+
+    /* ================= CALCULO m3 ================= */
     const chkAvance = document.getElementById('chkAvance');
     const chkBandas = document.getElementById('chkBandas');
     const chkResane = document.getElementById('chkResane');
@@ -575,22 +605,6 @@
 
     const qOutH2 = document.querySelector('#qOut h2');
     const qMode = document.getElementById('qMode');
-
-    function sumBandas3From(a1,h1,l1,a2,h2,l2,a3,h3,l3){
-      let sum=0;
-      const bands = [
-        {A:a1.value,H:h1.value,L:l1.value},
-        {A:a2.value,H:h2.value,L:l2.value},
-        {A:a3.value,H:h3.value,L:l3.value},
-      ];
-      for(const bx of bands){
-        const any = isFilled(bx.A)||isFilled(bx.H)||isFilled(bx.L);
-        if(!any) continue;
-        const A=parseDec(bx.A), H=parseDec(bx.H), L=parseDec(bx.L);
-        if(isFinite(A)&&isFinite(H)&&isFinite(L)) sum += calcBandas(A,H,L);
-      }
-      return sum;
-    }
 
     function calcTotalCalculo(){
       let total=0;
@@ -634,9 +648,7 @@
       calcTotalCalculo();
     }
     [chkAvance,chkBandas,chkResane].forEach(c=>c.addEventListener('change',onCheckChangeCalculo));
-    [aA,aH,aL,aConst,b1A,b1H,b1L,b2A,b2H,b2L,b3A,b3H,b3L,sA,sH].forEach(i=>{
-      i.addEventListener('input',calcTotalCalculo);
-    });
+    [aA,aH,aL,aConst,b1A,b1H,b1L,b2A,b2H,b2L,b3A,b3H,b3L,sA,sH].forEach(i=>i.addEventListener('input',calcTotalCalculo));
     document.getElementById('qCalcular').addEventListener('click',calcTotalCalculo);
     document.getElementById('qLimpiar').addEventListener('click',()=>{
       chkAvance.checked=false; chkBandas.checked=false; chkResane.checked=false;
@@ -646,12 +658,11 @@
     });
     onCheckChangeCalculo();
 
-    /* ==================== REGISTROS: cálculo + cuadro + PDF ==================== */
+    /* ================= REGISTROS ================= */
     const regFecha=document.getElementById('regFecha');
     const regLabor=document.getElementById('regLabor');
     const regNivel=document.getElementById('regNivel');
     const regEjecutor=document.getElementById('regEjecutor');
-
     regFecha.value = todayStr();
 
     const rChkAvance=document.getElementById('rChkAvance');
@@ -678,7 +689,7 @@
     const rOutH2=document.querySelector('#rOut h2');
     const rOutDetail=document.getElementById('rOutDetail');
 
-    // Cuadro (celdas)
+    // Cuadro en Reporte (celdas)
     const cFecha=document.getElementById('cFecha');
     const cLaborNivel=document.getElementById('cLaborNivel');
     const cEjecutor=document.getElementById('cEjecutor');
@@ -688,13 +699,21 @@
     const cResanes=document.getElementById('cResanes');
 
     const LS_REGS='sc_registros';
+    const LS_LAST='sc_last_cuadro';
+
     function getRegs(){ try{ return JSON.parse(localStorage.getItem(LS_REGS)) ?? []; }catch{ return []; } }
     function setRegs(arr){ localStorage.setItem(LS_REGS, JSON.stringify(arr)); }
 
-    let lastReg=null;
-
-    function sumBandas3Reg(){
-      return sumBandas3From(rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L);
+    function saveLastCuadro(obj){
+      try{ localStorage.setItem(LS_LAST, JSON.stringify(obj)); }catch{}
+    }
+    function loadLastCuadro(){
+      try{
+        const obj = JSON.parse(localStorage.getItem(LS_LAST) || 'null');
+        updateCuadro(obj);
+      }catch{
+        updateCuadro(null);
+      }
     }
 
     function updateCuadro(obj){
@@ -717,6 +736,8 @@
       cResanes.textContent = fmt1(obj.m3_resanes || 0);
     }
 
+    let lastReg=null;
+
     function calcTotalReg(){
       let total=0, partAv=0, partBa=0, partRe=0;
       const lines=[];
@@ -726,7 +747,7 @@
         rOutDetail.textContent='';
         rASac.value='';
         lastReg=null;
-        updateCuadro(null);
+        saveLastCuadro(null);
         return;
       }
 
@@ -745,7 +766,7 @@
       } else rASac.value='';
 
       if(rChkBandas.checked){
-        partBa = sumBandas3Reg();
+        partBa = sumBandas3From(rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L);
         total += partBa;
         lines.push(`Bandas: ${fmt1(partBa)} m³`);
       }
@@ -773,7 +794,7 @@
         m3_resanes: Number(fmt1(partRe))
       };
 
-      updateCuadro(lastReg);
+      saveLastCuadro(lastReg);
     }
 
     function onCheckChangeReg(){
@@ -784,10 +805,11 @@
     }
 
     [rChkAvance,rChkBandas,rChkResane].forEach(c=>c.addEventListener('change',onCheckChangeReg));
-    [rAA,rAH,rAL,rAConst,rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L,rsA,rsH,regFecha,regLabor,regNivel,regEjecutor].forEach(i=>{
-      i.addEventListener('input', calcTotalReg);
-      i.addEventListener('change', calcTotalReg);
-    });
+    [rAA,rAH,rAL,rAConst,rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L,rsA,rsH,regFecha,regLabor,regNivel,regEjecutor]
+      .forEach(i=>{
+        i.addEventListener('input', calcTotalReg);
+        i.addEventListener('change', calcTotalReg);
+      });
 
     document.getElementById('rCalcularTotal').addEventListener('click', calcTotalReg);
 
@@ -813,15 +835,19 @@
       setRegs(regs);
 
       alert('Registro guardado.');
-      renderTbl3();
     });
 
-    /* ===== Exportar PDF offline (Print -> Guardar como PDF) ===== */
-    function exportCuadroPDF(){
-      // Asegura que el cuadro esté actualizado
-      calcTotalReg();
+    onCheckChangeReg();
 
-      // Construir HTML imprimible
+    /* ================= REPORTE: PDF offline del cuadro ================= */
+    function escapeHtml(s){
+      return String(s ?? '')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+    }
+
+    function exportCuadroPDF(){
+      loadLastCuadro(); // refresca datos del cuadro desde LS
       const title = 'SHOTCRETE CALC - CUADRO DE REGISTRO';
       const html = `
 <!doctype html>
@@ -829,7 +855,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Export PDF</title>
+<title>Reporte PDF</title>
 <style>
   body{font-family:Arial,Helvetica,sans-serif;margin:24px;color:#111}
   h1{font-size:16px;margin:0 0 10px}
@@ -876,22 +902,12 @@
       w.document.write(html);
       w.document.close();
       w.focus();
-      // da tiempo a renderizar
       setTimeout(()=>w.print(), 250);
     }
 
-    function escapeHtml(s){
-      return String(s ?? '')
-        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
-    }
+    document.getElementById('repExportPDF').addEventListener('click', exportCuadroPDF);
 
-    document.getElementById('rExportPDF').addEventListener('click', exportCuadroPDF);
-
-    onCheckChangeReg();
-    updateCuadro(null);
-
-    /* ==================== TABLAS + CSV ==================== */
+    /* ================= REPORTE: tabla + CSV ================= */
     const tbl3Body=document.querySelector('#tbl3 tbody');
 
     function renderTbl3(){
@@ -952,9 +968,21 @@
     document.getElementById('tbl3BorrarTodo').addEventListener('click', ()=>{
       if(confirm('¿Borrar TODOS los registros?')){
         localStorage.removeItem(LS_REGS);
+        localStorage.removeItem(LS_LAST);
         renderTbl3();
+        loadLastCuadro();
       }
     });
+
+    /* ================= Offline: SW register ================= */
+    (function(){
+      if('serviceWorker' in navigator){
+        const swUrl='/shotcrete-calc/sw.js';
+        window.addEventListener('load', ()=> {
+          navigator.serviceWorker.register(swUrl).catch(()=>{});
+        });
+      }
+    })();
 
     /* Loader control */
     (function(){
@@ -969,15 +997,8 @@
       }
     })();
 
-    /* SW register (offline) */
-    (function(){
-      if('serviceWorker' in navigator){
-        const swUrl='/shotcrete-calc/sw.js';
-        window.addEventListener('load', ()=> {
-          navigator.serviceWorker.register(swUrl).catch(()=>{});
-        });
-      }
-    })();
+    // Inicializa cuadro en Reporte desde LS
+    loadLastCuadro();
   </script>
 </body>
 </html>
