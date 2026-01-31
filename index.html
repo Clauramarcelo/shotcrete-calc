@@ -5,11 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Shotcrete Calc</title>
 
-  <!-- ✅ Manifest PWA (corregido) -->
+  <!-- ✅ Canonical para forzar URL con "/" final (evita que el SW no controle la app si entras sin "/") -->
+  <link rel="canonical" href="https://clauramarcelo.github.io/shotcrete-calc/" />
+
+  <!-- ✅ Manifest PWA -->
   <link rel="manifest" href="/shotcrete-calc/manifest.json" />
   <meta name="theme-color" content="#ff6a00" />
 
-  <!-- ✅ Apple PWA (corregido) -->
+  <!-- ✅ Apple PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <link rel="apple-touch-icon" href="/shotcrete-calc/icon-192.png" />
@@ -22,7 +25,6 @@
       --bg:#ffffff; --fg:#0b0b0b; --muted:#667085; --card:#f6f8fa; --border:#d0d5dd;
       color-scheme: light dark;
 
-      /* Plomos por apartado (modo claro) */
       --plomo-avance-bg: #f3f4f6;
       --plomo-avance-br: #d0d5dd;
 
@@ -74,11 +76,21 @@
       background:linear-gradient(180deg,var(--brand),var(--brand-2));
       color:#fff;
       padding:calc(.6rem + env(safe-area-inset-top)) 1rem .6rem 1rem;
-      display:flex;align-items:center;gap:.75rem;
+      display:flex;align-items:center;justify-content:space-between;gap:.75rem;
       box-shadow:0 2px 12px rgba(0,0,0,.12)
     }
+    header .left{display:flex;align-items:center;gap:.75rem}
     header .logo{width:28px;height:28px;border-radius:6px;background:#fff2;display:inline-block}
     header h1{margin:0;font-size:1.1rem}
+
+    #netBadge{
+      font-size:.85rem;
+      padding:.25rem .55rem;
+      border-radius:999px;
+      background:rgba(255,255,255,0.22);
+      border:1px solid rgba(255,255,255,0.30);
+      white-space:nowrap;
+    }
 
     main{max-width:960px;margin:0 auto;padding:1rem;padding-bottom:4.5rem}
 
@@ -129,10 +141,8 @@
     th,td{border:1px solid var(--border);padding:.55rem;text-align:left}
     thead th{background:#fff3e8}
     @media (prefers-color-scheme: dark){ thead th{background:#24170a;color:#fed8b4} }
-
     .mini-table th,.mini-table td{padding:.45rem;font-size:.95rem}
 
-    /* Tabbar (3 pestañas) */
     .tabbar{
       position:fixed;left:0;right:0;bottom:0;z-index:9999;
       background:var(--bg);
@@ -200,6 +210,8 @@
     .subpane.sub-b2{ background: var(--plomo-b2-bg); }
     .subpane.sub-b3{ background: var(--plomo-b3-bg); }
 
+    .muted{color:var(--muted);font-size:.95rem}
+
     /* Loader */
     #appLoader{
       position:fixed; inset:0; z-index:99999;
@@ -249,14 +261,17 @@
 
 <body>
   <header>
-    <span class="logo" aria-hidden="true"></span>
-    <h1>Shotcrete Calc</h1>
+    <div class="left">
+      <span class="logo" aria-hidden="true"></span>
+      <h1>Shotcrete Calc</h1>
+    </div>
+    <div id="netBadge">⏳</div>
   </header>
 
+  <!-- Loader (local, cacheable) -->
   <div id="appLoader" aria-hidden="true">
     <div class="loader-card">
-      <img class="loader-icon" alt="Shotcrete icon"
-           src="https://raw.githubusercontent.com/Clauramarcelo/shotcrete-calc/main/Mixer.jpg" />
+      <img class="loader-icon" src="/shotcrete-calc/icon-192.png" alt="Shotcrete Calc">
       <div class="loader-spinner" aria-label="Cargando"></div>
       <div class="loader-text">Cargando…</div>
     </div>
@@ -416,22 +431,21 @@
 
         <div class="actions">
           <button class="btn primary" id="rCalcularTotal" type="button">Calcular total</button>
-          <button class="btn secondary" id="rGuardarRegistro" type="button">Registrar</button>
+          <button class="btn secondary" id="rGuardarRegistro" type="button">Guardar / Actualizar</button>
+          <button class="btn ghost" id="rCancelarEdicion" type="button">Cancelar edición</button>
         </div>
 
         <div id="rOut" class="result" aria-live="polite">
-          <h2>—</h2>
-          <small id="rOutDetail"></small>
+          <h2>—</h2><small id="rOutDetail"></small>
         </div>
       </fieldset>
     </section>
 
-    <!-- ================= REPORTE (ANTES TABLAS) ================= -->
+    <!-- ================= REPORTE ================= -->
     <section id="tab-reporte" class="tab" aria-labelledby="btn-reporte">
       <fieldset>
         <legend>Reporte</legend>
 
-        <!-- ✅ CUADRO (movido aquí) -->
         <fieldset style="margin:0 0 1rem">
           <legend>Cuadro de registro</legend>
           <table class="mini-table" id="regCuadro">
@@ -459,22 +473,23 @@
             </tbody>
           </table>
 
+          <div id="cuadroDetalle" class="muted" style="margin-top:.6rem; line-height:1.45"></div>
+
           <div class="actions">
             <button class="btn ghost" id="repExportPDF" type="button">Exportar PDF (Cuadro)</button>
           </div>
         </fieldset>
 
-        <!-- ✅ HISTORIAL -->
         <fieldset>
-          <legend>Historial (CSV)</legend>
+          <legend>Historial (BD offline)</legend>
 
           <div class="actions">
-            <button class="btn primary" id="tbl3ExportCSV" type="button">Exportar a CSV</button>
-            <button class="btn ghost" id="tbl3Refrescar" type="button">Refrescar</button>
-            <button class="btn secondary" id="tbl3BorrarTodo" type="button">Borrar todo</button>
+            <button class="btn primary" id="tblExportCSV" type="button">Exportar a CSV</button>
+            <button class="btn ghost" id="tblRefrescar" type="button">Refrescar</button>
+            <button class="btn secondary" id="tblBorrarTodo" type="button">Borrar todo</button>
           </div>
 
-          <table id="tbl3" class="mini-table">
+          <table id="tblHist" class="mini-table">
             <thead>
               <tr>
                 <th>#</th>
@@ -483,7 +498,7 @@
                 <th>Nivel</th>
                 <th>Ejecutor</th>
                 <th>m3(Total)</th>
-                <th>Avance + frente</th>
+                <th>Avance</th>
                 <th>Bandas</th>
                 <th>Resanes</th>
                 <th>Acciones</th>
@@ -496,7 +511,6 @@
     </section>
   </main>
 
-  <!-- ✅ Tab bar (Tablas -> Reporte) -->
   <nav class="tabbar" role="tablist" aria-label="Navegación">
     <button type="button" id="btn-calculo" class="active" role="tab"
       aria-controls="tab-calculo" aria-selected="true"
@@ -512,7 +526,22 @@
   </nav>
 
   <script>
-    /* ===== Utilidades ===== */
+    /* ========= Redirect a URL con "/" final (mitiga problema GH Pages con SW) ========= */
+    if (location.pathname === '/shotcrete-calc') {
+      location.replace('/shotcrete-calc/');
+    }
+
+    /* ========= Indicador online/offline ========= */
+    const netBadge = document.getElementById('netBadge');
+    function updateNetBadge(){
+      const online = navigator.onLine;
+      netBadge.textContent = online ? '🟢 Online' : '🔴 Offline';
+    }
+    window.addEventListener('online', updateNetBadge);
+    window.addEventListener('offline', updateNetBadge);
+    updateNetBadge();
+
+    /* ========= Utilidades ========= */
     function parseDec(txt){
       if (typeof txt !== 'string') return NaN;
       const s = txt.trim().replace(',', '.');
@@ -523,30 +552,24 @@
     const todayStr = () => new Date().toISOString().slice(0,10);
     function isFilled(v){ return String(v ?? '').trim() !== ''; }
 
-    /* ===== Tabs ===== */
+    /* ========= Tabs ========= */
     function switchTab(targetId, btnEl){
-      try{
-        document.querySelectorAll('.tabbar button').forEach(b=>{
-          const active = (b === btnEl);
-          b.classList.toggle('active', active);
-          b.setAttribute('aria-selected', active ? 'true' : 'false');
-        });
+      document.querySelectorAll('.tabbar button').forEach(b=>{
+        const active = (b === btnEl);
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      document.querySelectorAll('section.tab').forEach(sec=>{
+        sec.classList.toggle('active', sec.id === targetId);
+      });
 
-        document.querySelectorAll('section.tab').forEach(sec=>{
-          sec.classList.toggle('active', sec.id === targetId);
-        });
-
-        if (targetId === 'tab-reporte') {
-          loadLastCuadro();
-          renderTbl3();
-        }
-      }catch(err){
-        console.error(err);
-        alert('Error al cambiar de pestaña.');
+      if (targetId === 'tab-reporte'){
+        loadLastCuadro();
+        renderHist();
       }
     }
 
-    /* ===== Fórmulas ===== */
+    /* ========= Fórmulas ========= */
     function calcFrente(A, H){
       const hEff = Math.max(0, H - 2);
       return (A * hEff * 0.9) / 14;
@@ -563,7 +586,6 @@
     function calcResane(A, H){
       return (H * A) / 11.5;
     }
-
     function togglePane(chk, pane){ pane.classList.toggle('hidden', !chk.checked); }
 
     function sumBandas3From(a1,h1,l1,a2,h2,l2,a3,h3,l3){
@@ -582,7 +604,15 @@
       return sum;
     }
 
-    /* ================= CALCULO m3 ================= */
+    /* ========= BD offline (localStorage) ========= */
+    const LS_REGS = 'sc_registros';
+    const LS_LAST = 'sc_last_cuadro';
+    function getRegs(){ try{ return JSON.parse(localStorage.getItem(LS_REGS)) ?? []; }catch{ return []; } }
+    function setRegs(arr){ localStorage.setItem(LS_REGS, JSON.stringify(arr)); }
+    function saveLastCuadro(obj){ localStorage.setItem(LS_LAST, JSON.stringify(obj)); }
+    function getLastCuadro(){ try{ return JSON.parse(localStorage.getItem(LS_LAST) || 'null'); }catch{ return null; } }
+
+    /* ========= CALCULO m3 ========= */
     const chkAvance = document.getElementById('chkAvance');
     const chkBandas = document.getElementById('chkBandas');
     const chkResane = document.getElementById('chkResane');
@@ -658,7 +688,7 @@
     });
     onCheckChangeCalculo();
 
-    /* ================= REGISTROS ================= */
+    /* ========= REGISTROS (editable) ========= */
     const regFecha=document.getElementById('regFecha');
     const regLabor=document.getElementById('regLabor');
     const regNivel=document.getElementById('regNivel');
@@ -689,54 +719,7 @@
     const rOutH2=document.querySelector('#rOut h2');
     const rOutDetail=document.getElementById('rOutDetail');
 
-    // Cuadro en Reporte (celdas)
-    const cFecha=document.getElementById('cFecha');
-    const cLaborNivel=document.getElementById('cLaborNivel');
-    const cEjecutor=document.getElementById('cEjecutor');
-    const cTotal=document.getElementById('cTotal');
-    const cAvance=document.getElementById('cAvance');
-    const cBandas=document.getElementById('cBandas');
-    const cResanes=document.getElementById('cResanes');
-
-    const LS_REGS='sc_registros';
-    const LS_LAST='sc_last_cuadro';
-
-    function getRegs(){ try{ return JSON.parse(localStorage.getItem(LS_REGS)) ?? []; }catch{ return []; } }
-    function setRegs(arr){ localStorage.setItem(LS_REGS, JSON.stringify(arr)); }
-
-    function saveLastCuadro(obj){
-      try{ localStorage.setItem(LS_LAST, JSON.stringify(obj)); }catch{}
-    }
-    function loadLastCuadro(){
-      try{
-        const obj = JSON.parse(localStorage.getItem(LS_LAST) || 'null');
-        updateCuadro(obj);
-      }catch{
-        updateCuadro(null);
-      }
-    }
-
-    function updateCuadro(obj){
-      if(!obj){
-        cFecha.textContent='—';
-        cLaborNivel.textContent='—';
-        cEjecutor.textContent='—';
-        cTotal.textContent='—';
-        cAvance.textContent='—';
-        cBandas.textContent='—';
-        cResanes.textContent='—';
-        return;
-      }
-      cFecha.textContent = obj.fecha || '—';
-      cLaborNivel.textContent = `${obj.labor || ''} / ${obj.nivel || ''}`.trim() || '—';
-      cEjecutor.textContent = obj.ejecutor || '—';
-      cTotal.textContent = fmt1(obj.m3_total || 0);
-      cAvance.textContent = fmt1(obj.m3_avance || 0);
-      cBandas.textContent = fmt1(obj.m3_bandas || 0);
-      cResanes.textContent = fmt1(obj.m3_resanes || 0);
-    }
-
-    let lastReg=null;
+    let editIndex = null;
 
     function calcTotalReg(){
       let total=0, partAv=0, partBa=0, partRe=0;
@@ -746,10 +729,11 @@
         rOutH2.textContent='—';
         rOutDetail.textContent='';
         rASac.value='';
-        lastReg=null;
         saveLastCuadro(null);
-        return;
+        return null;
       }
+
+      const det = { avance:null, bandas:[null,null,null], resanes:null };
 
       if(rChkAvance.checked){
         const A=parseDec(rAA.value),H=parseDec(rAH.value),L=parseDec(rAL.value),C=parseDec(rAConst.value||'11.5');
@@ -760,15 +744,26 @@
           partAv = base+sac;
           total += partAv;
           lines.push(`Avance + Frente: ${fmt1(partAv)} m³`);
-        } else {
-          rASac.value='';
-        }
+          det.avance = {A,H,L,C,Sac:Number(sac.toFixed(2))};
+        } else rASac.value='';
       } else rASac.value='';
 
       if(rChkBandas.checked){
         partBa = sumBandas3From(rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L);
         total += partBa;
         lines.push(`Bandas: ${fmt1(partBa)} m³`);
+
+        const bands = [
+          {A:rb1A.value,H:rb1H.value,L:rb1L.value},
+          {A:rb2A.value,H:rb2H.value,L:rb2L.value},
+          {A:rb3A.value,H:rb3H.value,L:rb3L.value},
+        ];
+        bands.forEach((b,i)=>{
+          const any = isFilled(b.A)||isFilled(b.H)||isFilled(b.L);
+          if(!any) return;
+          const A=parseDec(b.A),H=parseDec(b.H),L=parseDec(b.L);
+          if(isFinite(A)&&isFinite(H)&&isFinite(L)) det.bandas[i] = {A,H,L};
+        });
       }
 
       if(rChkResane.checked){
@@ -777,13 +772,14 @@
           partRe = calcResane(A,H);
           total += partRe;
           lines.push(`Resanes: ${fmt1(partRe)} m³`);
+          det.resanes = {A,H};
         }
       }
 
       rOutH2.textContent = `TOTAL: ${fmt1(total)} m³`;
       rOutDetail.textContent = lines.join('\n');
 
-      lastReg = {
+      const obj = {
         fecha: regFecha.value || todayStr(),
         labor: (regLabor.value||'').trim(),
         nivel: (regNivel.value||'').trim(),
@@ -791,10 +787,13 @@
         m3_total: Number(fmt1(total)),
         m3_avance: Number(fmt1(partAv)),
         m3_bandas: Number(fmt1(partBa)),
-        m3_resanes: Number(fmt1(partRe))
+        m3_resanes: Number(fmt1(partRe)),
+        checks: {avance:rChkAvance.checked, bandas:rChkBandas.checked, resanes:rChkResane.checked},
+        detalles: det
       };
 
-      saveLastCuadro(lastReg);
+      saveLastCuadro(obj);
+      return obj;
     }
 
     function onCheckChangeReg(){
@@ -803,15 +802,28 @@
       togglePane(rChkResane,rPaneResane);
       calcTotalReg();
     }
-
     [rChkAvance,rChkBandas,rChkResane].forEach(c=>c.addEventListener('change',onCheckChangeReg));
     [rAA,rAH,rAL,rAConst,rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L,rsA,rsH,regFecha,regLabor,regNivel,regEjecutor]
-      .forEach(i=>{
-        i.addEventListener('input', calcTotalReg);
-        i.addEventListener('change', calcTotalReg);
-      });
+      .forEach(i=>{ i.addEventListener('input', calcTotalReg); i.addEventListener('change', calcTotalReg); });
 
-    document.getElementById('rCalcularTotal').addEventListener('click', calcTotalReg);
+    document.getElementById('rCalcularTotal').addEventListener('click', ()=>calcTotalReg());
+
+    function clearRegForm(){
+      editIndex = null;
+      regFecha.value = todayStr();
+      regLabor.value = '';
+      regNivel.value = '';
+      regEjecutor.value = '';
+      rChkAvance.checked=false; rChkBandas.checked=false; rChkResane.checked=false;
+      [rAA,rAH,rAL,rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L,rsA,rsH].forEach(i=>i.value='');
+      rAConst.value='11.5'; rASac.value='';
+      onCheckChangeReg();
+    }
+
+    document.getElementById('rCancelarEdicion').addEventListener('click', ()=>{
+      clearRegForm();
+      alert('Edición cancelada.');
+    });
 
     document.getElementById('rGuardarRegistro').addEventListener('click', ()=>{
       const fecha = regFecha.value || todayStr();
@@ -824,98 +836,79 @@
         return;
       }
 
-      calcTotalReg();
-      if(!lastReg || !isFinite(lastReg.m3_total) || lastReg.m3_total <= 0){
-        alert('Calcula el m³ total antes de registrar.');
+      const obj = calcTotalReg();
+      if(!obj || !isFinite(obj.m3_total) || obj.m3_total <= 0){
+        alert('Calcula el m³ total antes de guardar.');
         return;
       }
 
       const regs = getRegs();
-      regs.push(lastReg);
-      setRegs(regs);
+      if (editIndex === null) regs.push(obj);
+      else regs[editIndex] = obj;
 
-      alert('Registro guardado.');
+      setRegs(regs);
+      alert(editIndex === null ? 'Registro guardado.' : 'Registro actualizado.');
+      editIndex = null;
     });
 
     onCheckChangeReg();
 
-    /* ================= REPORTE: PDF offline del cuadro ================= */
-    function escapeHtml(s){
-      return String(s ?? '')
-        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+    /* ========= REPORTE (cuadro + detalle) ========= */
+    const cFecha=document.getElementById('cFecha');
+    const cLaborNivel=document.getElementById('cLaborNivel');
+    const cEjecutor=document.getElementById('cEjecutor');
+    const cTotal=document.getElementById('cTotal');
+    const cAvance=document.getElementById('cAvance');
+    const cBandas=document.getElementById('cBandas');
+    const cResanes=document.getElementById('cResanes');
+    const cuadroDetalle=document.getElementById('cuadroDetalle');
+
+    function updateCuadro(obj){
+      if(!obj){
+        cFecha.textContent='—';
+        cLaborNivel.textContent='—';
+        cEjecutor.textContent='—';
+        cTotal.textContent='—';
+        cAvance.textContent='—';
+        cBandas.textContent='—';
+        cResanes.textContent='—';
+        cuadroDetalle.textContent='';
+        return;
+      }
+      cFecha.textContent = obj.fecha || '—';
+      cLaborNivel.textContent = `${obj.labor || ''} / ${obj.nivel || ''}`.trim() || '—';
+      cEjecutor.textContent = obj.ejecutor || '—';
+      cTotal.textContent = fmt1(obj.m3_total || 0);
+      cAvance.textContent = fmt1(obj.m3_avance || 0);
+      cBandas.textContent = fmt1(obj.m3_bandas || 0);
+      cResanes.textContent = fmt1(obj.m3_resanes || 0);
+
+      const det = obj.detalles || {};
+      const lines = [];
+      if(det.avance){
+        lines.push(`Avance: A=${det.avance.A} H=${det.avance.H} L=${det.avance.L} C=${det.avance.C} Sac=${det.avance.Sac}`);
+      }
+      (det.bandas||[]).forEach((bx,idx)=>{
+        if(!bx) return;
+        lines.push(`Banda ${idx+1}: A=${bx.A} H=${bx.H} L=${bx.L}`);
+      });
+      if(det.resanes){
+        lines.push(`Resanes: A=${det.resanes.A} H=${det.resanes.H}`);
+      }
+      cuadroDetalle.textContent = lines.join('\n');
     }
 
-    function exportCuadroPDF(){
-      loadLastCuadro(); // refresca datos del cuadro desde LS
-      const title = 'SHOTCRETE CALC - CUADRO DE REGISTRO';
-      const html = `
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Reporte PDF</title>
-<style>
-  body{font-family:Arial,Helvetica,sans-serif;margin:24px;color:#111}
-  h1{font-size:16px;margin:0 0 10px}
-  .meta{font-size:12px;margin:0 0 14px;color:#333}
-  table{width:100%;border-collapse:collapse;font-size:12px}
-  th,td{border:1px solid #333;padding:6px;text-align:left}
-  thead th{background:#f2f2f2}
-  @page{size:A4;margin:14mm}
-</style>
-</head>
-<body>
-  <h1>${title}</h1>
-  <div class="meta">Generado: ${new Date().toLocaleString()}</div>
-  <table>
-    <thead>
-      <tr>
-        <th>Fecha</th>
-        <th>Labor / Nivel</th>
-        <th>Ejecutor</th>
-        <th>m3(Total)</th>
-        <th>Avance + frente</th>
-        <th>Bandas</th>
-        <th>Resanes</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>${escapeHtml(cFecha.textContent)}</td>
-        <td>${escapeHtml(cLaborNivel.textContent)}</td>
-        <td>${escapeHtml(cEjecutor.textContent)}</td>
-        <td>${escapeHtml(cTotal.textContent)}</td>
-        <td>${escapeHtml(cAvance.textContent)}</td>
-        <td>${escapeHtml(cBandas.textContent)}</td>
-        <td>${escapeHtml(cResanes.textContent)}</td>
-      </tr>
-    </tbody>
-  </table>
-</body>
-</html>`;
+    function loadLastCuadro(){ updateCuadro(getLastCuadro()); }
 
-      const w = window.open('', '_blank');
-      if(!w){ alert('Permite ventanas emergentes para exportar PDF.'); return; }
-      w.document.open();
-      w.document.write(html);
-      w.document.close();
-      w.focus();
-      setTimeout(()=>w.print(), 250);
-    }
+    /* ========= REPORTE: Historial editable ========= */
+    const histBody = document.querySelector('#tblHist tbody');
 
-    document.getElementById('repExportPDF').addEventListener('click', exportCuadroPDF);
-
-    /* ================= REPORTE: tabla + CSV ================= */
-    const tbl3Body=document.querySelector('#tbl3 tbody');
-
-    function renderTbl3(){
-      const regs=getRegs();
-      tbl3Body.innerHTML='';
+    function renderHist(){
+      const regs = getRegs();
+      histBody.innerHTML = '';
       regs.forEach((r,i)=>{
-        const tr=document.createElement('tr');
-        tr.innerHTML=`
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
           <td>${i+1}</td>
           <td>${r.fecha ?? ''}</td>
           <td>${r.labor ?? ''}</td>
@@ -925,14 +918,79 @@
           <td>${(r.m3_avance!=null)?fmt1(r.m3_avance):''}</td>
           <td>${(r.m3_bandas!=null)?fmt1(r.m3_bandas):''}</td>
           <td>${(r.m3_resanes!=null)?fmt1(r.m3_resanes):''}</td>
-          <td><button class="btn ghost" type="button">Eliminar</button></td>
+          <td>
+            <button class="btn ghost" type="button" data-act="edit" data-i="${i}">Editar</button>
+            <button class="btn ghost" type="button" data-act="del" data-i="${i}">Eliminar</button>
+          </td>
         `;
-        tbl3Body.appendChild(tr);
-        tr.querySelector('button').addEventListener('click', ()=>{
-          const arr=getRegs();
-          arr.splice(i,1);
-          setRegs(arr);
-          renderTbl3();
+        histBody.appendChild(tr);
+      });
+
+      histBody.querySelectorAll('button').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const i = Number(btn.dataset.i);
+          const act = btn.dataset.act;
+          const regs = getRegs();
+          if(!Number.isFinite(i) || !regs[i]) return;
+
+          if(act === 'del'){
+            regs.splice(i,1);
+            setRegs(regs);
+            renderHist();
+            return;
+          }
+
+          if(act === 'edit'){
+            const r = regs[i];
+            editIndex = i;
+
+            regFecha.value = r.fecha || todayStr();
+            regLabor.value = r.labor || '';
+            regNivel.value = r.nivel || '';
+            regEjecutor.value = r.ejecutor || '';
+
+            rChkAvance.checked = !!r.checks?.avance;
+            rChkBandas.checked = !!r.checks?.bandas;
+            rChkResane.checked = !!r.checks?.resanes;
+
+            const det = r.detalles || {};
+            if(det.avance){
+              rAA.value = det.avance.A ?? '';
+              rAH.value = det.avance.H ?? '';
+              rAL.value = det.avance.L ?? '';
+              rAConst.value = det.avance.C ?? '11.5';
+              rASac.value = (det.avance.Sac!=null)?Number(det.avance.Sac).toFixed(2):'';
+            } else {
+              [rAA,rAH,rAL].forEach(x=>x.value='');
+              rAConst.value='11.5';
+              rASac.value='';
+            }
+
+            const bandas = det.bandas || [];
+            const mapBand = (idx, Ael, Hel, Lel)=>{
+              const bx = bandas[idx];
+              if(bx){
+                Ael.value = bx.A ?? '';
+                Hel.value = bx.H ?? '';
+                Lel.value = bx.L ?? '';
+              } else {
+                Ael.value=''; Hel.value=''; Lel.value='';
+              }
+            };
+            mapBand(0, rb1A, rb1H, rb1L);
+            mapBand(1, rb2A, rb2H, rb2L);
+            mapBand(2, rb3A, rb3H, rb3L);
+
+            if(det.resanes){
+              rsA.value = det.resanes.A ?? '';
+              rsH.value = det.resanes.H ?? '';
+            } else {
+              rsA.value=''; rsH.value='';
+            }
+
+            onCheckChangeReg();
+            switchTab('tab-registros', document.getElementById('btn-registros'));
+          }
         });
       });
     }
@@ -950,7 +1008,7 @@
       return lines.join('\r\n');
     }
 
-    document.getElementById('tbl3ExportCSV').addEventListener('click', ()=>{
+    document.getElementById('tblExportCSV').addEventListener('click', ()=>{
       const regs=getRegs();
       if(!regs.length){ alert('No hay registros para exportar.'); return; }
       const csv=toCSV(regs);
@@ -958,28 +1016,93 @@
       const url=URL.createObjectURL(blob);
       const a=document.createElement('a');
       a.href=url;
-      a.download=`shotcrete-registros-${Date.now()}.csv`;
+      a.download=`shotcrete-reporte-${Date.now()}.csv`;
       a.click();
       URL.revokeObjectURL(url);
     });
 
-    document.getElementById('tbl3Refrescar').addEventListener('click', renderTbl3);
+    document.getElementById('tblRefrescar').addEventListener('click', renderHist);
 
-    document.getElementById('tbl3BorrarTodo').addEventListener('click', ()=>{
-      if(confirm('¿Borrar TODOS los registros?')){
+    document.getElementById('tblBorrarTodo').addEventListener('click', ()=>{
+      if(confirm('¿Borrar TODO el historial?')){
         localStorage.removeItem(LS_REGS);
         localStorage.removeItem(LS_LAST);
-        renderTbl3();
+        renderHist();
         loadLastCuadro();
       }
     });
 
-    /* ================= Offline: SW register ================= */
+    /* ========= PDF offline por impresión ========= */
+    function escapeHtml(s){
+      return String(s ?? '')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+    }
+
+    function exportCuadroPDF(){
+      loadLastCuadro();
+      const title = 'SHOTCRETE CALC - CUADRO DE REGISTRO';
+      const html = `
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reporte PDF</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;margin:24px;color:#111}
+  h1{font-size:16px;margin:0 0 10px}
+  .meta{font-size:12px;margin:0 0 14px;color:#333}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th,td{border:1px solid #333;padding:6px;text-align:left}
+  thead th{background:#f2f2f2}
+  pre{white-space:pre-wrap;font-size:11px;margin:10px 0 0;color:#333}
+  @page{size:A4;margin:14mm}
+</style>
+</head>
+<body>
+  <h1>${title}</h1>
+  <div class="meta">Generado: ${new Date().toLocaleString()}</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Fecha</th><th>Labor / Nivel</th><th>Ejecutor</th>
+        <th>m3(Total)</th><th>Avance + frente</th><th>Bandas</th><th>Resanes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>${escapeHtml(cFecha.textContent)}</td>
+        <td>${escapeHtml(cLaborNivel.textContent)}</td>
+        <td>${escapeHtml(cEjecutor.textContent)}</td>
+        <td>${escapeHtml(cTotal.textContent)}</td>
+        <td>${escapeHtml(cAvance.textContent)}</td>
+        <td>${escapeHtml(cBandas.textContent)}</td>
+        <td>${escapeHtml(cResanes.textContent)}</td>
+      </tr>
+    </tbody>
+  </table>
+  <pre>${escapeHtml(cuadroDetalle.textContent)}</pre>
+</body>
+</html>`;
+
+      const w = window.open('', '_blank');
+      if(!w){ alert('Permite ventanas emergentes para exportar PDF.'); return; }
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+      w.focus();
+      setTimeout(()=>w.print(), 250);
+    }
+
+    document.getElementById('repExportPDF').addEventListener('click', exportCuadroPDF);
+
+    /* ========= SW register con scope correcto (GitHub Pages) ========= */
     (function(){
       if('serviceWorker' in navigator){
         const swUrl='/shotcrete-calc/sw.js';
         window.addEventListener('load', ()=> {
-          navigator.serviceWorker.register(swUrl).catch(()=>{});
+          navigator.serviceWorker.register(swUrl, { scope: '/shotcrete-calc/' }).catch(()=>{});
         });
       }
     })();
@@ -997,8 +1120,9 @@
       }
     })();
 
-    // Inicializa cuadro en Reporte desde LS
+    // Inicializa Reporte
     loadLastCuadro();
+    renderHist();
   </script>
 </body>
 </html>
