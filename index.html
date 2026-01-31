@@ -67,13 +67,14 @@
     @media (prefers-color-scheme: dark){
       input,select{background:#0e0e10;color:var(--fg)}
     }
+    input[disabled]{opacity:.6}
 
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
     .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
     @media (max-width:820px){ .row3{grid-template-columns:1fr 1fr} }
     @media (max-width:560px){ .row3{grid-template-columns:1fr} .row2{grid-template-columns:1fr} }
 
-    .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
+    .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem;align-items:center}
     .btn{
       border:none;border-radius:.6rem;padding:.7rem 1rem;font-size:1rem;
       display:inline-flex;align-items:center;gap:.5rem;cursor:pointer
@@ -117,6 +118,30 @@
 
     .hidden{display:none !important}
     .muted{color:var(--muted);font-size:.95rem}
+
+    /* Checkboxes (modo) */
+    .checkline{
+      display:flex;
+      align-items:center;
+      gap:.45rem;
+      user-select:none;
+      padding:.35rem .55rem;
+      border:1px solid var(--border);
+      border-radius:.55rem;
+      background:rgba(255,255,255,0.50);
+    }
+    @media (prefers-color-scheme: dark){
+      .checkline{background:rgba(0,0,0,0.18)}
+    }
+    .checkline input[type="checkbox"]{
+      width:auto;
+      transform:scale(1.05);
+      margin:0;
+    }
+    .checkline.active{
+      border-color: rgba(255,106,0,0.65);
+      box-shadow: 0 0 0 2px rgba(255,106,0,0.10);
+    }
 
     /* ===== Loader estilo iPhone ===== */
     #appLoader{
@@ -187,30 +212,42 @@
       <fieldset>
         <legend>Calculo m3</legend>
 
+        <!-- ✅ 3 modos por checkbox (solo 1 activo a la vez) -->
         <div class="actions" style="margin-bottom:.4rem">
           <span class="muted">Modo:</span>
-          <label style="display:inline-flex;align-items:center;gap:.35rem;margin-left:.5rem">
-            <input type="radio" name="modoQuick" value="tunnel" checked> Avance (túnel)
+
+          <label class="checkline active" id="wrap-qAvance">
+            <input id="qModeAvance" type="checkbox" checked>
+            Avance + Frente
           </label>
-          <label style="display:inline-flex;align-items:center;gap:.35rem;margin-left:.5rem">
-            <input type="radio" name="modoQuick" value="wall"> Resane (hastial)
+
+          <label class="checkline" id="wrap-qBandas">
+            <input id="qModeBandas" type="checkbox">
+            Bandas
+          </label>
+
+          <label class="checkline" id="wrap-qResane">
+            <input id="qModeResane" type="checkbox">
+            Resane
           </label>
         </div>
 
         <div class="row3">
           <div><label for="qA">Ancho (A) — m</label><input id="qA" type="text" inputmode="decimal"></div>
           <div><label for="qH">Altura (H) — m</label><input id="qH" type="text" inputmode="decimal"></div>
-          <div><label for="qL">Largo (L) — m</label><input id="qL" type="text" inputmode="decimal"></div>
+          <div><label for="qL" id="lbl-qL">Longitud (L) — m</label><input id="qL" type="text" inputmode="decimal"></div>
         </div>
 
         <div class="row2" style="margin-top:.6rem">
           <div>
             <label for="qSac">Frente de sacrificio — m³ (auto)</label>
             <input id="qSac" type="text" inputmode="decimal" readonly>
+            <small class="muted">Se usa solo en Avance + Frente.</small>
           </div>
           <div>
             <label for="qConst">Constante (m²/m³)</label>
             <input id="qConst" type="text" inputmode="decimal" value="11.5">
+            <small class="muted">Se usa solo en Avance + Frente.</small>
           </div>
         </div>
 
@@ -220,7 +257,7 @@
         </div>
 
         <div id="qOut" class="result" aria-live="polite">
-          <h2>—</h2><small id="qMode">Selecciona modo y completa los datos.</small>
+          <h2>—</h2><small id="qMode">Selecciona un modo y completa los datos.</small>
         </div>
       </fieldset>
     </section>
@@ -388,96 +425,200 @@
     const fmt1 = (n) => Number(n).toFixed(1);
     const todayStr = () => new Date().toISOString().slice(0,10);
 
-    /* ===== Frente de sacrificio (AUTO)
-       Fórmula: ((A * (H - 2)) * 0.9) / 14
-    */
+    /* ===== Fórmulas ===== */
+    // Frente (auto): ((A * (H - 2)) * 0.9) / 14
     function calcFrenteSacrificio(A, H){
       const hEff = Math.max(0, H - 2);
       return (A * hEff * 0.9) / 14;
     }
+    // Bandas: (((H*2)+A)*0.9)*L
+    function calcBandas(A, H, L){
+      return (((H * 2) + A) * 0.9) * L;
+    }
+    // Resane: (H*A)/11.5
+    function calcResane(A, H){
+      return (H * A) / 11.5;
+    }
+    // Avance base (como tu cálculo túnel original): al/C con C=constante
+    function calcAvanceBase(A, H, L, C){
+      const pp = (H * 2) + A;
+      const pa = pp * 0.9;
+      const al = pa * L;
+      return al / C;
+    }
 
-    /* ===== Pestaña 1: Calculo m3 ===== */
+    /* ===== Pestaña 1: Calculo m3 (3 checkboxes) ===== */
     const qA=document.getElementById('qA'), qH=document.getElementById('qH'), qL=document.getElementById('qL');
     const qSac=document.getElementById('qSac'), qConst=document.getElementById('qConst');
     const qOutH2=document.querySelector('#qOut h2'), qOutMode=document.getElementById('qMode');
-    const qRadios=document.querySelectorAll('input[name="modoQuick"]');
+    const qModeAvance=document.getElementById('qModeAvance');
+    const qModeBandas=document.getElementById('qModeBandas');
+    const qModeResane=document.getElementById('qModeResane');
+    const wrapAv=document.getElementById('wrap-qAvance');
+    const wrapBa=document.getElementById('wrap-qBandas');
+    const wrapRe=document.getElementById('wrap-qResane');
+    const lblQL=document.getElementById('lbl-qL');
 
-    function nombreModoQuick(){
-      const m=[...qRadios].find(r=>r.checked)?.value ?? 'tunnel';
-      return m==='tunnel' ? 'Avance' : 'Resane';
+    function setActiveWrap(){
+      wrapAv.classList.toggle('active', !!qModeAvance.checked);
+      wrapBa.classList.toggle('active', !!qModeBandas.checked);
+      wrapRe.classList.toggle('active', !!qModeResane.checked);
+    }
+
+    // Solo 1 modo activo
+    function selectMode(mode){
+      qModeAvance.checked = (mode === 'avance');
+      qModeBandas.checked = (mode === 'bandas');
+      qModeResane.checked = (mode === 'resane');
+      applyQuickModeUI();
+      if (isQuickReady()) calcularQuick();
+      else resetQuickOutput();
+    }
+
+    function getMode(){
+      if (qModeBandas.checked) return 'bandas';
+      if (qModeResane.checked) return 'resane';
+      return 'avance'; // default
+    }
+
+    function applyQuickModeUI(){
+      const mode = getMode();
+      setActiveWrap();
+
+      // defaults
+      qL.disabled = false;
+      lblQL.style.opacity = '1';
+      qConst.disabled = false;
+      qSac.value = '';
+
+      if (mode === 'bandas'){
+        // Bandas usa A,H,L; no usa Constante ni Frente
+        qConst.disabled = true;
+        qSac.value = '';
+      }
+
+      if (mode === 'resane'){
+        // Resane usa A,H; L no aplica
+        qL.disabled = true;
+        qL.value = '';
+        lblQL.style.opacity = '.6';
+        // constante/fren te no aplica
+        qConst.disabled = true;
+        qSac.value = '';
+      }
+    }
+
+    function resetQuickOutput(){
+      qOutH2.textContent='—';
+      qOutMode.textContent='Selecciona un modo y completa los datos.';
+      qSac.value='';
+    }
+
+    function isQuickReady(){
+      const Aok = qA.value.trim();
+      const Hok = qH.value.trim();
+      const Lok = qL.value.trim();
+      const mode = getMode();
+
+      if (mode === 'resane') return Aok && Hok;
+      return Aok && Hok && Lok; // avance y bandas
     }
 
     function calcularQuick(){
-      const A=parseDec(qA.value), H=parseDec(qH.value), L=parseDec(qL.value);
-      const C=parseDec(qConst.value || '11.5');
-      const m=[...qRadios].find(r=>r.checked)?.value ?? 'tunnel';
+      applyQuickModeUI();
+      const mode = getMode();
 
-      if (!isFinite(L) || !isFinite(H) || !isFinite(C) || C<=0){
-        qOutH2.textContent='—';
-        qOutMode.textContent='Completa los datos.';
-        qSac.value='';
+      const A = parseDec(qA.value);
+      const H = parseDec(qH.value);
+      const L = parseDec(qL.value);
+      const C = parseDec(qConst.value || '11.5');
+
+      // Validaciones por modo
+      if (!isFinite(A) || !isFinite(H)){
+        resetQuickOutput();
+        qOutMode.textContent = 'Completa Ancho (A) y Altura (H).';
         return;
       }
-      if (m==='tunnel' && !isFinite(A)){
-        qOutH2.textContent='—';
-        qOutMode.textContent='Completa A, H y L.';
-        qSac.value='';
+      if (mode !== 'resane' && !isFinite(L)){
+        resetQuickOutput();
+        qOutMode.textContent = 'Completa Longitud (L).';
         return;
       }
 
-      // Sacrificio AUTO solo para túnel
-      let Sac=0;
-      if (m==='tunnel' && isFinite(A) && isFinite(H)){
-        Sac = calcFrenteSacrificio(A,H);
-        qSac.value = Sac.toFixed(2);
-      } else {
-        qSac.value='';
-        Sac=0;
+      // Calcular según modo
+      if (mode === 'bandas'){
+        const m3 = calcBandas(A, H, L);
+        qOutH2.textContent = `Bandas: ${fmt1(m3)} m³`;
+        qOutMode.textContent = '';
+        qSac.value = '';
+        return;
       }
 
-      // Cálculo base original
-      let m3_base=0;
-      if (m==='tunnel'){
-        const pp=(H*2)+A, pa=pp*0.9, al=pa*L;
-        m3_base=al/C;
-      } else {
-        m3_base=(L*H)/C;
+      if (mode === 'resane'){
+        const m3 = calcResane(A, H);
+        qOutH2.textContent = `Resane: ${fmt1(m3)} m³`;
+        qOutMode.textContent = '';
+        qSac.value = '';
+        return;
       }
 
-      const m3_total=m3_base + Sac;
-      qOutH2.textContent = `${nombreModoQuick()}: ${fmt1(m3_total)} m³`;
+      // Avance + Frente
+      if (!isFinite(C) || C <= 0){
+        resetQuickOutput();
+        qOutMode.textContent = 'Constante inválida.';
+        return;
+      }
+
+      const base = calcAvanceBase(A, H, L, C);
+      const sac = calcFrenteSacrificio(A, H);
+      qSac.value = sac.toFixed(2);
+
+      const total = base + sac;
+      qOutH2.textContent = `Avance + Frente: ${fmt1(total)} m³`;
       qOutMode.textContent = '';
     }
 
-    document.getElementById('qCalcular')?.addEventListener('click', calcularQuick);
+    // Eventos checkboxes (modo)
+    qModeAvance.addEventListener('change', ()=> selectMode('avance'));
+    qModeBandas.addEventListener('change', ()=> selectMode('bandas'));
+    qModeResane.addEventListener('change', ()=> selectMode('resane'));
 
-    document.getElementById('qLimpiar')?.addEventListener('click', ()=>{
+    // Si el usuario intenta desmarcar el único activo, lo mantenemos activo
+    [qModeAvance, qModeBandas, qModeResane].forEach(chk=>{
+      chk.addEventListener('click', ()=>{
+        // si desmarca y quedan todos false, volvemos a avance
+        setTimeout(()=>{
+          if (!qModeAvance.checked && !qModeBandas.checked && !qModeResane.checked){
+            selectMode('avance');
+          }
+        }, 0);
+      });
+    });
+
+    // Input listeners
+    [qA,qH,qL,qConst].forEach(el=>{
+      el.addEventListener('input', ()=>{
+        if (isQuickReady()) calcularQuick();
+        else resetQuickOutput();
+      });
+      el.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter') calcularQuick(); });
+    });
+
+    document.getElementById('qCalcular').addEventListener('click', calcularQuick);
+
+    document.getElementById('qLimpiar').addEventListener('click', ()=>{
       qA.value=''; qH.value=''; qL.value='';
       qSac.value='';
       qConst.value='11.5';
-      document.querySelector('input[name="modoQuick"][value="tunnel"]').checked=true;
-      qOutH2.textContent='—';
-      qOutMode.textContent='Selecciona modo y completa los datos.';
+      selectMode('avance');
+      resetQuickOutput();
       qA.focus();
     });
 
-    [qA,qH,qL,qConst,...qRadios].forEach(el=>{
-      el?.addEventListener('input', ()=>{
-        const m=[...qRadios].find(r=>r.checked)?.value ?? 'tunnel';
-        const wallReady=qH.value.trim() && qL.value.trim();
-        const tunnelReady=qA.value.trim() && wallReady;
-        const ready=(m==='wall') ? wallReady : tunnelReady;
-        if (ready) calcularQuick();
-        else {
-          qOutH2.textContent='—';
-          qOutMode.textContent='Selecciona modo y completa los datos.';
-          qSac.value='';
-        }
-      });
-      el?.addEventListener('keydown', ev=>{ if(ev.key==='Enter') calcularQuick(); });
-    });
+    // Inicializa UI
+    selectMode('avance');
 
-    /* ===== Pestaña 2: Registros ===== */
+    /* ===== Pestaña 2: Registros (tu lógica actual, con frente auto) ===== */
     const rA=document.getElementById('rA'), rH=document.getElementById('rH'), rL=document.getElementById('rL');
     const rSac=document.getElementById('rSac'), rConst=document.getElementById('rConst');
     const rOutH2=document.querySelector('#rOut h2'), rOutMode=document.getElementById('rMode');
@@ -514,7 +655,7 @@
         return false;
       }
 
-      // Sacrificio AUTO solo para túnel
+      // Frente auto (túnel)
       let Sac=0;
       if (m==='tunnel' && isFinite(A) && isFinite(H)){
         Sac = calcFrenteSacrificio(A,H);
@@ -524,13 +665,11 @@
         Sac=0;
       }
 
-      // Cálculo base original
       let m3_base=0;
       if (m==='tunnel'){
-        const pp=(H*2)+A, pa=pp*0.9, al=pa*L;
-        m3_base=al/C;
+        m3_base = calcAvanceBase(A, H, L, C);
       } else {
-        m3_base=(L*H)/C;
+        m3_base = (L*H)/C;
       }
 
       const m3_total=m3_base + Sac;
@@ -549,9 +688,8 @@
       return true;
     }
 
-    rCalcBtn?.addEventListener('click', calcularReg);
+    rCalcBtn.addEventListener('click', calcularReg);
 
-    /* ===== Guardar Registros (localStorage) ===== */
     const LS_REGS='sc_registros';
     function getRegs(){ try{ return JSON.parse(localStorage.getItem(LS_REGS)) ?? []; }catch{ return []; } }
     function setRegs(arr){ localStorage.setItem(LS_REGS, JSON.stringify(arr)); }
@@ -569,7 +707,7 @@
     }
     limpiarFormularioRegistro();
 
-    regGuardarBtn?.addEventListener('click', ()=>{
+    regGuardarBtn.addEventListener('click', ()=>{
       if(!lastRegCalc){ alert('Primero realiza el cálculo.'); return; }
 
       const fecha=regFecha.value || todayStr();
@@ -603,7 +741,7 @@
       regMsg.textContent='Registro guardado. Revisa la pestaña “Tablas”.';
     });
 
-    goTablasBtn?.addEventListener('click', ()=>{
+    goTablasBtn.addEventListener('click', ()=>{
       switchTab('tab-tablas', document.getElementById('btn-tablas'));
     });
 
@@ -624,11 +762,11 @@
           <td>${i+1}</td><td>${r.fecha}</td><td>${r.nivel}</td><td>${r.labor}</td><td>${r.robot}</td>
           <td>${r.presion}</td><td>${r.uso??'—'}</td><td>${r.turno??'—'}</td><td>${r.obs??''}</td>
           <td>${r.modo??'—'}</td><td>${m3txt}</td><td>${constxt}</td><td>${sactxt}</td><td>${ahltxt}</td>
-          <td><button class="btn ghost" type="button" data-i="${i}">Eliminar</button></td>
+          <td><button class="btn ghost" type="button">Eliminar</button></td>
         `;
         tbl3Body.appendChild(tr);
 
-        tr.querySelector('button')?.addEventListener('click', ()=>{
+        tr.querySelector('button').addEventListener('click', ()=>{
           const arr=getRegs();
           arr.splice(i,1);
           setRegs(arr);
@@ -650,7 +788,7 @@
       return lines.join('\r\n');
     }
 
-    document.getElementById('tbl3ExportCSV')?.addEventListener('click', ()=>{
+    document.getElementById('tbl3ExportCSV').addEventListener('click', ()=>{
       const regs=getRegs();
       if(!regs.length){ alert('No hay registros para exportar.'); return; }
       const csv=toCSV(regs);
@@ -663,9 +801,9 @@
       URL.revokeObjectURL(url);
     });
 
-    document.getElementById('tbl3Refrescar')?.addEventListener('click', ()=>{ renderTbl3(); });
+    document.getElementById('tbl3Refrescar').addEventListener('click', ()=>{ renderTbl3(); });
 
-    document.getElementById('tbl3BorrarTodo')?.addEventListener('click', ()=>{
+    document.getElementById('tbl3BorrarTodo').addEventListener('click', ()=>{
       if(confirm('¿Borrar TODOS los registros?')){
         localStorage.removeItem(LS_REGS);
         renderTbl3();
