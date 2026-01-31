@@ -21,10 +21,43 @@
 
       --bg:#ffffff; --fg:#0b0b0b; --muted:#667085; --card:#f6f8fa; --border:#d0d5dd;
       color-scheme: light dark;
+
+      /* ===== Plomos por apartado (modo claro) ===== */
+      --plomo-avance-bg: #f3f4f6;   /* gris neutro */
+      --plomo-avance-br: #d0d5dd;
+
+      --plomo-bandas-bg: #f1f5f9;   /* gris frío */
+      --plomo-bandas-br: #cbd5e1;
+
+      --plomo-resanes-bg: #f7f3f2;  /* gris cálido */
+      --plomo-resanes-br: #e0d6d3;
+
+      --plomo-b1-bg: #eef2f7;
+      --plomo-b2-bg: #eff6f4;
+      --plomo-b3-bg: #f5f2f8;
+
+      --accent-soft: rgba(255,106,0,0.35);
     }
+
     @media (prefers-color-scheme: dark){
       :root{
         --bg:#0b0b0b; --fg:#eee; --muted:#98a2b3; --card:#14171a; --border:#2a2e33;
+
+        /* ===== Plomos por apartado (modo oscuro) ===== */
+        --plomo-avance-bg: rgba(255,255,255,0.06);
+        --plomo-avance-br: rgba(255,255,255,0.14);
+
+        --plomo-bandas-bg: rgba(120,160,255,0.08);
+        --plomo-bandas-br: rgba(170,190,255,0.18);
+
+        --plomo-resanes-bg: rgba(255,210,180,0.06);
+        --plomo-resanes-br: rgba(255,210,180,0.16);
+
+        --plomo-b1-bg: rgba(255,255,255,0.05);
+        --plomo-b2-bg: rgba(180,255,230,0.06);
+        --plomo-b3-bg: rgba(220,190,255,0.06);
+
+        --accent-soft: rgba(255,106,0,0.42);
       }
     }
 
@@ -97,6 +130,7 @@
     thead th{background:#fff3e8}
     @media (prefers-color-scheme: dark){ thead th{background:#24170a;color:#fed8b4} }
 
+    /* Tabbar (3 pestañas) */
     .tabbar{
       position:fixed;left:0;right:0;bottom:0;z-index:9999;
       background:var(--bg);
@@ -117,6 +151,7 @@
 
     .hidden{display:none !important}
 
+    /* Checks sumables */
     .checkline{
       display:inline-flex; align-items:center; gap:.45rem;
       user-select:none;
@@ -128,6 +163,7 @@
     @media (prefers-color-scheme: dark){ .checkline{background:rgba(0,0,0,0.18)} }
     .checkline input{width:auto;margin:0;transform:scale(1.05)}
 
+    /* Panel base */
     .pane{
       margin-top:.75rem;
       padding:.75rem;
@@ -135,21 +171,39 @@
       border-radius:.7rem;
       background:rgba(255,255,255,0.55);
     }
-    @media (prefers-color-scheme: dark){ .pane{background:rgba(0,0,0,0.18)} }
     .pane-title{font-weight:800;margin:.1rem 0 .4rem}
 
-    /* subpanel para cada banda */
+    /* Plomos distintos por apartado (contraste + acento marca) */
+    .pane.pane-avance{
+      background: var(--plomo-avance-bg);
+      border-color: var(--plomo-avance-br);
+      box-shadow: inset 3px 0 0 var(--accent-soft);
+    }
+    .pane.pane-bandas{
+      background: var(--plomo-bandas-bg);
+      border-color: var(--plomo-bandas-br);
+      box-shadow: inset 3px 0 0 var(--accent-soft);
+    }
+    .pane.pane-resanes{
+      background: var(--plomo-resanes-bg);
+      border-color: var(--plomo-resanes-br);
+      box-shadow: inset 3px 0 0 var(--accent-soft);
+    }
+
+    /* Subpanel para cada banda */
     .subpane{
       border:1px solid var(--border);
       border-radius:.7rem;
       padding:.65rem;
-      background:rgba(255,255,255,0.35);
       margin-top:.6rem;
+      background: rgba(255,255,255,0.35);
     }
-    @media (prefers-color-scheme: dark){ .subpane{background:rgba(0,0,0,0.12)} }
     .subpane-title{font-weight:800;margin:0 0 .35rem}
+    .subpane.sub-b1{ background: var(--plomo-b1-bg); }
+    .subpane.sub-b2{ background: var(--plomo-b2-bg); }
+    .subpane.sub-b3{ background: var(--plomo-b3-bg); }
 
-    /* Loader */
+    /* ===== Loader estilo iPhone ===== */
     #appLoader{
       position:fixed; inset:0; z-index:99999;
       display:flex; align-items:center; justify-content:center;
@@ -202,6 +256,7 @@
     <h1>Shotcrete Calc</h1>
   </header>
 
+  <!-- ===== Splash / Loader ===== -->
   <div id="appLoader" aria-hidden="true">
     <div class="loader-card">
       <img class="loader-icon" alt="Shotcrete icon"
@@ -235,7 +290,7 @@
         </div>
 
         <!-- Avance + Frente -->
-        <div id="paneAvance" class="pane hidden">
+        <div id="paneAvance" class="pane pane-avance hidden">
           <div class="pane-title">Avance + Frente de sacrificio</div>
           <div class="row3">
             <div><label for="aA">Ancho (A) — m</label><input id="aA" type="text" inputmode="decimal"></div>
@@ -255,10 +310,10 @@
         </div>
 
         <!-- Bandas (3 bandas) -->
-        <div id="paneBandas" class="pane hidden">
+        <div id="paneBandas" class="pane pane-bandas hidden">
           <div class="pane-title">Calc. Bandas</div>
 
-          <div class="subpane">
+          <div class="subpane sub-b1">
             <div class="subpane-title">Banda 1</div>
             <div class="row3">
               <div><label for="b1A">Ancho (A) — m</label><input id="b1A" type="text" inputmode="decimal"></div>
@@ -267,7 +322,7 @@
             </div>
           </div>
 
-          <div class="subpane">
+          <div class="subpane sub-b2">
             <div class="subpane-title">Banda 2</div>
             <div class="row3">
               <div><label for="b2A">Ancho (A) — m</label><input id="b2A" type="text" inputmode="decimal"></div>
@@ -276,7 +331,7 @@
             </div>
           </div>
 
-          <div class="subpane">
+          <div class="subpane sub-b3">
             <div class="subpane-title">Banda 3</div>
             <div class="row3">
               <div><label for="b3A">Ancho (A) — m</label><input id="b3A" type="text" inputmode="decimal"></div>
@@ -287,7 +342,7 @@
         </div>
 
         <!-- Resanes -->
-        <div id="paneResane" class="pane hidden">
+        <div id="paneResane" class="pane pane-resanes hidden">
           <div class="pane-title">Calc. Resanes</div>
           <div class="row2">
             <div><label for="sA">Ancho (A) — m</label><input id="sA" type="text" inputmode="decimal"></div>
@@ -456,19 +511,23 @@
     const fmt1 = (n) => Number(n).toFixed(1);
     const todayStr = () => new Date().toISOString().slice(0,10);
 
+    // Frente: ((A*(H-2))*0.9)/14
     function calcFrente(A, H){
       const hEff = Math.max(0, H - 2);
       return (A * hEff * 0.9) / 14;
     }
+    // Avance base: (((H*2)+A)*0.9*L)/C
     function calcAvanceBase(A, H, L, C){
       const pp = (H * 2) + A;
       const pa = pp * 0.9;
       const al = pa * L;
       return al / C;
     }
+    // Bandas: ((((H*2)+A)*0.9)*L)/11.5
     function calcBandas(A, H, L){
       return ((((H * 2) + A) * 0.9) * L) / 11.5;
     }
+    // Resane: (H*A)/11.5
     function calcResane(A, H){
       return (H * A) / 11.5;
     }
@@ -488,7 +547,6 @@
     const aConst = document.getElementById('aConst');
     const aSac = document.getElementById('aSac');
 
-    // Bandas 1..3
     const b1A = document.getElementById('b1A'), b1H = document.getElementById('b1H'), b1L = document.getElementById('b1L');
     const b2A = document.getElementById('b2A'), b2H = document.getElementById('b2H'), b2L = document.getElementById('b2L');
     const b3A = document.getElementById('b3A'), b3H = document.getElementById('b3H'), b3L = document.getElementById('b3L');
@@ -502,13 +560,11 @@
     function togglePane(chk, pane){
       pane.classList.toggle('hidden', !chk.checked);
     }
-
     function isFilled(v){ return String(v ?? '').trim() !== ''; }
 
-    // Suma bandas: solo suma bandas completas; si banda está vacía, se ignora.
+    // Suma Bandas: suma solo bandas completas; bandas vacías se ignoran; parciales no suman.
     function sumBandas3(){
       let sum = 0;
-
       const bandas = [
         {A:b1A.value, H:b1H.value, L:b1L.value},
         {A:b2A.value, H:b2H.value, L:b2L.value},
@@ -517,14 +573,12 @@
 
       for (const bx of bandas){
         const any = isFilled(bx.A) || isFilled(bx.H) || isFilled(bx.L);
-        if (!any) continue; // banda vacía => ignorar
+        if (!any) continue;
         const A = parseDec(bx.A), H = parseDec(bx.H), L = parseDec(bx.L);
         if (isFinite(A) && isFinite(H) && isFinite(L)){
           sum += calcBandas(A,H,L);
         }
-        // si está parcial/incompleta, no suma (y no mostramos texto extra)
       }
-
       return sum;
     }
 
@@ -586,7 +640,6 @@
 
     [chkAvance, chkBandas, chkResane].forEach(chk => chk.addEventListener('change', onCheckChange));
 
-    // recalcular al tipear
     [
       aA,aH,aL,aConst,
       b1A,b1H,b1L,b2A,b2H,b2L,b3A,b3H,b3L,
@@ -611,7 +664,7 @@
 
     onCheckChange();
 
-    // ===== Registros (igual que ya venías) =====
+    // ===== Registros =====
     const rA=document.getElementById('rA'), rH=document.getElementById('rH'), rL=document.getElementById('rL');
     const rSac=document.getElementById('rSac'), rConst=document.getElementById('rConst');
     const rOutH2=document.querySelector('#rOut h2'), rOutMode=document.getElementById('rMode');
@@ -801,6 +854,7 @@
       }
     });
 
+    /* Loader control */
     (function(){
       const loader = document.getElementById('appLoader');
       if(!loader) return;
@@ -813,6 +867,7 @@
       }
     })();
 
+    /* SW register */
     (function(){
       if('serviceWorker' in navigator){
         const swUrl='/shotcrete-calc/sw.js';
