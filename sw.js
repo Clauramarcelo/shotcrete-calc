@@ -7,7 +7,8 @@ const ASSETS = [
   `${REPO}/index.html`,
   `${REPO}/manifest.json`,
   `${REPO}/icon-192.png`,
-  `${REPO}/icon-512.png`
+  `${REPO}/icon-512.png`,
+  `${REPO}/sw.js`
 ];
 
 self.addEventListener('install', (event) => {
