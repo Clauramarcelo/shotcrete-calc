@@ -6,13 +6,13 @@
   <title>Shotcrete Calc</title>
 
   <!-- Manifest PWA -->
-  <link rel="manifest" href="/shotcrete-calc/manifest.json" />
+  /shotcrete-calc/manifest.json
   <meta name="theme-color" content="#ff6a00" />
 
   <!-- Apple PWA (opcional) -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <link rel="apple-touch-icon" href="/shotcrete-calc/icon-192.png" />
+  /shotcrete-calc/icon-192.png
 
   <style>
     :root{
@@ -118,9 +118,8 @@
     section.tab.active{display:block}
 
     .hidden{display:none !important}
-    .muted{color:var(--muted);font-size:.95rem}
 
-    /* Checks “sumables” */
+    /* Checks sumables */
     .checkline{
       display:inline-flex; align-items:center; gap:.45rem;
       user-select:none;
@@ -131,6 +130,7 @@
     }
     @media (prefers-color-scheme: dark){ .checkline{background:rgba(0,0,0,0.18)} }
     .checkline input{width:auto;margin:0;transform:scale(1.05)}
+
     .pane{
       margin-top:.75rem;
       padding:.75rem;
@@ -140,7 +140,6 @@
     }
     @media (prefers-color-scheme: dark){ .pane{background:rgba(0,0,0,0.18)} }
     .pane-title{font-weight:800;margin:.1rem 0 .4rem}
-    .warn{color:#b42318;font-weight:600}
 
     /* ===== Loader estilo iPhone ===== */
     #appLoader{
@@ -195,44 +194,38 @@
     <h1>Shotcrete Calc</h1>
   </header>
 
-  <!-- ===== Splash / Loader ===== -->
   <div id="appLoader" aria-hidden="true">
     <div class="loader-card">
-      <img class="loader-icon" alt="Shotcrete icon"
-           src="https://raw.githubusercontent.com/Clauramarcelo/shotcrete-calc/main/Mixer.jpg" />
+      https://raw.githubusercontent.com/Clauramarcelo/shotcrete-calc/main/Mixer.jpg
       <div class="loader-spinner" aria-label="Cargando"></div>
       <div class="loader-text">Cargando…</div>
     </div>
   </div>
 
   <main>
-    <!-- ===== 1) CALCULO m3 ===== -->
     <section id="tab-calculo" class="tab active" aria-labelledby="btn-calculo">
       <fieldset>
         <legend>Calculo m3</legend>
 
         <div class="actions" style="margin-bottom:.35rem">
-          <span class="muted">Marcar lo que corresponda (se SUMA al total):</span>
-
           <label class="checkline">
             <input id="chkAvance" type="checkbox" />
-            Avance + Frente
+            Avance + Frente de sacrificio
           </label>
 
           <label class="checkline">
             <input id="chkBandas" type="checkbox" />
-            Bandas
+            Calc. Bandas
           </label>
 
           <label class="checkline">
             <input id="chkResane" type="checkbox" />
-            Resane
+            Calc. Resanes
           </label>
         </div>
 
-        <!-- Panel Avance + Frente -->
         <div id="paneAvance" class="pane hidden">
-          <div class="pane-title">Avance + Frente (usa A/H/L + Constante)</div>
+          <div class="pane-title">Avance + Frente de sacrificio</div>
           <div class="row3">
             <div><label for="aA">Ancho (A) — m</label><input id="aA" type="text" inputmode="decimal"></div>
             <div><label for="aH">Altura (H) — m</label><input id="aH" type="text" inputmode="decimal"></div>
@@ -240,40 +233,31 @@
           </div>
           <div class="row2" style="margin-top:.6rem">
             <div>
-              <label for="aSac">Frente de sacrificio — m³ (auto)</label>
+              <label for="aSac">Frente de sacrificio — m³</label>
               <input id="aSac" type="text" inputmode="decimal" readonly>
-              <small class="muted">Fórmula: ((A*(H-2))*0.9)/14</small>
             </div>
             <div>
-              <label for="aConst">Constante (m²/m³)</label>
+              <label for="aConst">Constante</label>
               <input id="aConst" type="text" inputmode="decimal" value="11.5">
-              <small class="muted">Se usa para el avance base (AL/Const).</small>
             </div>
           </div>
-          <p id="aWarn" class="muted warn" style="margin:.5rem 0 0"></p>
         </div>
 
-        <!-- Panel Bandas -->
         <div id="paneBandas" class="pane hidden">
-          <div class="pane-title">Bandas (usa A/H/L)</div>
+          <div class="pane-title">Calc. Bandas</div>
           <div class="row3">
             <div><label for="bA">Ancho (A) — m</label><input id="bA" type="text" inputmode="decimal"></div>
             <div><label for="bH">Altura (H) — m</label><input id="bH" type="text" inputmode="decimal"></div>
             <div><label for="bL">Longitud (L) — m</label><input id="bL" type="text" inputmode="decimal"></div>
           </div>
-          <small class="muted">Fórmula: (((H×2)+A)×0.9)×L</small>
-          <p id="bWarn" class="muted warn" style="margin:.5rem 0 0"></p>
         </div>
 
-        <!-- Panel Resane -->
         <div id="paneResane" class="pane hidden">
-          <div class="pane-title">Resane (usa A/H)</div>
+          <div class="pane-title">Calc. Resanes</div>
           <div class="row2">
             <div><label for="sA">Ancho (A) — m</label><input id="sA" type="text" inputmode="decimal"></div>
             <div><label for="sH">Altura (H) — m</label><input id="sH" type="text" inputmode="decimal"></div>
           </div>
-          <small class="muted">Fórmula: (H×A)/11.5</small>
-          <p id="sWarn" class="muted warn" style="margin:.5rem 0 0"></p>
         </div>
 
         <div class="actions">
@@ -283,18 +267,16 @@
 
         <div id="qOut" class="result" aria-live="polite">
           <h2>—</h2>
-          <small id="qMode">Marca uno o más checks y completa los datos.</small>
+          <small id="qMode"></small>
         </div>
       </fieldset>
     </section>
 
-    <!-- ===== 2) REGISTROS ===== -->
     <section id="tab-registros" class="tab" aria-labelledby="btn-registros">
       <fieldset>
         <legend>Calculadora de Registros</legend>
 
         <div class="actions" style="margin-bottom:.4rem">
-          <span class="muted">Modo:</span>
           <label style="display:inline-flex;align-items:center;gap:.35rem;margin-left:.5rem">
             <input type="radio" name="modoRegCalc" value="tunnel" checked> Avance (túnel)
           </label>
@@ -325,7 +307,7 @@
         </div>
 
         <div id="rOut" class="result" aria-live="polite">
-          <h2>—</h2><small id="rMode">Primero calcula; luego podrás registrar la actividad.</small>
+          <h2>—</h2><small id="rMode"></small>
         </div>
       </fieldset>
 
@@ -373,11 +355,10 @@
           <button class="btn secondary" id="goTablasBtn" type="button">Ir a Tablas</button>
         </div>
 
-        <p id="regMsg" class="muted" style="margin-top:.4rem"></p>
+        <p id="regMsg" style="margin-top:.4rem;color:var(--muted);font-size:.95rem"></p>
       </fieldset>
     </section>
 
-    <!-- ===== 3) TABLAS ===== -->
     <section id="tab-tablas" class="tab" aria-labelledby="btn-tablas">
       <fieldset>
         <legend>Tabla de registros (CSV)</legend>
@@ -417,29 +398,20 @@
   </nav>
 
   <script>
-    /* ===== Tabs ===== */
     function switchTab(targetId, btnEl){
-      try{
-        document.querySelectorAll('.tabbar button').forEach(b=>{
-          const active = (b === btnEl);
-          b.classList.toggle('active', active);
-          b.setAttribute('aria-selected', active ? 'true' : 'false');
-        });
+      document.querySelectorAll('.tabbar button').forEach(b=>{
+        const active = (b === btnEl);
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
 
-        document.querySelectorAll('section.tab').forEach(sec=>{
-          sec.classList.toggle('active', sec.id === targetId);
-        });
+      document.querySelectorAll('section.tab').forEach(sec=>{
+        sec.classList.toggle('active', sec.id === targetId);
+      });
 
-        if (targetId === 'tab-calculo') { document.getElementById('chkAvance')?.focus({preventScroll:true}); }
-        if (targetId === 'tab-registros'){ document.getElementById('rA')?.focus({preventScroll:true}); }
-        if (targetId === 'tab-tablas') { renderTbl3(); }
-      }catch(err){
-        console.error('switchTab error:', err);
-        alert('Ocurrió un error al cambiar de pestaña. Revisa la consola (F12).');
-      }
+      if (targetId === 'tab-tablas') renderTbl3();
     }
 
-    /* ===== Utilidades ===== */
     function parseDec(txt){
       if (typeof txt !== 'string') return NaN;
       const s = txt.trim().replace(',', '.');
@@ -449,29 +421,23 @@
     const fmt1 = (n) => Number(n).toFixed(1);
     const todayStr = () => new Date().toISOString().slice(0,10);
 
-    /* ===== Fórmulas ===== */
-    // Frente: ((A*(H-2))*0.9)/14
     function calcFrente(A, H){
       const hEff = Math.max(0, H - 2);
       return (A * hEff * 0.9) / 14;
     }
-    // Avance base: (((H*2)+A)*0.9*L)/C
     function calcAvanceBase(A, H, L, C){
       const pp = (H * 2) + A;
       const pa = pp * 0.9;
       const al = pa * L;
       return al / C;
     }
-    // Bandas: (((H*2)+A)*0.9)*L
     function calcBandas(A, H, L){
-      return (((H * 2) + A) * 0.9) * L;
+      return ((((H * 2) + A) * 0.9) * L) / 11.5;
     }
-    // Resane: (H*A)/11.5
     function calcResane(A, H){
       return (H * A) / 11.5;
     }
 
-    /* ===== Calculo m3 sumable (3 checks) ===== */
     const chkAvance = document.getElementById('chkAvance');
     const chkBandas = document.getElementById('chkBandas');
     const chkResane = document.getElementById('chkResane');
@@ -485,16 +451,13 @@
     const aL = document.getElementById('aL');
     const aConst = document.getElementById('aConst');
     const aSac = document.getElementById('aSac');
-    const aWarn = document.getElementById('aWarn');
 
     const bA = document.getElementById('bA');
     const bH = document.getElementById('bH');
     const bL = document.getElementById('bL');
-    const bWarn = document.getElementById('bWarn');
 
     const sA = document.getElementById('sA');
     const sH = document.getElementById('sH');
-    const sWarn = document.getElementById('sWarn');
 
     const qOutH2 = document.querySelector('#qOut h2');
     const qMode = document.getElementById('qMode');
@@ -503,87 +466,58 @@
       pane.classList.toggle('hidden', !chk.checked);
     }
 
-    function clearWarns(){
-      aWarn.textContent = '';
-      bWarn.textContent = '';
-      sWarn.textContent = '';
-    }
-
     function calcTotal(){
-      clearWarns();
-
       let total = 0;
       const lines = [];
-      const warns = [];
 
-      // --- Avance + Frente ---
+      if (!chkAvance.checked && !chkBandas.checked && !chkResane.checked){
+        qOutH2.textContent = '—';
+        qMode.textContent = '';
+        aSac.value = '';
+        return;
+      }
+
       if (chkAvance.checked){
         const A = parseDec(aA.value), H = parseDec(aH.value), L = parseDec(aL.value), C = parseDec(aConst.value || '11.5');
-        const ok = isFinite(A) && isFinite(H) && isFinite(L) && isFinite(C) && C>0;
-        if (!ok){
-          aSac.value = '';
-          const msg = 'Avance+Frente: falta A/H/L o Constante válida.';
-          aWarn.textContent = msg;
-          warns.push(msg);
-        } else {
+        if (isFinite(A) && isFinite(H) && isFinite(L) && isFinite(C) && C>0){
           const base = calcAvanceBase(A,H,L,C);
           const sac = calcFrente(A,H);
           aSac.value = sac.toFixed(2);
           const part = base + sac;
           total += part;
-          lines.push(`Avance+Frente: ${fmt1(part)} m³ (Base ${fmt1(base)} + Frente ${sac.toFixed(2)})`);
+          lines.push(`Avance + Frente: ${fmt1(part)} m³`);
+        } else {
+          aSac.value = '';
+          lines.push(`Avance + Frente: Incompleto`);
         }
       } else {
         aSac.value = '';
-        aWarn.textContent = '';
       }
 
-      // --- Bandas ---
       if (chkBandas.checked){
         const A = parseDec(bA.value), H = parseDec(bH.value), L = parseDec(bL.value);
-        const ok = isFinite(A) && isFinite(H) && isFinite(L);
-        if (!ok){
-          const msg = 'Bandas: falta A/H/L.';
-          bWarn.textContent = msg;
-          warns.push(msg);
-        } else {
+        if (isFinite(A) && isFinite(H) && isFinite(L)){
           const part = calcBandas(A,H,L);
           total += part;
           lines.push(`Bandas: ${fmt1(part)} m³`);
+        } else {
+          lines.push(`Bandas: Incompleto`);
         }
-      } else {
-        bWarn.textContent = '';
       }
 
-      // --- Resane ---
       if (chkResane.checked){
         const A = parseDec(sA.value), H = parseDec(sH.value);
-        const ok = isFinite(A) && isFinite(H);
-        if (!ok){
-          const msg = 'Resane: falta A/H.';
-          sWarn.textContent = msg;
-          warns.push(msg);
-        } else {
+        if (isFinite(A) && isFinite(H)){
           const part = calcResane(A,H);
           total += part;
-          lines.push(`Resane: ${fmt1(part)} m³`);
+          lines.push(`Resanes: ${fmt1(part)} m³`);
+        } else {
+          lines.push(`Resanes: Incompleto`);
         }
-      } else {
-        sWarn.textContent = '';
-      }
-
-      if (!chkAvance.checked && !chkBandas.checked && !chkResane.checked){
-        qOutH2.textContent = '—';
-        qMode.textContent = 'Marca uno o más checks y completa los datos.';
-        return;
       }
 
       qOutH2.textContent = `TOTAL: ${fmt1(total)} m³`;
-      const detail = [
-        ...(lines.length ? lines : []),
-        ...(warns.length ? ['','⚠️ Revisar:', ...warns.map(w=>'• '+w)] : [])
-      ].join('\n');
-      qMode.textContent = detail || '';
+      qMode.textContent = lines.join('\n');
     }
 
     function onCheckChange(){
@@ -594,30 +528,23 @@
     }
 
     [chkAvance, chkBandas, chkResane].forEach(chk => chk.addEventListener('change', onCheckChange));
-
-    // Recalcular al escribir en cualquier input de cálculo
     [aA,aH,aL,aConst,bA,bH,bL,sA,sH].forEach(inp=>{
-      inp.addEventListener('input', ()=> calcTotal());
+      inp.addEventListener('input', calcTotal);
       inp.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter') calcTotal(); });
     });
 
     document.getElementById('qCalcular').addEventListener('click', calcTotal);
-
     document.getElementById('qLimpiar').addEventListener('click', ()=>{
-      // checks
       chkAvance.checked=false; chkBandas.checked=false; chkResane.checked=false;
-      // inputs
       [aA,aH,aL,bA,bH,bL,sA,sH].forEach(i=>i.value='');
       aConst.value = '11.5';
       aSac.value = '';
-      clearWarns();
       onCheckChange();
     });
 
-    // Inicial
     onCheckChange();
 
-    /* ===== Registros (como tu app actual) ===== */
+    // ===== Registros =====
     const rA=document.getElementById('rA'), rH=document.getElementById('rH'), rL=document.getElementById('rL');
     const rSac=document.getElementById('rSac'), rConst=document.getElementById('rConst');
     const rOutH2=document.querySelector('#rOut h2'), rOutMode=document.getElementById('rMode');
@@ -654,7 +581,6 @@
         return false;
       }
 
-      // Frente auto para túnel
       let Sac=0;
       if (m==='tunnel' && isFinite(A) && isFinite(H)){
         Sac = calcFrente(A,H);
@@ -808,7 +734,6 @@
       }
     });
 
-    /* ===== Loader control ===== */
     (function(){
       const loader = document.getElementById('appLoader');
       if(!loader) return;
@@ -821,7 +746,6 @@
       }
     })();
 
-    /* ===== SW register ===== */
     (function(){
       if('serviceWorker' in navigator){
         const swUrl='/shotcrete-calc/sw.js';
