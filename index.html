@@ -6,13 +6,13 @@
   <title>Shotcrete Calc</title>
 
   <!-- Manifest PWA -->
-  /shotcrete-calc/manifest.json
+  <link rel="manifest" href="/shotcrete-calc/manifest.json" />
   <meta name="theme-color" content="#ff6a00" />
 
   <!-- Apple PWA (opcional) -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  /shotcrete-calc/icon-192.png
+  <link rel="apple-touch-icon" href="/shotcrete-calc/icon-192.png" />
 
   <style>
     :root{
@@ -67,7 +67,6 @@
     @media (prefers-color-scheme: dark){
       input,select{background:#0e0e10;color:var(--fg)}
     }
-    input[disabled]{opacity:.6}
 
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
     .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
@@ -98,7 +97,6 @@
     thead th{background:#fff3e8}
     @media (prefers-color-scheme: dark){ thead th{background:#24170a;color:#fed8b4} }
 
-    /* Tabbar (3 pestañas) */
     .tabbar{
       position:fixed;left:0;right:0;bottom:0;z-index:9999;
       background:var(--bg);
@@ -119,7 +117,6 @@
 
     .hidden{display:none !important}
 
-    /* Checks sumables */
     .checkline{
       display:inline-flex; align-items:center; gap:.45rem;
       user-select:none;
@@ -141,7 +138,18 @@
     @media (prefers-color-scheme: dark){ .pane{background:rgba(0,0,0,0.18)} }
     .pane-title{font-weight:800;margin:.1rem 0 .4rem}
 
-    /* ===== Loader estilo iPhone ===== */
+    /* subpanel para cada banda */
+    .subpane{
+      border:1px solid var(--border);
+      border-radius:.7rem;
+      padding:.65rem;
+      background:rgba(255,255,255,0.35);
+      margin-top:.6rem;
+    }
+    @media (prefers-color-scheme: dark){ .subpane{background:rgba(0,0,0,0.12)} }
+    .subpane-title{font-weight:800;margin:0 0 .35rem}
+
+    /* Loader */
     #appLoader{
       position:fixed; inset:0; z-index:99999;
       display:flex; align-items:center; justify-content:center;
@@ -196,13 +204,15 @@
 
   <div id="appLoader" aria-hidden="true">
     <div class="loader-card">
-      https://raw.githubusercontent.com/Clauramarcelo/shotcrete-calc/main/Mixer.jpg
+      <img class="loader-icon" alt="Shotcrete icon"
+           src="https://raw.githubusercontent.com/Clauramarcelo/shotcrete-calc/main/Mixer.jpg" />
       <div class="loader-spinner" aria-label="Cargando"></div>
       <div class="loader-text">Cargando…</div>
     </div>
   </div>
 
   <main>
+    <!-- ===== 1) CALCULO m3 ===== -->
     <section id="tab-calculo" class="tab active" aria-labelledby="btn-calculo">
       <fieldset>
         <legend>Calculo m3</legend>
@@ -224,6 +234,7 @@
           </label>
         </div>
 
+        <!-- Avance + Frente -->
         <div id="paneAvance" class="pane hidden">
           <div class="pane-title">Avance + Frente de sacrificio</div>
           <div class="row3">
@@ -243,15 +254,39 @@
           </div>
         </div>
 
+        <!-- Bandas (3 bandas) -->
         <div id="paneBandas" class="pane hidden">
           <div class="pane-title">Calc. Bandas</div>
-          <div class="row3">
-            <div><label for="bA">Ancho (A) — m</label><input id="bA" type="text" inputmode="decimal"></div>
-            <div><label for="bH">Altura (H) — m</label><input id="bH" type="text" inputmode="decimal"></div>
-            <div><label for="bL">Longitud (L) — m</label><input id="bL" type="text" inputmode="decimal"></div>
+
+          <div class="subpane">
+            <div class="subpane-title">Banda 1</div>
+            <div class="row3">
+              <div><label for="b1A">Ancho (A) — m</label><input id="b1A" type="text" inputmode="decimal"></div>
+              <div><label for="b1H">Altura (H) — m</label><input id="b1H" type="text" inputmode="decimal"></div>
+              <div><label for="b1L">Longitud (L) — m</label><input id="b1L" type="text" inputmode="decimal"></div>
+            </div>
+          </div>
+
+          <div class="subpane">
+            <div class="subpane-title">Banda 2</div>
+            <div class="row3">
+              <div><label for="b2A">Ancho (A) — m</label><input id="b2A" type="text" inputmode="decimal"></div>
+              <div><label for="b2H">Altura (H) — m</label><input id="b2H" type="text" inputmode="decimal"></div>
+              <div><label for="b2L">Longitud (L) — m</label><input id="b2L" type="text" inputmode="decimal"></div>
+            </div>
+          </div>
+
+          <div class="subpane">
+            <div class="subpane-title">Banda 3</div>
+            <div class="row3">
+              <div><label for="b3A">Ancho (A) — m</label><input id="b3A" type="text" inputmode="decimal"></div>
+              <div><label for="b3H">Altura (H) — m</label><input id="b3H" type="text" inputmode="decimal"></div>
+              <div><label for="b3L">Longitud (L) — m</label><input id="b3L" type="text" inputmode="decimal"></div>
+            </div>
           </div>
         </div>
 
+        <!-- Resanes -->
         <div id="paneResane" class="pane hidden">
           <div class="pane-title">Calc. Resanes</div>
           <div class="row2">
@@ -272,6 +307,7 @@
       </fieldset>
     </section>
 
+    <!-- ===== 2) REGISTROS ===== -->
     <section id="tab-registros" class="tab" aria-labelledby="btn-registros">
       <fieldset>
         <legend>Calculadora de Registros</legend>
@@ -359,6 +395,7 @@
       </fieldset>
     </section>
 
+    <!-- ===== 3) TABLAS ===== -->
     <section id="tab-tablas" class="tab" aria-labelledby="btn-tablas">
       <fieldset>
         <legend>Tabla de registros (CSV)</legend>
@@ -404,11 +441,9 @@
         b.classList.toggle('active', active);
         b.setAttribute('aria-selected', active ? 'true' : 'false');
       });
-
       document.querySelectorAll('section.tab').forEach(sec=>{
         sec.classList.toggle('active', sec.id === targetId);
       });
-
       if (targetId === 'tab-tablas') renderTbl3();
     }
 
@@ -438,6 +473,7 @@
       return (H * A) / 11.5;
     }
 
+    // ===== Calculo m3 =====
     const chkAvance = document.getElementById('chkAvance');
     const chkBandas = document.getElementById('chkBandas');
     const chkResane = document.getElementById('chkResane');
@@ -452,9 +488,10 @@
     const aConst = document.getElementById('aConst');
     const aSac = document.getElementById('aSac');
 
-    const bA = document.getElementById('bA');
-    const bH = document.getElementById('bH');
-    const bL = document.getElementById('bL');
+    // Bandas 1..3
+    const b1A = document.getElementById('b1A'), b1H = document.getElementById('b1H'), b1L = document.getElementById('b1L');
+    const b2A = document.getElementById('b2A'), b2H = document.getElementById('b2H'), b2L = document.getElementById('b2L');
+    const b3A = document.getElementById('b3A'), b3H = document.getElementById('b3H'), b3L = document.getElementById('b3L');
 
     const sA = document.getElementById('sA');
     const sH = document.getElementById('sH');
@@ -464,6 +501,31 @@
 
     function togglePane(chk, pane){
       pane.classList.toggle('hidden', !chk.checked);
+    }
+
+    function isFilled(v){ return String(v ?? '').trim() !== ''; }
+
+    // Suma bandas: solo suma bandas completas; si banda está vacía, se ignora.
+    function sumBandas3(){
+      let sum = 0;
+
+      const bandas = [
+        {A:b1A.value, H:b1H.value, L:b1L.value},
+        {A:b2A.value, H:b2H.value, L:b2L.value},
+        {A:b3A.value, H:b3H.value, L:b3L.value},
+      ];
+
+      for (const bx of bandas){
+        const any = isFilled(bx.A) || isFilled(bx.H) || isFilled(bx.L);
+        if (!any) continue; // banda vacía => ignorar
+        const A = parseDec(bx.A), H = parseDec(bx.H), L = parseDec(bx.L);
+        if (isFinite(A) && isFinite(H) && isFinite(L)){
+          sum += calcBandas(A,H,L);
+        }
+        // si está parcial/incompleta, no suma (y no mostramos texto extra)
+      }
+
+      return sum;
     }
 
     function calcTotal(){
@@ -477,6 +539,7 @@
         return;
       }
 
+      // Avance + Frente
       if (chkAvance.checked){
         const A = parseDec(aA.value), H = parseDec(aH.value), L = parseDec(aL.value), C = parseDec(aConst.value || '11.5');
         if (isFinite(A) && isFinite(H) && isFinite(L) && isFinite(C) && C>0){
@@ -488,31 +551,25 @@
           lines.push(`Avance + Frente: ${fmt1(part)} m³`);
         } else {
           aSac.value = '';
-          lines.push(`Avance + Frente: Incompleto`);
         }
       } else {
         aSac.value = '';
       }
 
+      // Bandas (sumatoria 3)
       if (chkBandas.checked){
-        const A = parseDec(bA.value), H = parseDec(bH.value), L = parseDec(bL.value);
-        if (isFinite(A) && isFinite(H) && isFinite(L)){
-          const part = calcBandas(A,H,L);
-          total += part;
-          lines.push(`Bandas: ${fmt1(part)} m³`);
-        } else {
-          lines.push(`Bandas: Incompleto`);
-        }
+        const sumB = sumBandas3();
+        total += sumB;
+        lines.push(`Bandas: ${fmt1(sumB)} m³`);
       }
 
+      // Resanes
       if (chkResane.checked){
         const A = parseDec(sA.value), H = parseDec(sH.value);
         if (isFinite(A) && isFinite(H)){
           const part = calcResane(A,H);
           total += part;
           lines.push(`Resanes: ${fmt1(part)} m³`);
-        } else {
-          lines.push(`Resanes: Incompleto`);
         }
       }
 
@@ -528,7 +585,13 @@
     }
 
     [chkAvance, chkBandas, chkResane].forEach(chk => chk.addEventListener('change', onCheckChange));
-    [aA,aH,aL,aConst,bA,bH,bL,sA,sH].forEach(inp=>{
+
+    // recalcular al tipear
+    [
+      aA,aH,aL,aConst,
+      b1A,b1H,b1L,b2A,b2H,b2L,b3A,b3H,b3L,
+      sA,sH
+    ].forEach(inp=>{
       inp.addEventListener('input', calcTotal);
       inp.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter') calcTotal(); });
     });
@@ -536,7 +599,11 @@
     document.getElementById('qCalcular').addEventListener('click', calcTotal);
     document.getElementById('qLimpiar').addEventListener('click', ()=>{
       chkAvance.checked=false; chkBandas.checked=false; chkResane.checked=false;
-      [aA,aH,aL,bA,bH,bL,sA,sH].forEach(i=>i.value='');
+
+      [aA,aH,aL,aConst,sA,sH,
+       b1A,b1H,b1L,b2A,b2H,b2L,b3A,b3H,b3L
+      ].forEach(i=> i.value='');
+
       aConst.value = '11.5';
       aSac.value = '';
       onCheckChange();
@@ -544,7 +611,7 @@
 
     onCheckChange();
 
-    // ===== Registros =====
+    // ===== Registros (igual que ya venías) =====
     const rA=document.getElementById('rA'), rH=document.getElementById('rH'), rL=document.getElementById('rL');
     const rSac=document.getElementById('rSac'), rConst=document.getElementById('rConst');
     const rOutH2=document.querySelector('#rOut h2'), rOutMode=document.getElementById('rMode');
