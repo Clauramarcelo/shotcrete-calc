@@ -86,11 +86,12 @@
     .result{
       margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;
       border:1px dashed var(--border);
-      display:flex;align-items:center;justify-content:center;text-align:center
+      display:flex;align-items:center;justify-content:center;text-align:center;
+      flex-direction:column; gap:.35rem;
     }
     @media (prefers-color-scheme: dark){ .result{background:#0e0e10} }
     .result h2{margin:0;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:var(--brand)}
-    .result small{display:block;color:var(--muted);margin-top:.25rem}
+    .result small{display:block;color:var(--muted);margin-top:.15rem;white-space:pre-line}
 
     table{width:100%;border-collapse:collapse}
     th,td{border:1px solid var(--border);padding:.55rem;text-align:left}
@@ -119,29 +120,27 @@
     .hidden{display:none !important}
     .muted{color:var(--muted);font-size:.95rem}
 
-    /* Checkboxes (modo) */
+    /* Checks “sumables” */
     .checkline{
-      display:flex;
-      align-items:center;
-      gap:.45rem;
+      display:inline-flex; align-items:center; gap:.45rem;
       user-select:none;
       padding:.35rem .55rem;
       border:1px solid var(--border);
       border-radius:.55rem;
-      background:rgba(255,255,255,0.50);
+      background:rgba(255,255,255,0.55);
     }
-    @media (prefers-color-scheme: dark){
-      .checkline{background:rgba(0,0,0,0.18)}
+    @media (prefers-color-scheme: dark){ .checkline{background:rgba(0,0,0,0.18)} }
+    .checkline input{width:auto;margin:0;transform:scale(1.05)}
+    .pane{
+      margin-top:.75rem;
+      padding:.75rem;
+      border:1px solid var(--border);
+      border-radius:.7rem;
+      background:rgba(255,255,255,0.55);
     }
-    .checkline input[type="checkbox"]{
-      width:auto;
-      transform:scale(1.05);
-      margin:0;
-    }
-    .checkline.active{
-      border-color: rgba(255,106,0,0.65);
-      box-shadow: 0 0 0 2px rgba(255,106,0,0.10);
-    }
+    @media (prefers-color-scheme: dark){ .pane{background:rgba(0,0,0,0.18)} }
+    .pane-title{font-weight:800;margin:.1rem 0 .4rem}
+    .warn{color:#b42318;font-weight:600}
 
     /* ===== Loader estilo iPhone ===== */
     #appLoader{
@@ -212,52 +211,79 @@
       <fieldset>
         <legend>Calculo m3</legend>
 
-        <!-- ✅ 3 modos por checkbox (solo 1 activo a la vez) -->
-        <div class="actions" style="margin-bottom:.4rem">
-          <span class="muted">Modo:</span>
+        <div class="actions" style="margin-bottom:.35rem">
+          <span class="muted">Marcar lo que corresponda (se SUMA al total):</span>
 
-          <label class="checkline active" id="wrap-qAvance">
-            <input id="qModeAvance" type="checkbox" checked>
+          <label class="checkline">
+            <input id="chkAvance" type="checkbox" />
             Avance + Frente
           </label>
 
-          <label class="checkline" id="wrap-qBandas">
-            <input id="qModeBandas" type="checkbox">
+          <label class="checkline">
+            <input id="chkBandas" type="checkbox" />
             Bandas
           </label>
 
-          <label class="checkline" id="wrap-qResane">
-            <input id="qModeResane" type="checkbox">
+          <label class="checkline">
+            <input id="chkResane" type="checkbox" />
             Resane
           </label>
         </div>
 
-        <div class="row3">
-          <div><label for="qA">Ancho (A) — m</label><input id="qA" type="text" inputmode="decimal"></div>
-          <div><label for="qH">Altura (H) — m</label><input id="qH" type="text" inputmode="decimal"></div>
-          <div><label for="qL" id="lbl-qL">Longitud (L) — m</label><input id="qL" type="text" inputmode="decimal"></div>
+        <!-- Panel Avance + Frente -->
+        <div id="paneAvance" class="pane hidden">
+          <div class="pane-title">Avance + Frente (usa A/H/L + Constante)</div>
+          <div class="row3">
+            <div><label for="aA">Ancho (A) — m</label><input id="aA" type="text" inputmode="decimal"></div>
+            <div><label for="aH">Altura (H) — m</label><input id="aH" type="text" inputmode="decimal"></div>
+            <div><label for="aL">Longitud (L) — m</label><input id="aL" type="text" inputmode="decimal"></div>
+          </div>
+          <div class="row2" style="margin-top:.6rem">
+            <div>
+              <label for="aSac">Frente de sacrificio — m³ (auto)</label>
+              <input id="aSac" type="text" inputmode="decimal" readonly>
+              <small class="muted">Fórmula: ((A*(H-2))*0.9)/14</small>
+            </div>
+            <div>
+              <label for="aConst">Constante (m²/m³)</label>
+              <input id="aConst" type="text" inputmode="decimal" value="11.5">
+              <small class="muted">Se usa para el avance base (AL/Const).</small>
+            </div>
+          </div>
+          <p id="aWarn" class="muted warn" style="margin:.5rem 0 0"></p>
         </div>
 
-        <div class="row2" style="margin-top:.6rem">
-          <div>
-            <label for="qSac">Frente de sacrificio — m³ (auto)</label>
-            <input id="qSac" type="text" inputmode="decimal" readonly>
-            <small class="muted">Se usa solo en Avance + Frente.</small>
+        <!-- Panel Bandas -->
+        <div id="paneBandas" class="pane hidden">
+          <div class="pane-title">Bandas (usa A/H/L)</div>
+          <div class="row3">
+            <div><label for="bA">Ancho (A) — m</label><input id="bA" type="text" inputmode="decimal"></div>
+            <div><label for="bH">Altura (H) — m</label><input id="bH" type="text" inputmode="decimal"></div>
+            <div><label for="bL">Longitud (L) — m</label><input id="bL" type="text" inputmode="decimal"></div>
           </div>
-          <div>
-            <label for="qConst">Constante (m²/m³)</label>
-            <input id="qConst" type="text" inputmode="decimal" value="11.5">
-            <small class="muted">Se usa solo en Avance + Frente.</small>
+          <small class="muted">Fórmula: (((H×2)+A)×0.9)×L</small>
+          <p id="bWarn" class="muted warn" style="margin:.5rem 0 0"></p>
+        </div>
+
+        <!-- Panel Resane -->
+        <div id="paneResane" class="pane hidden">
+          <div class="pane-title">Resane (usa A/H)</div>
+          <div class="row2">
+            <div><label for="sA">Ancho (A) — m</label><input id="sA" type="text" inputmode="decimal"></div>
+            <div><label for="sH">Altura (H) — m</label><input id="sH" type="text" inputmode="decimal"></div>
           </div>
+          <small class="muted">Fórmula: (H×A)/11.5</small>
+          <p id="sWarn" class="muted warn" style="margin:.5rem 0 0"></p>
         </div>
 
         <div class="actions">
-          <button class="btn primary" id="qCalcular" type="button">Calcular</button>
+          <button class="btn primary" id="qCalcular" type="button">Calcular total</button>
           <button class="btn ghost" id="qLimpiar" type="button">Limpiar</button>
         </div>
 
         <div id="qOut" class="result" aria-live="polite">
-          <h2>—</h2><small id="qMode">Selecciona un modo y completa los datos.</small>
+          <h2>—</h2>
+          <small id="qMode">Marca uno o más checks y completa los datos.</small>
         </div>
       </fieldset>
     </section>
@@ -303,7 +329,6 @@
         </div>
       </fieldset>
 
-      <!-- Formulario de registro -->
       <fieldset id="regForm" class="hidden">
         <legend>Registro de actividad</legend>
 
@@ -377,7 +402,6 @@
     </section>
   </main>
 
-  <!-- Tab bar (solo 3 pestañas) -->
   <nav class="tabbar" role="tablist" aria-label="Navegación">
     <button type="button" id="btn-calculo" class="active" role="tab"
       aria-controls="tab-calculo" aria-selected="true"
@@ -406,7 +430,7 @@
           sec.classList.toggle('active', sec.id === targetId);
         });
 
-        if (targetId === 'tab-calculo') { document.getElementById('qA')?.focus({preventScroll:true}); }
+        if (targetId === 'tab-calculo') { document.getElementById('chkAvance')?.focus({preventScroll:true}); }
         if (targetId === 'tab-registros'){ document.getElementById('rA')?.focus({preventScroll:true}); }
         if (targetId === 'tab-tablas') { renderTbl3(); }
       }catch(err){
@@ -426,10 +450,17 @@
     const todayStr = () => new Date().toISOString().slice(0,10);
 
     /* ===== Fórmulas ===== */
-    // Frente (auto): ((A * (H - 2)) * 0.9) / 14
-    function calcFrenteSacrificio(A, H){
+    // Frente: ((A*(H-2))*0.9)/14
+    function calcFrente(A, H){
       const hEff = Math.max(0, H - 2);
       return (A * hEff * 0.9) / 14;
+    }
+    // Avance base: (((H*2)+A)*0.9*L)/C
+    function calcAvanceBase(A, H, L, C){
+      const pp = (H * 2) + A;
+      const pa = pp * 0.9;
+      const al = pa * L;
+      return al / C;
     }
     // Bandas: (((H*2)+A)*0.9)*L
     function calcBandas(A, H, L){
@@ -439,186 +470,154 @@
     function calcResane(A, H){
       return (H * A) / 11.5;
     }
-    // Avance base (como tu cálculo túnel original): al/C con C=constante
-    function calcAvanceBase(A, H, L, C){
-      const pp = (H * 2) + A;
-      const pa = pp * 0.9;
-      const al = pa * L;
-      return al / C;
+
+    /* ===== Calculo m3 sumable (3 checks) ===== */
+    const chkAvance = document.getElementById('chkAvance');
+    const chkBandas = document.getElementById('chkBandas');
+    const chkResane = document.getElementById('chkResane');
+
+    const paneAvance = document.getElementById('paneAvance');
+    const paneBandas = document.getElementById('paneBandas');
+    const paneResane = document.getElementById('paneResane');
+
+    const aA = document.getElementById('aA');
+    const aH = document.getElementById('aH');
+    const aL = document.getElementById('aL');
+    const aConst = document.getElementById('aConst');
+    const aSac = document.getElementById('aSac');
+    const aWarn = document.getElementById('aWarn');
+
+    const bA = document.getElementById('bA');
+    const bH = document.getElementById('bH');
+    const bL = document.getElementById('bL');
+    const bWarn = document.getElementById('bWarn');
+
+    const sA = document.getElementById('sA');
+    const sH = document.getElementById('sH');
+    const sWarn = document.getElementById('sWarn');
+
+    const qOutH2 = document.querySelector('#qOut h2');
+    const qMode = document.getElementById('qMode');
+
+    function togglePane(chk, pane){
+      pane.classList.toggle('hidden', !chk.checked);
     }
 
-    /* ===== Pestaña 1: Calculo m3 (3 checkboxes) ===== */
-    const qA=document.getElementById('qA'), qH=document.getElementById('qH'), qL=document.getElementById('qL');
-    const qSac=document.getElementById('qSac'), qConst=document.getElementById('qConst');
-    const qOutH2=document.querySelector('#qOut h2'), qOutMode=document.getElementById('qMode');
-    const qModeAvance=document.getElementById('qModeAvance');
-    const qModeBandas=document.getElementById('qModeBandas');
-    const qModeResane=document.getElementById('qModeResane');
-    const wrapAv=document.getElementById('wrap-qAvance');
-    const wrapBa=document.getElementById('wrap-qBandas');
-    const wrapRe=document.getElementById('wrap-qResane');
-    const lblQL=document.getElementById('lbl-qL');
-
-    function setActiveWrap(){
-      wrapAv.classList.toggle('active', !!qModeAvance.checked);
-      wrapBa.classList.toggle('active', !!qModeBandas.checked);
-      wrapRe.classList.toggle('active', !!qModeResane.checked);
+    function clearWarns(){
+      aWarn.textContent = '';
+      bWarn.textContent = '';
+      sWarn.textContent = '';
     }
 
-    // Solo 1 modo activo
-    function selectMode(mode){
-      qModeAvance.checked = (mode === 'avance');
-      qModeBandas.checked = (mode === 'bandas');
-      qModeResane.checked = (mode === 'resane');
-      applyQuickModeUI();
-      if (isQuickReady()) calcularQuick();
-      else resetQuickOutput();
-    }
+    function calcTotal(){
+      clearWarns();
 
-    function getMode(){
-      if (qModeBandas.checked) return 'bandas';
-      if (qModeResane.checked) return 'resane';
-      return 'avance'; // default
-    }
+      let total = 0;
+      const lines = [];
+      const warns = [];
 
-    function applyQuickModeUI(){
-      const mode = getMode();
-      setActiveWrap();
-
-      // defaults
-      qL.disabled = false;
-      lblQL.style.opacity = '1';
-      qConst.disabled = false;
-      qSac.value = '';
-
-      if (mode === 'bandas'){
-        // Bandas usa A,H,L; no usa Constante ni Frente
-        qConst.disabled = true;
-        qSac.value = '';
+      // --- Avance + Frente ---
+      if (chkAvance.checked){
+        const A = parseDec(aA.value), H = parseDec(aH.value), L = parseDec(aL.value), C = parseDec(aConst.value || '11.5');
+        const ok = isFinite(A) && isFinite(H) && isFinite(L) && isFinite(C) && C>0;
+        if (!ok){
+          aSac.value = '';
+          const msg = 'Avance+Frente: falta A/H/L o Constante válida.';
+          aWarn.textContent = msg;
+          warns.push(msg);
+        } else {
+          const base = calcAvanceBase(A,H,L,C);
+          const sac = calcFrente(A,H);
+          aSac.value = sac.toFixed(2);
+          const part = base + sac;
+          total += part;
+          lines.push(`Avance+Frente: ${fmt1(part)} m³ (Base ${fmt1(base)} + Frente ${sac.toFixed(2)})`);
+        }
+      } else {
+        aSac.value = '';
+        aWarn.textContent = '';
       }
 
-      if (mode === 'resane'){
-        // Resane usa A,H; L no aplica
-        qL.disabled = true;
-        qL.value = '';
-        lblQL.style.opacity = '.6';
-        // constante/fren te no aplica
-        qConst.disabled = true;
-        qSac.value = '';
-      }
-    }
-
-    function resetQuickOutput(){
-      qOutH2.textContent='—';
-      qOutMode.textContent='Selecciona un modo y completa los datos.';
-      qSac.value='';
-    }
-
-    function isQuickReady(){
-      const Aok = qA.value.trim();
-      const Hok = qH.value.trim();
-      const Lok = qL.value.trim();
-      const mode = getMode();
-
-      if (mode === 'resane') return Aok && Hok;
-      return Aok && Hok && Lok; // avance y bandas
-    }
-
-    function calcularQuick(){
-      applyQuickModeUI();
-      const mode = getMode();
-
-      const A = parseDec(qA.value);
-      const H = parseDec(qH.value);
-      const L = parseDec(qL.value);
-      const C = parseDec(qConst.value || '11.5');
-
-      // Validaciones por modo
-      if (!isFinite(A) || !isFinite(H)){
-        resetQuickOutput();
-        qOutMode.textContent = 'Completa Ancho (A) y Altura (H).';
-        return;
-      }
-      if (mode !== 'resane' && !isFinite(L)){
-        resetQuickOutput();
-        qOutMode.textContent = 'Completa Longitud (L).';
-        return;
+      // --- Bandas ---
+      if (chkBandas.checked){
+        const A = parseDec(bA.value), H = parseDec(bH.value), L = parseDec(bL.value);
+        const ok = isFinite(A) && isFinite(H) && isFinite(L);
+        if (!ok){
+          const msg = 'Bandas: falta A/H/L.';
+          bWarn.textContent = msg;
+          warns.push(msg);
+        } else {
+          const part = calcBandas(A,H,L);
+          total += part;
+          lines.push(`Bandas: ${fmt1(part)} m³`);
+        }
+      } else {
+        bWarn.textContent = '';
       }
 
-      // Calcular según modo
-      if (mode === 'bandas'){
-        const m3 = calcBandas(A, H, L);
-        qOutH2.textContent = `Bandas: ${fmt1(m3)} m³`;
-        qOutMode.textContent = '';
-        qSac.value = '';
+      // --- Resane ---
+      if (chkResane.checked){
+        const A = parseDec(sA.value), H = parseDec(sH.value);
+        const ok = isFinite(A) && isFinite(H);
+        if (!ok){
+          const msg = 'Resane: falta A/H.';
+          sWarn.textContent = msg;
+          warns.push(msg);
+        } else {
+          const part = calcResane(A,H);
+          total += part;
+          lines.push(`Resane: ${fmt1(part)} m³`);
+        }
+      } else {
+        sWarn.textContent = '';
+      }
+
+      if (!chkAvance.checked && !chkBandas.checked && !chkResane.checked){
+        qOutH2.textContent = '—';
+        qMode.textContent = 'Marca uno o más checks y completa los datos.';
         return;
       }
 
-      if (mode === 'resane'){
-        const m3 = calcResane(A, H);
-        qOutH2.textContent = `Resane: ${fmt1(m3)} m³`;
-        qOutMode.textContent = '';
-        qSac.value = '';
-        return;
-      }
-
-      // Avance + Frente
-      if (!isFinite(C) || C <= 0){
-        resetQuickOutput();
-        qOutMode.textContent = 'Constante inválida.';
-        return;
-      }
-
-      const base = calcAvanceBase(A, H, L, C);
-      const sac = calcFrenteSacrificio(A, H);
-      qSac.value = sac.toFixed(2);
-
-      const total = base + sac;
-      qOutH2.textContent = `Avance + Frente: ${fmt1(total)} m³`;
-      qOutMode.textContent = '';
+      qOutH2.textContent = `TOTAL: ${fmt1(total)} m³`;
+      const detail = [
+        ...(lines.length ? lines : []),
+        ...(warns.length ? ['','⚠️ Revisar:', ...warns.map(w=>'• '+w)] : [])
+      ].join('\n');
+      qMode.textContent = detail || '';
     }
 
-    // Eventos checkboxes (modo)
-    qModeAvance.addEventListener('change', ()=> selectMode('avance'));
-    qModeBandas.addEventListener('change', ()=> selectMode('bandas'));
-    qModeResane.addEventListener('change', ()=> selectMode('resane'));
+    function onCheckChange(){
+      togglePane(chkAvance, paneAvance);
+      togglePane(chkBandas, paneBandas);
+      togglePane(chkResane, paneResane);
+      calcTotal();
+    }
 
-    // Si el usuario intenta desmarcar el único activo, lo mantenemos activo
-    [qModeAvance, qModeBandas, qModeResane].forEach(chk=>{
-      chk.addEventListener('click', ()=>{
-        // si desmarca y quedan todos false, volvemos a avance
-        setTimeout(()=>{
-          if (!qModeAvance.checked && !qModeBandas.checked && !qModeResane.checked){
-            selectMode('avance');
-          }
-        }, 0);
-      });
+    [chkAvance, chkBandas, chkResane].forEach(chk => chk.addEventListener('change', onCheckChange));
+
+    // Recalcular al escribir en cualquier input de cálculo
+    [aA,aH,aL,aConst,bA,bH,bL,sA,sH].forEach(inp=>{
+      inp.addEventListener('input', ()=> calcTotal());
+      inp.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter') calcTotal(); });
     });
 
-    // Input listeners
-    [qA,qH,qL,qConst].forEach(el=>{
-      el.addEventListener('input', ()=>{
-        if (isQuickReady()) calcularQuick();
-        else resetQuickOutput();
-      });
-      el.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter') calcularQuick(); });
-    });
-
-    document.getElementById('qCalcular').addEventListener('click', calcularQuick);
+    document.getElementById('qCalcular').addEventListener('click', calcTotal);
 
     document.getElementById('qLimpiar').addEventListener('click', ()=>{
-      qA.value=''; qH.value=''; qL.value='';
-      qSac.value='';
-      qConst.value='11.5';
-      selectMode('avance');
-      resetQuickOutput();
-      qA.focus();
+      // checks
+      chkAvance.checked=false; chkBandas.checked=false; chkResane.checked=false;
+      // inputs
+      [aA,aH,aL,bA,bH,bL,sA,sH].forEach(i=>i.value='');
+      aConst.value = '11.5';
+      aSac.value = '';
+      clearWarns();
+      onCheckChange();
     });
 
-    // Inicializa UI
-    selectMode('avance');
+    // Inicial
+    onCheckChange();
 
-    /* ===== Pestaña 2: Registros (tu lógica actual, con frente auto) ===== */
+    /* ===== Registros (como tu app actual) ===== */
     const rA=document.getElementById('rA'), rH=document.getElementById('rH'), rL=document.getElementById('rL');
     const rSac=document.getElementById('rSac'), rConst=document.getElementById('rConst');
     const rOutH2=document.querySelector('#rOut h2'), rOutMode=document.getElementById('rMode');
@@ -655,10 +654,10 @@
         return false;
       }
 
-      // Frente auto (túnel)
+      // Frente auto para túnel
       let Sac=0;
       if (m==='tunnel' && isFinite(A) && isFinite(H)){
-        Sac = calcFrenteSacrificio(A,H);
+        Sac = calcFrente(A,H);
         rSac.value = Sac.toFixed(2);
       } else {
         rSac.value='';
@@ -667,7 +666,7 @@
 
       let m3_base=0;
       if (m==='tunnel'){
-        m3_base = calcAvanceBase(A, H, L, C);
+        m3_base = calcAvanceBase(A,H,L,C);
       } else {
         m3_base = (L*H)/C;
       }
@@ -745,7 +744,6 @@
       switchTab('tab-tablas', document.getElementById('btn-tablas'));
     });
 
-    /* ===== Tablas + CSV ===== */
     const tbl3Body=document.querySelector('#tbl3 tbody');
 
     function renderTbl3(){
