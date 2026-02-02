@@ -1,6 +1,6 @@
 // --- Service Worker para GitHub Pages (sub-path /shotcrete-calc/) ---
 const REPO = '/shotcrete-calc';
-const CACHE_NAME = 'sc-v60';
+const CACHE_NAME = 'sc-v62';
 
 const ASSETS = [
   `${REPO}/`,
@@ -8,69 +8,100 @@ const ASSETS = [
   `${REPO}/manifest.json`,
   `${REPO}/icon-192.png`,
   `${REPO}/icon-512.png`,
-  `${REPO}/sw.js`
+  `${REPO}/sw.js`,
 ];
+
+// Helper: cachea lo que se pueda (no rompe si falta un archivo)
+async function cacheBestEffort(cache, urls) {
+  await Promise.all(
+    urls.map(async (url) => {
+      try {
+        const res = await fetch(url, { cache: 'no-cache' });
+        if (res.ok) await cache.put(url, res);
+      } catch (_) {
+        // Ignorar fallos individuales para no romper la instalación
+      }
+    })
+  );
+}
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      await cacheBestEffort(cache, ASSETS);
+    })()
   );
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(
-      keys.filter(k => k.startsWith('sc-') && k !== CACHE_NAME).map(k => caches.delete(k))
-    );
-    await self.clients.claim();
-  })());
+  event.waitUntil(
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(
+        keys
+          .filter((k) => k.startsWith('sc-') && k !== CACHE_NAME)
+          .map((k) => caches.delete(k))
+      );
+      await self.clients.claim();
+    })()
+  );
 });
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
+  const url = new URL(req.url);
 
-  // Navegaciones: network-first con fallback fuerte a caché
+  // Solo controlamos nuestro scope
+  if (!url.pathname.startsWith(REPO)) return;
+
+  // Navegaciones: network-first con fallback a cache (HTML)
   if (req.mode === 'navigate') {
-    event.respondWith((async () => {
-      const cache = await caches.open(CACHE_NAME);
-      try {
-        const fresh = await fetch(req);
-        cache.put(`${REPO}/index.html`, fresh.clone());
-        return fresh;
-      } catch {
-        const cachedNav = await cache.match(req, { ignoreSearch: true });
-        if (cachedNav) return cachedNav;
+    event.respondWith(
+      (async () => {
+        const cache = await caches.open(CACHE_NAME);
+        try {
+          const fresh = await fetch(req);
+          cache.put(`${REPO}/index.html`, fresh.clone());
+          return fresh;
+        } catch (_) {
+          const cachedNav = await cache.match(req, { ignoreSearch: true });
+          if (cachedNav) return cachedNav;
 
-        const cachedIndex = await cache.match(`${REPO}/index.html`, { ignoreSearch: true });
-        if (cachedIndex) return cachedIndex;
+          const cachedIndex = await cache.match(`${REPO}/index.html`, { ignoreSearch: true });
+          if (cachedIndex) return cachedIndex;
 
-        const cachedRoot = await cache.match(`${REPO}/`, { ignoreSearch: true });
-        if (cachedRoot) return cachedRoot;
+          const cachedRoot = await cache.match(`${REPO}/`, { ignoreSearch: true });
+          if (cachedRoot) return cachedRoot;
 
-        return new Response(
-          `<!doctype html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Offline</title></head>
-           <body style="font-family:system-ui;display:grid;place-items:center;height:100vh;margin:0">Sin conexión</body></html>`,
-          { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-        );
-      }
-    })());
+          return new Response(
+            `<h1>Offline</h1><p>Sin conexión.</p>`,
+            { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+          );
+        }
+      })()
+    );
     return;
   }
 
-  // Recursos: cache-first + runtime caching
+  // Assets: cache-first
   event.respondWith(
-    caches.match(req, { ignoreSearch: true }).then((cached) => {
+    (async () => {
+      const cached = await caches.match(req);
       if (cached) return cached;
 
-      return fetch(req).then((resp) => {
-        if (resp && resp.status === 200) {
-          const clone = resp.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
+      try {
+        const resp = await fetch(req);
+        if (resp && resp.ok) {
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(req, resp.clone());
         }
         return resp;
-      }).catch(() => cached);
-    })
+      } catch (_) {
+        return cached;
+      }
+    })()
   );
 });
+``
