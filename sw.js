@@ -1,6 +1,6 @@
 // --- Service Worker para GitHub Pages (sub-path /shotcrete-calc/) ---
 const REPO = '/shotcrete-calc';
-const CACHE_NAME = 'sc-v65';
+const CACHE_NAME = 'sc-v66';
 
 const ASSETS = [
   `${REPO}/`,
@@ -9,7 +9,8 @@ const ASSETS = [
   `${REPO}/icon-192.png`,
   `${REPO}/icon-512.png`,
   `${REPO}/sw.js`,
-]; 
+];
+
 // Helper: cachea lo que se pueda (no rompe si falta un archivo)
 async function cacheBestEffort(cache, urls) {
   await Promise.all(
@@ -18,7 +19,7 @@ async function cacheBestEffort(cache, urls) {
         const res = await fetch(url, { cache: 'no-cache' });
         if (res.ok) await cache.put(url, res);
       } catch (_) {
-        // Ignorar fallos individuales para no romper la instalación
+        // Ignorar fallos individuales
       }
     })
   );
@@ -55,7 +56,7 @@ self.addEventListener('fetch', (event) => {
   // Solo controlamos nuestro scope
   if (!url.pathname.startsWith(REPO)) return;
 
-  // Navegaciones: network-first con fallback a cache (HTML)
+  // Navegaciones: network-first con fallback a cache
   if (req.mode === 'navigate') {
     event.respondWith(
       (async () => {
@@ -75,10 +76,7 @@ self.addEventListener('fetch', (event) => {
           if (cachedRoot) return cachedRoot;
 
           return new Response(
-            `
-            <h2>Offline</h2>
-            <p>Sin conexión.</p>
-            `,
+            `<h2>Offline</h2><p>Sin conexión.</p>`,
             { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
           );
         }
