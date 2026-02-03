@@ -10,7 +10,6 @@ const ASSETS = [
   `${REPO}/icon-512.png`,
   `${REPO}/sw.js`,
 ]; 
-
 // Helper: cachea lo que se pueda (no rompe si falta un archivo)
 async function cacheBestEffort(cache, urls) {
   await Promise.all(
