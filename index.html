@@ -96,7 +96,7 @@
       input,select{background:#0e0e10;color:var(--fg)}
     }
 
-    /* ✅ Layout responsivo */
+    /* Layout responsivo */
     .row2c{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
     @media (max-width:360px){ .row2c{grid-template-columns:1fr;} }
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
@@ -107,7 +107,7 @@
 
     .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem;align-items:center}
 
-    /* ✅ Botones amigables */
+    /* Botones amigables */
     .btn{
       border:none;border-radius:.7rem;padding:.85rem 1rem;font-size:1rem;
       display:inline-flex;align-items:center;justify-content:center;gap:.5rem;cursor:pointer;
@@ -122,11 +122,8 @@
     .btn.tiny{
       padding:.45rem .65rem;
       font-size:.9rem;
-      min-width: auto;
+      min-width:auto;
       border-radius:.55rem;
-    }
-    @media (max-width:480px){
-      .btn.tiny{flex:0; }
     }
 
     .result{
@@ -147,7 +144,7 @@
     }
     .mini-table th,.mini-table td{padding:.45rem;font-size:.95rem}
 
-    /* ✅ MEJORA CLAVE: tablas amigables en móvil */
+    /* Tablas amigables en móvil */
     .table-wrap{
       overflow-x:auto;
       -webkit-overflow-scrolling: touch;
@@ -158,12 +155,7 @@
     @media (prefers-color-scheme: dark){
       .table-wrap{background:rgba(0,0,0,0.10)}
     }
-    /* ayuda a que no “apriete” columnas */
-    .table-wrap table{ min-width: 860px; }
-    @media (max-width:480px){
-      .table-wrap table{ min-width: 980px; } /* más espacio para scroll en teléfono */
-    }
-    /* hint visual de scroll */
+    .table-wrap table{ min-width: 980px; }
     .scroll-hint{
       margin-top:.45rem;
       font-size:.9rem;
@@ -231,10 +223,6 @@
       background: rgba(255,255,255,0.35);
     }
     .subpane-title{font-weight:800;margin:0 0 .35rem}
-    .subpane.sub-b1{ background: rgba(255,255,255,0.06); }
-    .subpane.sub-b2{ background: rgba(255,255,255,0.06); }
-    .subpane.sub-b3{ background: rgba(255,255,255,0.06); }
-
     .bandsGrid{
       display:grid;
       grid-template-columns:1fr 1fr;
@@ -242,7 +230,6 @@
       margin-top:.6rem;
     }
     @media (max-width:360px){ .bandsGrid{grid-template-columns:1fr;} }
-
     .muted{color:var(--muted);font-size:.95rem}
     .no-print{}
 
@@ -297,14 +284,14 @@
     }
     @media (prefers-color-scheme: dark){ .loader-text{ color:#d8d8d8; } }
 
-    /* ===================== MODO IMPRESIÓN ===================== */
+    /* ===================== MODO IMPRESIÓN (Ctrl+P / Guardar PDF) ===================== */
     #printArea { display:none; }
     @media print {
       header, .tabbar, #appLoader { display:none !important; }
       main { display:none !important; }
       #printArea { display:block !important; }
       body { background:#fff !important; color:#000 !important; }
-      .table-wrap{ overflow: visible !important; border: none !important; } /* no estorba al PDF */
+      .table-wrap{ overflow: visible !important; border: none !important; }
     }
     #printArea{
       padding:18px 18px 0 18px;
@@ -342,9 +329,23 @@
       padding:6px;
       vertical-align:top;
     }
-    #printTableWrap thead th{
-      background:#f2f2f2;
+    #printTableWrap thead th{ background:#f2f2f2; }
+
+    /* Detalles de medidas en PDF */
+    #printDetailsWrap h3{
+      margin: 10px 0 6px;
+      font-size: 12px;
     }
+    #printDetailsWrap .det{
+      font-size: 11px;
+      margin: 0 0 10px;
+    }
+    #printDetailsWrap .det-item{
+      border:1px solid #333;
+      padding:6px;
+      margin-bottom:6px;
+    }
+    #printDetailsWrap .k{ font-weight:bold; }
   </style>
 </head>
 
@@ -394,7 +395,7 @@
         <div id="paneBandas" class="pane pane-bandas hidden">
           <div class="pane-title">Calc. Bandas</div>
 
-          <div class="subpane sub-b1">
+          <div class="subpane">
             <div class="subpane-title">Banda 1</div>
             <div class="row3">
               <div><label for="b1A">Ancho (A) — m</label><input id="b1A" type="text" inputmode="decimal"></div>
@@ -403,7 +404,7 @@
             </div>
           </div>
 
-          <div class="subpane sub-b2">
+          <div class="subpane">
             <div class="subpane-title">Banda 2</div>
             <div class="row3">
               <div><label for="b2A">Ancho (A) — m</label><input id="b2A" type="text" inputmode="decimal"></div>
@@ -412,7 +413,7 @@
             </div>
           </div>
 
-          <div class="subpane sub-b3">
+          <div class="subpane">
             <div class="subpane-title">Banda 3</div>
             <div class="row3">
               <div><label for="b3A">Ancho (A) — m</label><input id="b3A" type="text" inputmode="decimal"></div>
@@ -509,7 +510,7 @@
           <div class="pane-title">Calc. Bandas</div>
 
           <div class="bandsGrid">
-            <div class="subpane sub-b1">
+            <div class="subpane">
               <div class="subpane-title">Banda 1</div>
               <div class="row2c">
                 <div><label for="rb1A">Ancho (A)</label><input id="rb1A" type="text" inputmode="decimal"></div>
@@ -521,7 +522,7 @@
               </div>
             </div>
 
-            <div class="subpane sub-b2">
+            <div class="subpane">
               <div class="subpane-title">Banda 2</div>
               <div class="row2c">
                 <div><label for="rb2A">Ancho (A)</label><input id="rb2A" type="text" inputmode="decimal"></div>
@@ -533,7 +534,7 @@
               </div>
             </div>
 
-            <div class="subpane sub-b3 span2">
+            <div class="subpane span2">
               <div class="subpane-title">Banda 3</div>
               <div class="row2c">
                 <div><label for="rb3A">Ancho (A)</label><input id="rb3A" type="text" inputmode="decimal"></div>
@@ -614,7 +615,7 @@
               </tfoot>
             </table>
           </div>
-          <div class="scroll-hint no-print">📱 Tip: Desliza la tabla hacia los lados para ver todas las columnas.</div>
+          <div class="scroll-hint no-print">📱 Tip: desliza la tabla hacia los lados para ver todas las columnas.</div>
 
           <div class="actions no-print">
             <button class="btn ghost" id="repPrint" type="button">Imprimir / Guardar PDF</button>
@@ -650,7 +651,7 @@
               <tbody></tbody>
             </table>
           </div>
-          <div class="scroll-hint no-print">📱 Tip: En Historial también puedes deslizar horizontalmente.</div>
+          <div class="scroll-hint no-print">📱 Tip: en Historial también puedes deslizar horizontalmente.</div>
         </fieldset>
       </fieldset>
     </section>
@@ -668,13 +669,14 @@
       onclick="switchTab('tab-reporte', this)">Reporte</button>
   </nav>
 
-  <!-- ===================== Área de impresión ===================== -->
+  <!-- ===================== Área de impresión (PDF) ===================== -->
   <div id="printArea">
     <h2>SHOTCRETE CALC - REPORTE DEL DÍA</h2>
     <div id="printMeta"></div>
     <div id="printSums"></div>
     <div id="printChartWrap" style="margin-top:12px;"></div>
     <div id="printTableWrap" style="margin-top:12px;"></div>
+    <div id="printDetailsWrap" style="margin-top:12px;"></div>
   </div>
 
   <script>
@@ -694,6 +696,7 @@
       return Number(s);
     }
     const fmt1 = (n) => Number(n).toFixed(1);
+    const fmt2 = (n) => Number(n).toFixed(2);
     const todayStr = () => new Date().toISOString().slice(0,10);
     function isFilled(v){ return String(v ?? '').trim() !== ''; }
 
@@ -817,7 +820,6 @@
     const b1A = document.getElementById('b1A'), b1H = document.getElementById('b1H'), b1L = document.getElementById('b1L');
     const b2A = document.getElementById('b2A'), b2H = document.getElementById('b2H'), b2L = document.getElementById('b2L');
     const b3A = document.getElementById('b3A'), b3H = document.getElementById('b3H'), b3L = document.getElementById('b3L');
-
     const sA = document.getElementById('sA');
     const sH = document.getElementById('sH');
 
@@ -854,6 +856,7 @@
           lines.push(`Resanes: ${fmt1(part)} m³`);
         }
       }
+
       qOutH2.textContent=`TOTAL: ${fmt1(total)} m³`;
       qMode.textContent=lines.join('\n');
     }
@@ -920,6 +923,7 @@
 
       const det = { avance:null, bandas:[null,null,null], resanes:null };
 
+      // Avance
       if(rChkAvance.checked){
         const A=parseDec(rAA.value), H=parseDec(rAH.value), L=parseDec(rAL.value), C=parseDec(rAConst.value || '11.5');
         if(isFinite(A)&&isFinite(H)&&isFinite(L)&&isFinite(C)&&C>0){
@@ -933,12 +937,26 @@
         } else rASac.value='';
       } else rASac.value='';
 
+      // Bandas (✅ guarda medidas por banda)
       if(rChkBandas.checked){
         partBa = sumBandas3From(rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L);
         total += partBa;
         lines.push(`Bandas: ${fmt1(partBa)} m³`);
+
+        const bands = [
+          {A: rb1A.value, H: rb1H.value, L: rb1L.value},
+          {A: rb2A.value, H: rb2H.value, L: rb2L.value},
+          {A: rb3A.value, H: rb3H.value, L: rb3L.value},
+        ];
+        bands.forEach((b, i) => {
+          const any = isFilled(b.A) || isFilled(b.H) || isFilled(b.L);
+          if (!any) return;
+          const A=parseDec(b.A), H=parseDec(b.H), L=parseDec(b.L);
+          if(isFinite(A)&&isFinite(H)&&isFinite(L)) det.bandas[i] = {A,H,L};
+        });
       }
 
+      // Resanes
       if(rChkResane.checked){
         const A=parseDec(rsA.value), H=parseDec(rsH.value);
         if(isFinite(A)&&isFinite(H)){
@@ -1098,6 +1116,7 @@
       repSumResanes.textContent= arr.length ? fmt1(sRe) : '—';
     }
 
+    // Eliminar por fila (Reporte)
     repDayBody.addEventListener('click', (e)=>{
       const btn = e.target.closest('button[data-act="del-repday"]');
       if(!btn) return;
@@ -1185,6 +1204,24 @@
               rAA.value=''; rAH.value=''; rAL.value=''; rAConst.value='11.5'; rASac.value='';
             }
 
+            const bandas = det.bandas ?? [];
+            const mapBand = (idx, Ael, Hel, Lel)=>{
+              const bx = bandas[idx];
+              Ael.value = bx?.A ?? '';
+              Hel.value = bx?.H ?? '';
+              Lel.value = bx?.L ?? '';
+            };
+            mapBand(0, rb1A, rb1H, rb1L);
+            mapBand(1, rb2A, rb2H, rb2L);
+            mapBand(2, rb3A, rb3H, rb3L);
+
+            if(det.resanes){
+              rsA.value = det.resanes.A ?? '';
+              rsH.value = det.resanes.H ?? '';
+            } else {
+              rsA.value=''; rsH.value='';
+            }
+
             onCheckChangeReg();
             switchTab('tab-registros', document.getElementById('btn-registros'));
           }
@@ -1233,7 +1270,7 @@
       }
     });
 
-    // ================= Gráfico + PDF (igual que antes) =================
+    // ================= Gráfico + PDF =================
     function aggregateByLabor(dayRecords){
       const map = new Map();
       for(const r of dayRecords){
@@ -1311,20 +1348,65 @@
         ctx.fillStyle = '#111';
         ctx.font = 'bold 12px Arial';
         ctx.fillText(val.toFixed(1), x, y - 6);
-
-        const label = lab.length > 14 ? lab.slice(0,13)+'…' : lab;
-        ctx.save();
-        ctx.translate(x + barW/2, padT + chartH + 22);
-        ctx.rotate(-Math.PI/6);
-        ctx.font = '12px Arial';
-        ctx.fillStyle = '#111';
-        ctx.textAlign = 'center';
-        ctx.fillText(label, 0, 0);
-        ctx.restore();
       }
       return canvas;
     }
 
+    // ======= Detalles por Labor (medidas) para PDF =======
+    function detalleToText(r){
+      const det = r.detalles || {};
+      const parts = [];
+
+      if (det.avance) {
+        const a = det.avance;
+        parts.push(`Avance: A=${a.A}, H=${a.H}, L=${a.L}, C=${a.C}, Sac=${(a.Sac!=null?fmt2(a.Sac):'')}`);
+      }
+
+      if (Array.isArray(det.bandas)) {
+        det.bandas.forEach((b, idx) => {
+          if (!b) return;
+          parts.push(`Banda ${idx+1}: A=${b.A}, H=${b.H}, L=${b.L}`);
+        });
+      }
+
+      if (det.resanes) {
+        const s = det.resanes;
+        parts.push(`Resane: A=${s.A}, H=${s.H}`);
+      }
+
+      return parts.length ? parts.join(' | ') : 'Sin detalle de medidas.';
+    }
+
+    function buildPrintDetailsByLabor(records){
+      const map = new Map();
+      for (const r of records) {
+        const lab = (r.labor || 'Sin labor').trim() || 'Sin labor';
+        if (!map.has(lab)) map.set(lab, []);
+        map.get(lab).push(r);
+      }
+
+      let html = `<h2 style="margin:0 0 6px; font-size:14px;">DETALLE DE MEDIDAS (POR LABOR)</h2>`;
+      for (const [lab, arr] of map.entries()) {
+        html += `<h3>Labor: ${lab}</h3>`;
+        html += `<div class="det">`;
+        arr.forEach((r, i) => {
+          html += `
+            <div class="det-item">
+              <div><span class="k">Registro:</span> ${i+1}
+                | <span class="k">Fecha:</span> ${r.fecha ?? ''}
+                | <span class="k">Guardia:</span> ${r.guardia ?? ''}
+                | <span class="k">Nivel:</span> ${r.nivel ?? ''}
+                | <span class="k">Ejecutor:</span> ${r.ejecutor ?? ''}
+              </div>
+              <div><span class="k">Medidas:</span> ${detalleToText(r)}</div>
+            </div>`;
+        });
+        html += `</div>`;
+      }
+      return html;
+    }
+
+    // Imprimir / Guardar PDF (Reporte)
     document.getElementById('repPrint').addEventListener('click', ()=>{
       const day = repFecha.value || todayStr();
       const dayDB = getDayDB();
@@ -1386,6 +1468,9 @@
           </tfoot>
         </table>
       `;
+
+      // ✅ Medidas debajo (por labor)
+      document.getElementById('printDetailsWrap').innerHTML = buildPrintDetailsByLabor(records);
 
       window.print();
     });
