@@ -7,11 +7,9 @@
 
   <!-- ✅ Canonical -->
   <link rel="canonical" href="https://clauramarcelo.github.io/shotcrete-calc/" />
-
   <!-- ✅ Manifest PWA -->
   <link rel="manifest" href="/shotcrete-calc/manifest.json" />
   <meta name="theme-color" content="#ff6a00" />
-
   <!-- ✅ Apple PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -23,6 +21,7 @@
       --brand-2:#ff821a;
       --bg:#ffffff; --fg:#0b0b0b; --muted:#667085; --card:#f6f8fa; --border:#d0d5dd;
       color-scheme: light dark;
+
       --plomo-avance-bg: #f3f4f6;
       --plomo-avance-br: #d0d5dd;
       --plomo-bandas-bg: #f1f5f9;
@@ -76,7 +75,6 @@
       border:1px solid rgba(255,255,255,0.30);
       white-space:nowrap;
     }
-
     main{max-width:960px;margin:0 auto;padding:1rem;padding-bottom:4.5rem}
     fieldset{
       border:1px solid var(--border);
@@ -94,7 +92,6 @@
     @media (prefers-color-scheme: dark){
       input,select{background:#0e0e10;color:var(--fg)}
     }
-
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
     .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
     @media (max-width:820px){ .row3{grid-template-columns:1fr 1fr} }
@@ -113,7 +110,7 @@
     .btn.primary{background:var(--brand);color:#fff}
     .btn.secondary{background:#f28c2a;color:#fff}
     .btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
-    .no-print{ /* para ocultar cosas en impresión */ }
+    .no-print{ /* ocultar cosas en impresión */ }
 
     .result{
       margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;
@@ -128,7 +125,9 @@
     table{width:100%;border-collapse:collapse}
     th,td{border:1px solid var(--border);padding:.55rem;text-align:left;vertical-align:top}
     thead th{background:#fff3e8}
-    @media (prefers-color-scheme: dark){ thead th{background:#24170a;color:#fed8b4} }
+    @media (prefers-color-scheme: dark){
+      thead th{background:#24170a;color:#fed8b4}
+    }
     .mini-table th,.mini-table td{padding:.45rem;font-size:.95rem}
 
     .tabbar{
@@ -261,14 +260,12 @@
 
     /* ===================== MODO IMPRESIÓN (Ctrl+P) ===================== */
     #printArea { display:none; }
-
     @media print {
       header, .tabbar, #appLoader { display:none !important; }
       main { display:none !important; }
       #printArea { display:block !important; }
       body { background:#fff !important; color:#000 !important; }
     }
-
     /* Estilos del área de impresión */
     #printArea{
       padding:18px 18px 0 18px;
@@ -284,6 +281,7 @@
       font-size:11px;
       color:#333;
       margin:0 0 10px;
+      white-space:pre-line;
     }
     #printSums{
       font-size:12px;
@@ -310,7 +308,6 @@
     }
   </style>
 </head>
-
 <body>
   <header>
     <div class="left">
@@ -453,17 +450,14 @@
         <!-- Avance -->
         <div id="rPaneAvance" class="pane pane-avance hidden">
           <div class="pane-title">Avance + Frente de sacrificio</div>
-
           <div class="row2c">
             <div><label for="rAA">Ancho (A) — m</label><input id="rAA" type="text" inputmode="decimal"></div>
             <div><label for="rAH">Altura (H) — m</label><input id="rAH" type="text" inputmode="decimal"></div>
           </div>
-
           <div class="row2c" style="margin-top:.4rem">
             <div><label for="rAL">Longitud (L) — m</label><input id="rAL" type="text" inputmode="decimal"></div>
             <div><label for="rAConst">Constante</label><input id="rAConst" type="text" inputmode="decimal" value="11.5"></div>
           </div>
-
           <div style="margin-top:.4rem">
             <label for="rASac">Frente de sacrificio — m³</label>
             <input id="rASac" type="text" inputmode="decimal" readonly>
@@ -522,15 +516,55 @@
           </div>
         </div>
 
-        <!-- ✅ Solo 2 botones -->
+        <!-- ✅ SOLO 2 BOTONES (FORMULARIO) -->
         <div class="actions">
-          <button class="btn primary" id="rCalcularTotal" type="button">Calcular</button>
-          <button class="btn secondary" id="rGuardarYLimpiar" type="button">Guardar y limpiar</button>
+          <button class="btn primary" id="rGuardar" type="button">Guardar</button>
+          <button class="btn ghost" id="rLimpiar" type="button">Limpiar</button>
         </div>
 
         <div id="rOut" class="result" aria-live="polite">
           <h2>—</h2><small id="rOutDetail"></small>
         </div>
+
+        <!-- ✅ Cuadro del día (en Registros) -->
+        <fieldset style="margin-top:1rem">
+          <legend>Cuadro de registro (del día)</legend>
+
+          <div class="actions">
+            <button class="btn secondary" id="regExportDiaPDF" type="button">Guardar PDF (cuadro del día)</button>
+            <button class="btn ghost" id="regRefrescarDia" type="button">Refrescar</button>
+          </div>
+
+          <table class="mini-table" id="regCuadroDia">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Guardia</th>
+                <th>Labor / Nivel</th>
+                <th>Ejecutor</th>
+                <th>m³ (Total)</th>
+                <th>Avance + frente</th>
+                <th>Bandas</th>
+                <th>Resanes</th>
+                <th class="no-print">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="regDayBody"></tbody>
+            <tfoot>
+              <tr>
+                <th colspan="4">SUMAS DEL DÍA</th>
+                <th id="regSumTotal">—</th>
+                <th id="regSumAvance">—</th>
+                <th id="regSumBandas">—</th>
+                <th id="regSumResanes">—</th>
+              </tr>
+            </tfoot>
+          </table>
+
+          <div class="muted no-print" style="margin-top:.6rem">
+            Tip: Presiona “Guardar PDF” y elige “Guardar como PDF” en el diálogo de impresión.
+          </div>
+        </fieldset>
       </fieldset>
     </section>
 
@@ -539,7 +573,6 @@
       <fieldset>
         <legend>Reporte</legend>
 
-        <!-- Fecha reporte -->
         <div class="row2c" style="margin:0 0 .6rem">
           <div>
             <label for="repFecha">Fecha del reporte</label>
@@ -564,6 +597,7 @@
                 <th>Avance + frente</th>
                 <th>Bandas</th>
                 <th>Resanes</th>
+                <th class="no-print">Acciones</th>
               </tr>
             </thead>
             <tbody id="repDayBody"></tbody>
@@ -574,6 +608,7 @@
                 <th id="repSumAvance">—</th>
                 <th id="repSumBandas">—</th>
                 <th id="repSumResanes">—</th>
+                <th class="no-print">—</th>
               </tr>
             </tfoot>
           </table>
@@ -615,6 +650,7 @@
             <tbody></tbody>
           </table>
         </fieldset>
+
       </fieldset>
     </section>
   </main>
@@ -623,11 +659,9 @@
     <button type="button" id="btn-calculo" class="active" role="tab"
       aria-controls="tab-calculo" aria-selected="true"
       onclick="switchTab('tab-calculo', this)">Calculo m3</button>
-
     <button type="button" id="btn-registros" role="tab"
       aria-controls="tab-registros" aria-selected="false"
       onclick="switchTab('tab-registros', this)">Registros</button>
-
     <button type="button" id="btn-reporte" role="tab"
       aria-controls="tab-reporte" aria-selected="false"
       onclick="switchTab('tab-reporte', this)">Reporte</button>
@@ -643,16 +677,15 @@
   </div>
 
   <script>
-    // ------------------- URL / Online badge -------------------
+    // --- URL / Online badge ---
     if (location.pathname === '/shotcrete-calc') location.replace('/shotcrete-calc/');
-
     const netBadge = document.getElementById('netBadge');
     function updateNetBadge(){ netBadge.textContent = navigator.onLine ? '🟢 Online' : '🔴 Offline'; }
     window.addEventListener('online', updateNetBadge);
     window.addEventListener('offline', updateNetBadge);
     updateNetBadge();
 
-    // ------------------- Utilidades -------------------
+    // --- Utilidades ---
     function parseDec(txt){
       if (typeof txt !== 'string') return NaN;
       const s = txt.trim().replace(',', '.');
@@ -663,7 +696,7 @@
     const todayStr = () => new Date().toISOString().slice(0,10);
     function isFilled(v){ return String(v ?? '').trim() !== ''; }
 
-    // ------------------- Tabs -------------------
+    // --- Tabs ---
     function switchTab(targetId, btnEl){
       document.querySelectorAll('.tabbar button').forEach(b=>{
         const active = (b === btnEl);
@@ -673,13 +706,17 @@
       document.querySelectorAll('section.tab').forEach(sec=>{
         sec.classList.toggle('active', sec.id === targetId);
       });
+
       if (targetId === 'tab-reporte'){
         renderDayReport();
         renderHistDB();
       }
+      if (targetId === 'tab-registros'){
+        renderDayInRegistros();
+      }
     }
 
-    // ------------------- Fórmulas -------------------
+    // --- Fórmulas ---
     function calcFrente(A, H){
       const hEff = Math.max(0, H - 2);
       return (A * hEff * 0.9) / 14;
@@ -699,24 +736,24 @@
     function togglePane(chk, pane){ pane.classList.toggle('hidden', !chk.checked); }
 
     function sumBandas3From(a1,h1,l1,a2,h2,l2,a3,h3,l3){
-      let sum=0;
+      let sum = 0;
       const bands = [
         {A:a1.value,H:h1.value,L:l1.value},
         {A:a2.value,H:h2.value,L:l2.value},
         {A:a3.value,H:h3.value,L:l3.value},
       ];
-      for(const bx of bands){
+      for (const bx of bands){
         const any = isFilled(bx.A) || isFilled(bx.H) || isFilled(bx.L);
-        if(!any) continue;
+        if (!any) continue;
         const A=parseDec(bx.A), H=parseDec(bx.H), L=parseDec(bx.L);
-        if(isFinite(A)&&isFinite(H)&&isFinite(L)) sum += calcBandas(A,H,L);
+        if (isFinite(A) && isFinite(H) && isFinite(L)) sum += calcBandas(A,H,L);
       }
       return sum;
     }
 
     // =================== BD separadas ===================
-    const LS_DB  = 'sc_db_registros';    // Base completa (Historial BD)
-    const LS_DAY = 'sc_day_registros';   // Reporte del día (por fecha)
+    const LS_DB  = 'sc_db_registros';   // Base completa (Historial BD)  (existía) [1](https://volcanperu-my.sharepoint.com/personal/claura_volcan_com_pe/Documents/Archivos%20de%20Microsoft%C2%A0Copilot%20Chat/index.html)
+    const LS_DAY = 'sc_day_registros';  // Reporte del día (por fecha)   (existía) [1](https://volcanperu-my.sharepoint.com/personal/claura_volcan_com_pe/Documents/Archivos%20de%20Microsoft%C2%A0Copilot%20Chat/index.html)
 
     function safeJSONParse(key, fallback){
       try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
@@ -725,10 +762,8 @@
     function safeJSONSet(key, value){
       localStorage.setItem(key, JSON.stringify(value));
     }
-
     function getDB(){ return safeJSONParse(LS_DB, []); }
     function setDB(arr){ safeJSONSet(LS_DB, arr); }
-
     function getDayDB(){ return safeJSONParse(LS_DAY, {}); }
     function setDayDB(obj){ safeJSONSet(LS_DAY, obj); }
 
@@ -778,12 +813,13 @@
     function calcTotalCalculo(){
       let total=0;
       const lines=[];
+
       if(!chkAvance.checked && !chkBandas.checked && !chkResane.checked){
         qOutH2.textContent='—'; qMode.textContent=''; aSac.value=''; return;
       }
 
       if(chkAvance.checked){
-        const A=parseDec(aA.value),H=parseDec(aH.value),L=parseDec(aL.value),C=parseDec(aConst.value || '11.5');
+        const A=parseDec(aA.value), H=parseDec(aH.value), L=parseDec(aL.value), C=parseDec(aConst.value || '11.5');
         if(isFinite(A)&&isFinite(H)&&isFinite(L)&&isFinite(C)&&C>0){
           const base=calcAvanceBase(A,H,L,C);
           const sac=calcFrente(A,H);
@@ -797,15 +833,13 @@
         const sumB = sumBandas3From(b1A,b1H,b1L,b2A,b2H,b2L,b3A,b3H,b3L);
         total+=sumB; lines.push(`Bandas: ${fmt1(sumB)} m³`);
       }
-
       if(chkResane.checked){
-        const A=parseDec(sA.value),H=parseDec(sH.value);
+        const A=parseDec(sA.value), H=parseDec(sH.value);
         if(isFinite(A)&&isFinite(H)){
           const part=calcResane(A,H); total+=part;
           lines.push(`Resanes: ${fmt1(part)} m³`);
         }
       }
-
       qOutH2.textContent=`TOTAL: ${fmt1(total)} m³`;
       qMode.textContent=lines.join('\n');
     }
@@ -834,11 +868,13 @@
     const regLabor=document.getElementById('regLabor');
     const regNivel=document.getElementById('regNivel');
     const regEjecutor=document.getElementById('regEjecutor');
+
     regFecha.value = todayStr();
 
     const rChkAvance=document.getElementById('rChkAvance');
     const rChkBandas=document.getElementById('rChkBandas');
     const rChkResane=document.getElementById('rChkResane');
+
     const rPaneAvance=document.getElementById('rPaneAvance');
     const rPaneBandas=document.getElementById('rPaneBandas');
     const rPaneResane=document.getElementById('rPaneResane');
@@ -862,6 +898,7 @@
     function calcTotalReg(){
       let total=0, partAv=0, partBa=0, partRe=0;
       const lines=[];
+
       if(!rChkAvance.checked && !rChkBandas.checked && !rChkResane.checked){
         rOutH2.textContent='—';
         rOutDetail.textContent='';
@@ -872,17 +909,21 @@
       const det = { avance:null, bandas:[null,null,null], resanes:null };
 
       if(rChkAvance.checked){
-        const A=parseDec(rAA.value),H=parseDec(rAH.value),L=parseDec(rAL.value),C=parseDec(rAConst.value || '11.5');
+        const A=parseDec(rAA.value), H=parseDec(rAH.value), L=parseDec(rAL.value), C=parseDec(rAConst.value || '11.5');
         if(isFinite(A)&&isFinite(H)&&isFinite(L)&&isFinite(C)&&C>0){
           const base=calcAvanceBase(A,H,L,C);
           const sac=calcFrente(A,H);
           rASac.value=sac.toFixed(2);
-          partAv = base+sac;
+          partAv = base + sac;
           total += partAv;
           lines.push(`Avance + Frente: ${fmt1(partAv)} m³`);
           det.avance = {A,H,L,C,Sac:Number(sac.toFixed(2))};
-        } else rASac.value='';
-      } else rASac.value='';
+        } else {
+          rASac.value='';
+        }
+      } else {
+        rASac.value='';
+      }
 
       if(rChkBandas.checked){
         partBa = sumBandas3From(rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L);
@@ -897,13 +938,13 @@
         bands.forEach((b,i)=>{
           const any = isFilled(b.A) || isFilled(b.H) || isFilled(b.L);
           if(!any) return;
-          const A=parseDec(b.A),H=parseDec(b.H),L=parseDec(b.L);
+          const A=parseDec(b.A), H=parseDec(b.H), L=parseDec(b.L);
           if(isFinite(A)&&isFinite(H)&&isFinite(L)) det.bandas[i] = {A,H,L};
         });
       }
 
       if(rChkResane.checked){
-        const A=parseDec(rsA.value),H=parseDec(rsH.value);
+        const A=parseDec(rsA.value), H=parseDec(rsH.value);
         if(isFinite(A)&&isFinite(H)){
           partRe = calcResane(A,H);
           total += partRe;
@@ -941,11 +982,13 @@
     }
 
     [rChkAvance,rChkBandas,rChkResane].forEach(c=>c.addEventListener('change',onCheckChangeReg));
-    [rAA,rAH,rAL,rAConst,rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L,rsA,rsH,regFecha,regGuardia,regLabor,regNivel,regEjecutor]
-      .forEach(i=>{ i.addEventListener('input', calcTotalReg); i.addEventListener('change', calcTotalReg); });
-
-    // Botón Calcular
-    document.getElementById('rCalcularTotal').addEventListener('click', ()=>calcTotalReg());
+    [
+      rAA,rAH,rAL,rAConst,rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L,rsA,rsH,
+      regFecha,regGuardia,regLabor,regNivel,regEjecutor
+    ].forEach(i=>{
+      i.addEventListener('input', calcTotalReg);
+      i.addEventListener('change', calcTotalReg);
+    });
 
     function limpiarFormularioRegistros(){
       window.__editingId = null;
@@ -968,24 +1011,45 @@
       onCheckChangeReg();
       rOutH2.textContent = '—';
       rOutDetail.textContent = '';
+      renderDayInRegistros();
     }
 
-    // Botón Guardar y limpiar
-    document.getElementById('rGuardarYLimpiar').addEventListener('click', () => {
+    // ✅ Eliminar un registro en ambas BD (día + historial)
+    function deleteRecordEverywhere(id, fecha){
+      const db = getDB();
+      setDB(db.filter(r => r.id !== id));
+
+      const dayDB = getDayDB();
+      const arr = dayDB[fecha] ?? [];
+      removeById(arr, id);
+      dayDB[fecha] = arr;
+      setDayDB(dayDB);
+
+      if (window.__editingId === id) limpiarFormularioRegistros();
+
+      renderHistDB();
+      renderDayReport();
+      renderDayInRegistros();
+    }
+
+    // ✅ Botones principales del formulario (solo 2)
+    document.getElementById('rLimpiar').addEventListener('click', limpiarFormularioRegistros);
+
+    document.getElementById('rGuardar').addEventListener('click', ()=>{
       const fecha = regFecha.value || todayStr();
       const guardia = regGuardia.value || '';
       const labor = (regLabor.value || '').trim();
       const nivel = (regNivel.value || '').trim();
       const ejecutor = regEjecutor.value || '';
 
-      if (!fecha || !guardia || !labor || !nivel || !ejecutor) {
+      if(!fecha || !guardia || !labor || !nivel || !ejecutor){
         alert('Completa Fecha, Guardia, Labor, Nivel y Ejecutor.');
         return;
       }
 
       const obj = calcTotalReg();
-      if (!obj || !isFinite(obj.m3_total) || obj.m3_total <= 0) {
-        alert('Calcula el m³ total antes de guardar.');
+      if(!obj || !isFinite(obj.m3_total) || obj.m3_total <= 0){
+        alert('Completa los datos de cálculo (Avance/Bandas/Resanes) para obtener un m³ total > 0.');
         return;
       }
 
@@ -998,7 +1062,7 @@
       const dayDB = getDayDB();
 
       // Si editas y cambias la fecha, quita del día original
-      if (window.__editingId && window.__editingOriginalFecha && window.__editingOriginalFecha !== obj.fecha) {
+      if (window.__editingId && window.__editingOriginalFecha && window.__editingOriginalFecha !== obj.fecha){
         const oldArr = dayDB[window.__editingOriginalFecha] ?? [];
         removeById(oldArr, obj.id);
         dayDB[window.__editingOriginalFecha] = oldArr;
@@ -1011,21 +1075,85 @@
 
       alert('Guardado ✅');
 
-      // refrescar reporte si está activo
-      if (document.getElementById('tab-reporte')?.classList.contains('active')) {
+      // refrescar vistas
+      renderDayInRegistros();
+      if (document.getElementById('tab-reporte')?.classList.contains('active')){
         renderDayReport();
         renderHistDB();
       }
-
-      limpiarFormularioRegistros();
     });
 
     onCheckChangeReg();
 
+    // ======= Cuadro del día en pestaña Registros =======
+    const regDayBody = document.getElementById('regDayBody');
+    const regSumTotal = document.getElementById('regSumTotal');
+    const regSumAvance = document.getElementById('regSumAvance');
+    const regSumBandas = document.getElementById('regSumBandas');
+    const regSumResanes = document.getElementById('regSumResanes');
+
+    function renderDayInRegistros(){
+      if(!regDayBody) return;
+
+      const day = regFecha.value || todayStr();
+      const dayDB = getDayDB();
+      const arr = dayDB[day] ?? [];
+
+      regDayBody.innerHTML = '';
+      let sTotal=0, sAv=0, sBa=0, sRe=0;
+
+      arr.forEach((r)=>{
+        sTotal += Number(r.m3_total ?? 0);
+        sAv += Number(r.m3_avance ?? 0);
+        sBa += Number(r.m3_bandas ?? 0);
+        sRe += Number(r.m3_resanes ?? 0);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${r.fecha ?? ''}</td>
+          <td>${r.guardia ?? ''}</td>
+          <td>${(r.labor ?? '')} / ${(r.nivel ?? '')}</td>
+          <td>${r.ejecutor ?? ''}</td>
+          <td>${fmt1(r.m3_total ?? 0)}</td>
+          <td>${fmt1(r.m3_avance ?? 0)}</td>
+          <td>${fmt1(r.m3_bandas ?? 0)}</td>
+          <td>${fmt1(r.m3_resanes ?? 0)}</td>
+          <td class="no-print">
+            <button class="btn ghost" type="button"
+              data-act="del-day" data-id="${r.id}" data-fecha="${r.fecha}">
+              Eliminar
+            </button>
+          </td>
+        `;
+        regDayBody.appendChild(tr);
+      });
+
+      regSumTotal.textContent = arr.length ? fmt1(sTotal) : '—';
+      regSumAvance.textContent = arr.length ? fmt1(sAv) : '—';
+      regSumBandas.textContent = arr.length ? fmt1(sBa) : '—';
+      regSumResanes.textContent = arr.length ? fmt1(sRe) : '—';
+    }
+
+    document.getElementById('regRefrescarDia')?.addEventListener('click', renderDayInRegistros);
+    regFecha.addEventListener('change', renderDayInRegistros);
+
+    // Delegación: Eliminar por fila (Registros)
+    regDayBody?.addEventListener('click', (e)=>{
+      const btn = e.target.closest('button[data-act="del-day"]');
+      if(!btn) return;
+      const id = btn.dataset.id;
+      const fecha = btn.dataset.fecha;
+      if(!id || !fecha) return;
+
+      if(confirm('¿Eliminar este registro? Esta acción no se puede deshacer.')){
+        deleteRecordEverywhere(id, fecha);
+      }
+    });
+
     // ================= REPORTE (del día + historial BD) =================
     const repFecha = document.getElementById('repFecha');
     const repDayBody = document.getElementById('repDayBody');
-    const repSumTotal  = document.getElementById('repSumTotal');
+    const repSumTotal = document.getElementById('repSumTotal');
     const repSumAvance = document.getElementById('repSumAvance');
     const repSumBandas = document.getElementById('repSumBandas');
     const repSumResanes= document.getElementById('repSumResanes');
@@ -1039,14 +1167,13 @@
       const arr = dayDB[day] ?? [];
 
       repDayBody.innerHTML = '';
+      let sTotal=0, sAv=0, sBa=0, sRe=0;
 
-      let sTotal = 0, sAv = 0, sBa = 0, sRe = 0;
-
-      arr.forEach((r) => {
-        sTotal += Number(r.m3_total  ?? 0);
-        sAv    += Number(r.m3_avance ?? 0);
-        sBa    += Number(r.m3_bandas ?? 0);
-        sRe    += Number(r.m3_resanes ?? 0);
+      arr.forEach((r)=>{
+        sTotal += Number(r.m3_total ?? 0);
+        sAv += Number(r.m3_avance ?? 0);
+        sBa += Number(r.m3_bandas ?? 0);
+        sRe += Number(r.m3_resanes ?? 0);
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -1058,15 +1185,32 @@
           <td>${fmt1(r.m3_avance ?? 0)}</td>
           <td>${fmt1(r.m3_bandas ?? 0)}</td>
           <td>${fmt1(r.m3_resanes ?? 0)}</td>
+          <td class="no-print">
+            <button class="btn ghost" type="button"
+              data-act="del-rep" data-id="${r.id}" data-fecha="${r.fecha}">
+              Eliminar
+            </button>
+          </td>
         `;
         repDayBody.appendChild(tr);
       });
 
-      repSumTotal.textContent  = arr.length ? fmt1(sTotal) : '—';
-      repSumAvance.textContent = arr.length ? fmt1(sAv)    : '—';
-      repSumBandas.textContent = arr.length ? fmt1(sBa)    : '—';
-      repSumResanes.textContent= arr.length ? fmt1(sRe)    : '—';
+      repSumTotal.textContent = arr.length ? fmt1(sTotal) : '—';
+      repSumAvance.textContent = arr.length ? fmt1(sAv) : '—';
+      repSumBandas.textContent = arr.length ? fmt1(sBa) : '—';
+      repSumResanes.textContent= arr.length ? fmt1(sRe) : '—';
     }
+
+    // Delegación: Eliminar por fila (Reporte)
+    repDayBody?.addEventListener('click', (e)=>{
+      const btn = e.target.closest('button[data-act="del-rep"]');
+      if(!btn) return;
+      const id = btn.dataset.id;
+      const fecha = btn.dataset.fecha;
+      if(confirm('¿Eliminar este registro? Esta acción no se puede deshacer.')){
+        deleteRecordEverywhere(id, fecha);
+      }
+    });
 
     // ================= HISTORIAL BD (base completa) =================
     const histBody = document.querySelector('#tblHist tbody');
@@ -1090,7 +1234,7 @@
           <td>${(r.m3_resanes!=null)?fmt1(r.m3_resanes):''}</td>
           <td class="no-print">
             <button class="btn ghost" type="button" data-act="edit" data-i="${i}">Editar</button>
-            <button class="btn ghost" type="button" data-act="del" data-i="${i}">Eliminar</button>
+            <button class="btn ghost" type="button" data-act="del"  data-i="${i}">Eliminar</button>
           </td>
         `;
         histBody.appendChild(tr);
@@ -1100,17 +1244,16 @@
         btn.addEventListener('click', ()=>{
           const i = Number(btn.dataset.i);
           const act = btn.dataset.act;
-
           const regs = getDB();
           const r = regs[i];
           if(!r) return;
 
           if(act === 'del'){
-            // borrar de BD completa
+            if(!confirm('¿Eliminar este registro del historial?')) return;
+
             regs.splice(i,1);
             setDB(regs);
 
-            // borrar también del dayDB (por fecha)
             const dayDB = getDayDB();
             const dayArr = dayDB[r.fecha] ?? [];
             removeById(dayArr, r.id);
@@ -1119,6 +1262,7 @@
 
             renderHistDB();
             renderDayReport();
+            renderDayInRegistros();
             return;
           }
 
@@ -1142,7 +1286,7 @@
               rAH.value = det.avance.H ?? '';
               rAL.value = det.avance.L ?? '';
               rAConst.value = det.avance.C ?? '11.5';
-              rASac.value = (det.avance.Sac!=null)?Number(det.avance.Sac).toFixed(2):'';
+              rASac.value = (det.avance.Sac!=null) ? Number(det.avance.Sac).toFixed(2) : '';
             } else {
               rAA.value=''; rAH.value=''; rAL.value=''; rAConst.value='11.5'; rASac.value='';
             }
@@ -1202,6 +1346,7 @@
     document.getElementById('tblRefrescar').addEventListener('click', ()=>{
       renderHistDB();
       renderDayReport();
+      renderDayInRegistros();
     });
 
     document.getElementById('tblBorrarTodo').addEventListener('click', ()=>{
@@ -1210,6 +1355,7 @@
         localStorage.removeItem(LS_DAY);
         renderHistDB();
         renderDayReport();
+        renderDayInRegistros();
       }
     });
 
@@ -1217,7 +1363,7 @@
     function aggregateByLabor(dayRecords){
       const map = new Map();
       for(const r of dayRecords){
-        const lab = (r.labor ?? 'Sin labor').trim() || 'Sin labor';
+        const lab = ((r.labor ?? 'Sin labor').trim() || 'Sin labor');
         const val = Number(r.m3_total ?? 0);
         map.set(lab, (map.get(lab) ?? 0) + val);
       }
@@ -1228,8 +1374,8 @@
       const canvas = document.createElement('canvas');
       const width = 900, height = 420;
       canvas.width = width; canvas.height = height;
-      const ctx = canvas.getContext('2d');
 
+      const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0,0,width,height);
 
@@ -1240,7 +1386,6 @@
       ctx.fillStyle = '#111';
       ctx.font = 'bold 22px Arial';
       ctx.fillText('Lanzado por Labor (m³_total)', padL, 28);
-
       ctx.font = '14px Arial';
       ctx.fillStyle = '#444';
       ctx.fillText(`Fecha: ${fecha}`, padL, 48);
@@ -1310,37 +1455,40 @@
       ctx.font = '12px Arial';
       ctx.fillStyle = '#333';
       ctx.fillText('m³_total acumulado por labor', padL, height - 20);
-
       return canvas;
     }
 
-    // ================= Impresión (Ctrl+P) =================
-    document.getElementById('repPrint').addEventListener('click', () => {
+    // ================= Impresión / Guardar PDF =================
+
+    // 1) PDF desde REPORTE (ya existía, lo mejoré con Avance)
+    document.getElementById('repPrint').addEventListener('click', ()=>{
       const day = repFecha.value || todayStr();
       const dayDB = getDayDB();
       const records = dayDB[day] ?? [];
 
-      let sTotal=0, sBa=0, sRe=0;
+      let sTotal=0, sAv=0, sBa=0, sRe=0;
       records.forEach(r=>{
         sTotal += Number(r.m3_total ?? 0);
-        sBa    += Number(r.m3_bandas ?? 0);
-        sRe    += Number(r.m3_resanes ?? 0);
+        sAv += Number(r.m3_avance ?? 0);
+        sBa += Number(r.m3_bandas ?? 0);
+        sRe += Number(r.m3_resanes ?? 0);
       });
 
       document.getElementById('printMeta').textContent =
-        `Fecha: ${day} | Generado: ${new Date().toLocaleString()}`;
+        `Fecha: ${day}\nGenerado: ${new Date().toLocaleString()}\nOrigen: Pestaña Reporte`;
 
       document.getElementById('printSums').innerHTML =
-        `<b>Σ m³_total:</b> ${fmt1(sTotal)} &nbsp;&nbsp; <b>Σ Bandas:</b> ${fmt1(sBa)} &nbsp;&nbsp; <b>Σ Resanes:</b> ${fmt1(sRe)}`;
+        `<b>Σ m³_total:</b> ${fmt1(sTotal)} 
+         <b>Σ Avance:</b> ${fmt1(sAv)} 
+         <b>Σ Bandas:</b> ${fmt1(sBa)} 
+         <b>Σ Resanes:</b> ${fmt1(sRe)}`;
 
-      // gráfico
       const agg = aggregateByLabor(records);
       const canvas = drawBarChartToCanvas(agg, day);
       const chartWrap = document.getElementById('printChartWrap');
       chartWrap.innerHTML = '';
       chartWrap.appendChild(canvas);
 
-      // tabla (uno tras otro)
       const rowsHtml = records.map(r => `
         <tr>
           <td>${r.fecha ?? ''}</td>
@@ -1348,6 +1496,7 @@
           <td>${(r.labor ?? '')} / ${(r.nivel ?? '')}</td>
           <td>${r.ejecutor ?? ''}</td>
           <td>${fmt1(r.m3_total ?? 0)}</td>
+          <td>${fmt1(r.m3_avance ?? 0)}</td>
           <td>${fmt1(r.m3_bandas ?? 0)}</td>
           <td>${fmt1(r.m3_resanes ?? 0)}</td>
         </tr>
@@ -1358,7 +1507,7 @@
           <thead>
             <tr>
               <th>Fecha</th><th>Guardia</th><th>Labor / Nivel</th><th>Ejecutor</th>
-              <th>m³ Total</th><th>Bandas</th><th>Resanes</th>
+              <th>m³ Total</th><th>Avance</th><th>Bandas</th><th>Resanes</th>
             </tr>
           </thead>
           <tbody>${rowsHtml}</tbody>
@@ -1366,6 +1515,7 @@
             <tr>
               <th colspan="4">TOTAL DÍA</th>
               <th>${fmt1(sTotal)}</th>
+              <th>${fmt1(sAv)}</th>
               <th>${fmt1(sBa)}</th>
               <th>${fmt1(sRe)}</th>
             </tr>
@@ -1373,15 +1523,92 @@
         </table>
       `;
 
-      // dispara impresión (equivale a Ctrl+P)
       window.print();
+    });
+
+    // 2) PDF desde REGISTROS (cuadro del día)
+    function printDayFromRegistros(){
+      const day = regFecha.value || todayStr();
+      const dayDB = getDayDB();
+      const records = dayDB[day] ?? [];
+
+      let sTotal=0, sAv=0, sBa=0, sRe=0;
+      records.forEach(r=>{
+        sTotal += Number(r.m3_total ?? 0);
+        sAv += Number(r.m3_avance ?? 0);
+        sBa += Number(r.m3_bandas ?? 0);
+        sRe += Number(r.m3_resanes ?? 0);
+      });
+
+      document.getElementById('printMeta').textContent =
+        `Fecha: ${day}\nGenerado: ${new Date().toLocaleString()}\nOrigen: Pestaña Registros`;
+
+      document.getElementById('printSums').innerHTML =
+        `<b>Σ m³_total:</b> ${fmt1(sTotal)} 
+         <b>Σ Avance:</b> ${fmt1(sAv)} 
+         <b>Σ Bandas:</b> ${fmt1(sBa)} 
+         <b>Σ Resanes:</b> ${fmt1(sRe)}`;
+
+      const agg = aggregateByLabor(records);
+      const canvas = drawBarChartToCanvas(agg, day);
+      const chartWrap = document.getElementById('printChartWrap');
+      chartWrap.innerHTML = '';
+      chartWrap.appendChild(canvas);
+
+      const rowsHtml = records.map(r => `
+        <tr>
+          <td>${r.fecha ?? ''}</td>
+          <td>${r.guardia ?? ''}</td>
+          <td>${(r.labor ?? '')} / ${(r.nivel ?? '')}</td>
+          <td>${r.ejecutor ?? ''}</td>
+          <td>${fmt1(r.m3_total ?? 0)}</td>
+          <td>${fmt1(r.m3_avance ?? 0)}</td>
+          <td>${fmt1(r.m3_bandas ?? 0)}</td>
+          <td>${fmt1(r.m3_resanes ?? 0)}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('printTableWrap').innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th><th>Guardia</th><th>Labor / Nivel</th><th>Ejecutor</th>
+              <th>m³ Total</th><th>Avance</th><th>Bandas</th><th>Resanes</th>
+            </tr>
+          </thead>
+          <tbody>${rowsHtml}</tbody>
+          <tfoot>
+            <tr>
+              <th colspan="4">TOTAL DÍA</th>
+              <th>${fmt1(sTotal)}</th>
+              <th>${fmt1(sAv)}</th>
+              <th>${fmt1(sBa)}</th>
+              <th>${fmt1(sRe)}</th>
+            </tr>
+          </tfoot>
+        </table>
+      `;
+
+      window.print();
+    }
+
+    document.getElementById('regExportDiaPDF')?.addEventListener('click', ()=>{
+      const day = regFecha.value || todayStr();
+      const dayDB = getDayDB();
+      const records = dayDB[day] ?? [];
+      if(!records.length){
+        alert('No hay registros para esa fecha. Guarda al menos uno antes de exportar.');
+        return;
+      }
+      printDayFromRegistros();
     });
 
     // Inicial
     renderDayReport();
     renderHistDB();
+    renderDayInRegistros();
 
-    // ------------------- Service Worker -------------------
+    // --- Service Worker ---
     (function(){
       if('serviceWorker' in navigator){
         const swUrl='/shotcrete-calc/sw.js';
@@ -1391,7 +1618,7 @@
       }
     })();
 
-    // ------------------- Loader control -------------------
+    // --- Loader control ---
     (function(){
       const loader = document.getElementById('appLoader');
       if(!loader) return;
