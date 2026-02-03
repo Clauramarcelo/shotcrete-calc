@@ -1,6 +1,6 @@
 // --- Service Worker para GitHub Pages (sub-path /shotcrete-calc/) ---
 const REPO = '/shotcrete-calc';
-const CACHE_NAME = 'sc-v63';
+const CACHE_NAME = 'sc-v64';
 
 const ASSETS = [
   `${REPO}/`,
@@ -76,7 +76,10 @@ self.addEventListener('fetch', (event) => {
           if (cachedRoot) return cachedRoot;
 
           return new Response(
-            `<h1>Offline</h1><p>Sin conexión.</p>`,
+            `
+            <h2>Offline</h2>
+            <p>Sin conexión.</p>
+            `,
             { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
           );
         }
@@ -104,4 +107,3 @@ self.addEventListener('fetch', (event) => {
     })()
   );
 });
-``
