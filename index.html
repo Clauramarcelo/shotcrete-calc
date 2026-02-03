@@ -77,6 +77,7 @@
       border:1px solid rgba(255,255,255,0.30);
       white-space:nowrap;
     }
+
     main{max-width:960px;margin:0 auto;padding:1rem;padding-bottom:4.5rem}
     fieldset{
       border:1px solid var(--border);
@@ -95,7 +96,7 @@
       input,select{background:#0e0e10;color:var(--fg)}
     }
 
-    /* ✅ Móvil primero: 2 columnas compactas, colapsa a 1 en pantallas pequeñas */
+    /* ✅ Layout responsivo */
     .row2c{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
     @media (max-width:360px){ .row2c{grid-template-columns:1fr;} }
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
@@ -104,22 +105,29 @@
     @media (max-width:560px){ .row3{grid-template-columns:1fr} .row2{grid-template-columns:1fr} }
     .span2{ grid-column: 1 / -1; }
 
-    .actions{
-      display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem;align-items:center
-    }
-    /* ✅ Botones amigables en celular */
+    .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem;align-items:center}
+
+    /* ✅ Botones amigables */
     .btn{
       border:none;border-radius:.7rem;padding:.85rem 1rem;font-size:1rem;
       display:inline-flex;align-items:center;justify-content:center;gap:.5rem;cursor:pointer;
       min-width: 140px;
     }
-    @media (max-width:420px){
-      .btn{flex:1; min-width: 0;}
+    @media (max-width:480px){
+      .btn{flex:1; min-width:0;}
     }
     .btn.primary{background:var(--brand);color:#fff}
     .btn.secondary{background:#f28c2a;color:#fff}
     .btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
-    .no-print{}
+    .btn.tiny{
+      padding:.45rem .65rem;
+      font-size:.9rem;
+      min-width: auto;
+      border-radius:.55rem;
+    }
+    @media (max-width:480px){
+      .btn.tiny{flex:0; }
+    }
 
     .result{
       margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;
@@ -138,6 +146,29 @@
       thead th{background:#24170a;color:#fed8b4}
     }
     .mini-table th,.mini-table td{padding:.45rem;font-size:.95rem}
+
+    /* ✅ MEJORA CLAVE: tablas amigables en móvil */
+    .table-wrap{
+      overflow-x:auto;
+      -webkit-overflow-scrolling: touch;
+      border:1px solid var(--border);
+      border-radius:.8rem;
+      background:rgba(255,255,255,0.25);
+    }
+    @media (prefers-color-scheme: dark){
+      .table-wrap{background:rgba(0,0,0,0.10)}
+    }
+    /* ayuda a que no “apriete” columnas */
+    .table-wrap table{ min-width: 860px; }
+    @media (max-width:480px){
+      .table-wrap table{ min-width: 980px; } /* más espacio para scroll en teléfono */
+    }
+    /* hint visual de scroll */
+    .scroll-hint{
+      margin-top:.45rem;
+      font-size:.9rem;
+      color:var(--muted);
+    }
 
     .tabbar{
       position:fixed;left:0;right:0;bottom:0;z-index:9999;
@@ -200,9 +231,9 @@
       background: rgba(255,255,255,0.35);
     }
     .subpane-title{font-weight:800;margin:0 0 .35rem}
-    .subpane.sub-b1{ background: var(--plomo-b1-bg); }
-    .subpane.sub-b2{ background: var(--plomo-b2-bg); }
-    .subpane.sub-b3{ background: var(--plomo-b3-bg); }
+    .subpane.sub-b1{ background: rgba(255,255,255,0.06); }
+    .subpane.sub-b2{ background: rgba(255,255,255,0.06); }
+    .subpane.sub-b3{ background: rgba(255,255,255,0.06); }
 
     .bandsGrid{
       display:grid;
@@ -213,6 +244,7 @@
     @media (max-width:360px){ .bandsGrid{grid-template-columns:1fr;} }
 
     .muted{color:var(--muted);font-size:.95rem}
+    .no-print{}
 
     /* Loader */
     #appLoader{
@@ -272,6 +304,7 @@
       main { display:none !important; }
       #printArea { display:block !important; }
       body { background:#fff !important; color:#000 !important; }
+      .table-wrap{ overflow: visible !important; border: none !important; } /* no estorba al PDF */
     }
     #printArea{
       padding:18px 18px 0 18px;
@@ -408,7 +441,7 @@
       </fieldset>
     </section>
 
-    <!-- ================= REGISTROS (LIMPIO + RESPONSIVO) ================= -->
+    <!-- ================= REGISTROS (LIMPIO) ================= -->
     <section id="tab-registros" class="tab" aria-labelledby="btn-registros">
       <fieldset>
         <legend>Registros</legend>
@@ -535,7 +568,7 @@
       </fieldset>
     </section>
 
-    <!-- ================= REPORTE ================= -->
+    <!-- ================= REPORTE (RESPONSIVO) ================= -->
     <section id="tab-reporte" class="tab" aria-labelledby="btn-reporte">
       <fieldset>
         <legend>Reporte</legend>
@@ -553,35 +586,38 @@
         <fieldset style="margin:0 0 1rem">
           <legend>Cuadro de registro (del día)</legend>
 
-          <table class="mini-table" id="regCuadro">
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Guardia</th>
-                <th>Labor / Nivel</th>
-                <th>Ejecutor</th>
-                <th>m³ (Total)</th>
-                <th>Avance + frente</th>
-                <th>Bandas</th>
-                <th>Resanes</th>
-                <th class="no-print">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="repDayBody"></tbody>
-            <tfoot>
-              <tr>
-                <th colspan="4">SUMAS DEL DÍA</th>
-                <th id="repSumTotal">—</th>
-                <th id="repSumAvance">—</th>
-                <th id="repSumBandas">—</th>
-                <th id="repSumResanes">—</th>
-                <th class="no-print">—</th>
-              </tr>
-            </tfoot>
-          </table>
+          <div class="table-wrap">
+            <table class="mini-table" id="regCuadro">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Guardia</th>
+                  <th>Labor / Nivel</th>
+                  <th>Ejecutor</th>
+                  <th>m³ (Total)</th>
+                  <th>Avance + frente</th>
+                  <th>Bandas</th>
+                  <th>Resanes</th>
+                  <th class="no-print">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="repDayBody"></tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="4">SUMAS DEL DÍA</th>
+                  <th id="repSumTotal">—</th>
+                  <th id="repSumAvance">—</th>
+                  <th id="repSumBandas">—</th>
+                  <th id="repSumResanes">—</th>
+                  <th class="no-print">—</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="scroll-hint no-print">📱 Tip: Desliza la tabla hacia los lados para ver todas las columnas.</div>
 
           <div class="actions no-print">
-            <button class="btn ghost" id="repPrint" type="button">Imprimir / Guardar PDF (Ctrl+P)</button>
+            <button class="btn ghost" id="repPrint" type="button">Imprimir / Guardar PDF</button>
           </div>
         </fieldset>
 
@@ -594,24 +630,27 @@
             <button class="btn secondary" id="tblBorrarTodo" type="button">Borrar TODO</button>
           </div>
 
-          <table id="tblHist" class="mini-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Fecha</th>
-                <th>Guardia</th>
-                <th>Labor</th>
-                <th>Nivel</th>
-                <th>Ejecutor</th>
-                <th>m³(Total)</th>
-                <th>Avance</th>
-                <th>Bandas</th>
-                <th>Resanes</th>
-                <th class="no-print">Acciones</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <div class="table-wrap">
+            <table id="tblHist" class="mini-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Fecha</th>
+                  <th>Guardia</th>
+                  <th>Labor</th>
+                  <th>Nivel</th>
+                  <th>Ejecutor</th>
+                  <th>m³(Total)</th>
+                  <th>Avance</th>
+                  <th>Bandas</th>
+                  <th>Resanes</th>
+                  <th class="no-print">Acciones</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="scroll-hint no-print">📱 Tip: En Historial también puedes deslizar horizontalmente.</div>
         </fieldset>
       </fieldset>
     </section>
@@ -744,7 +783,7 @@
     window.__editingId = null;
     window.__editingOriginalFecha = null;
 
-    // ✅ Eliminar en ambas BD (día + historial) para consistencia
+    // ✅ Eliminar en ambas BD (día + historial)
     function deleteRecordEverywhere(id, fecha){
       const db = getDB();
       setDB(db.filter(r => r.id !== id));
@@ -986,20 +1025,18 @@
         return;
       }
 
-      // 1) BD completa
+      // BD completa
       const db = getDB();
       upsertById(db, obj);
       setDB(db);
 
-      // 2) BD por día
+      // BD por día
       const dayDB = getDayDB();
-
       if (window.__editingId && window.__editingOriginalFecha && window.__editingOriginalFecha !== obj.fecha){
         const oldArr = dayDB[window.__editingOriginalFecha] ?? [];
         removeById(oldArr, obj.id);
         dayDB[window.__editingOriginalFecha] = oldArr;
       }
-
       const dayArr = dayDB[obj.fecha] ?? [];
       upsertById(dayArr, obj);
       dayDB[obj.fecha] = dayArr;
@@ -1046,7 +1083,7 @@
           <td>${fmt1(r.m3_bandas ?? 0)}</td>
           <td>${fmt1(r.m3_resanes ?? 0)}</td>
           <td class="no-print">
-            <button class="btn ghost" type="button"
+            <button class="btn ghost tiny" type="button"
               data-act="del-repday" data-id="${r.id}" data-fecha="${r.fecha}">
               Eliminar
             </button>
@@ -1061,7 +1098,6 @@
       repSumResanes.textContent= arr.length ? fmt1(sRe) : '—';
     }
 
-    // Eliminar por fila (Reporte - cuadro del día)
     repDayBody.addEventListener('click', (e)=>{
       const btn = e.target.closest('button[data-act="del-repday"]');
       if(!btn) return;
@@ -1093,8 +1129,8 @@
           <td>${(r.m3_bandas!=null)?fmt1(r.m3_bandas):''}</td>
           <td>${(r.m3_resanes!=null)?fmt1(r.m3_resanes):''}</td>
           <td class="no-print">
-            <button class="btn ghost" type="button" data-act="edit" data-i="${i}">Editar</button>
-            <button class="btn ghost" type="button" data-act="del"  data-i="${i}">Eliminar</button>
+            <button class="btn ghost tiny" type="button" data-act="edit" data-i="${i}">Editar</button>
+            <button class="btn ghost tiny" type="button" data-act="del"  data-i="${i}">Eliminar</button>
           </td>
         `;
         histBody.appendChild(tr);
@@ -1113,7 +1149,6 @@
             regs.splice(i,1);
             setDB(regs);
 
-            // también del día
             const dayDB = getDayDB();
             const dayArr = dayDB[r.fecha] ?? [];
             removeById(dayArr, r.id);
@@ -1148,24 +1183,6 @@
               rASac.value = (det.avance.Sac!=null) ? Number(det.avance.Sac).toFixed(2) : '';
             } else {
               rAA.value=''; rAH.value=''; rAL.value=''; rAConst.value='11.5'; rASac.value='';
-            }
-
-            const bandas = det.bandas ?? [];
-            const mapBand = (idx, Ael, Hel, Lel)=>{
-              const bx = bandas[idx];
-              Ael.value = bx?.A ?? '';
-              Hel.value = bx?.H ?? '';
-              Lel.value = bx?.L ?? '';
-            };
-            mapBand(0, rb1A, rb1H, rb1L);
-            mapBand(1, rb2A, rb2H, rb2L);
-            mapBand(2, rb3A, rb3H, rb3L);
-
-            if(det.resanes){
-              rsA.value = det.resanes.A ?? '';
-              rsH.value = det.resanes.H ?? '';
-            } else {
-              rsA.value=''; rsH.value='';
             }
 
             onCheckChangeReg();
@@ -1216,7 +1233,7 @@
       }
     });
 
-    // ================= Gráfico barras (Labor vs m³_total) =================
+    // ================= Gráfico + PDF (igual que antes) =================
     function aggregateByLabor(dayRecords){
       const map = new Map();
       for(const r of dayRecords){
@@ -1305,14 +1322,9 @@
         ctx.fillText(label, 0, 0);
         ctx.restore();
       }
-
-      ctx.font = '12px Arial';
-      ctx.fillStyle = '#333';
-      ctx.fillText('m³_total acumulado por labor', padL, height - 20);
       return canvas;
     }
 
-    // ================= Guardar PDF (Reporte) =================
     document.getElementById('repPrint').addEventListener('click', ()=>{
       const day = repFecha.value || todayStr();
       const dayDB = getDayDB();
