@@ -56,7 +56,7 @@ self.addEventListener('fetch', (event) => {
   // Solo controlamos nuestro scope
   if (!url.pathname.startsWith(REPO)) return;
 
-  // Navegaciones: network-first con fallback a cache
+  // Navegaciones: network-first con fallback a cache (HTML)
   if (req.mode === 'navigate') {
     event.respondWith(
       (async () => {
