@@ -10,6 +10,7 @@
   <!-- ✅ Manifest PWA -->
   <link rel="manifest" href="/shotcrete-calc/manifest.json" />
   <meta name="theme-color" content="#ff6a00" />
+
   <!-- ✅ Apple PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -21,7 +22,6 @@
       --brand-2:#ff821a;
       --bg:#ffffff; --fg:#0b0b0b; --muted:#667085; --card:#f6f8fa; --border:#d0d5dd;
       color-scheme: light dark;
-
       --plomo-avance-bg: #f3f4f6;
       --plomo-avance-br: #d0d5dd;
       --plomo-bandas-bg: #f1f5f9;
@@ -96,12 +96,9 @@
     .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
     @media (max-width:820px){ .row3{grid-template-columns:1fr 1fr} }
     @media (max-width:560px){ .row3{grid-template-columns:1fr} .row2{grid-template-columns:1fr} }
-
-    /* ✅ Compacto 2 columnas para móvil */
     .row2c{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
     @media (max-width:360px){ .row2c{grid-template-columns:1fr;} }
     .span2{ grid-column: 1 / -1; }
-
     .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem;align-items:center}
     .btn{
       border:none;border-radius:.6rem;padding:.7rem 1rem;font-size:1rem;
@@ -110,8 +107,7 @@
     .btn.primary{background:var(--brand);color:#fff}
     .btn.secondary{background:#f28c2a;color:#fff}
     .btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
-    .no-print{ /* ocultar cosas en impresión */ }
-
+    .no-print{}
     .result{
       margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;
       border:1px dashed var(--border);
@@ -121,7 +117,6 @@
     @media (prefers-color-scheme: dark){ .result{background:#0e0e10} }
     .result h2{margin:0;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:var(--brand)}
     .result small{display:block;color:var(--muted);margin-top:.15rem;white-space:pre-line}
-
     table{width:100%;border-collapse:collapse}
     th,td{border:1px solid var(--border);padding:.55rem;text-align:left;vertical-align:top}
     thead th{background:#fff3e8}
@@ -129,7 +124,6 @@
       thead th{background:#24170a;color:#fed8b4}
     }
     .mini-table th,.mini-table td{padding:.45rem;font-size:.95rem}
-
     .tabbar{
       position:fixed;left:0;right:0;bottom:0;z-index:9999;
       background:var(--bg);
@@ -144,11 +138,9 @@
     }
     .tabbar button.active{color:var(--brand);font-weight:700;background:#fff7ef}
     @media (prefers-color-scheme: dark){ .tabbar button.active{background:#1b140c} }
-
     section.tab{display:none}
     section.tab.active{display:block}
     .hidden{display:none !important}
-
     .checkline{
       display:inline-flex; align-items:center; gap:.45rem;
       user-select:none;
@@ -159,7 +151,6 @@
     }
     @media (prefers-color-scheme: dark){ .checkline{background:rgba(0,0,0,0.18)} }
     .checkline input{width:auto;margin:0;transform:scale(1.05)}
-
     .pane{
       margin-top:.75rem;
       padding:.75rem;
@@ -183,7 +174,6 @@
       border-color: var(--plomo-resanes-br);
       box-shadow: inset 3px 0 0 var(--accent-soft);
     }
-
     .subpane{
       border:1px solid var(--border);
       border-radius:.7rem;
@@ -195,8 +185,6 @@
     .subpane.sub-b1{ background: var(--plomo-b1-bg); }
     .subpane.sub-b2{ background: var(--plomo-b2-bg); }
     .subpane.sub-b3{ background: var(--plomo-b3-bg); }
-
-    /* ✅ Bandas: 1 y 2 lado a lado; 3 abajo */
     .bandsGrid{
       display:grid;
       grid-template-columns:1fr 1fr;
@@ -204,7 +192,6 @@
       margin-top:.6rem;
     }
     @media (max-width:360px){ .bandsGrid{grid-template-columns:1fr;} }
-
     .muted{color:var(--muted);font-size:.95rem}
 
     /* Loader */
@@ -266,7 +253,6 @@
       #printArea { display:block !important; }
       body { background:#fff !important; color:#000 !important; }
     }
-    /* Estilos del área de impresión */
     #printArea{
       padding:18px 18px 0 18px;
       font-family: Arial, Helvetica, sans-serif;
@@ -526,7 +512,7 @@
           <h2>—</h2><small id="rOutDetail"></small>
         </div>
 
-        <!-- ✅ Cuadro del día (en Registros) -->
+        <!-- Cuadro del día en Registros (con PDF y eliminar) -->
         <fieldset style="margin-top:1rem">
           <legend>Cuadro de registro (del día)</legend>
 
@@ -557,13 +543,10 @@
                 <th id="regSumAvance">—</th>
                 <th id="regSumBandas">—</th>
                 <th id="regSumResanes">—</th>
+                <th class="no-print">—</th>
               </tr>
             </tfoot>
           </table>
-
-          <div class="muted no-print" style="margin-top:.6rem">
-            Tip: Presiona “Guardar PDF” y elige “Guardar como PDF” en el diálogo de impresión.
-          </div>
         </fieldset>
       </fieldset>
     </section>
@@ -650,7 +633,6 @@
             <tbody></tbody>
           </table>
         </fieldset>
-
       </fieldset>
     </section>
   </main>
@@ -667,7 +649,7 @@
       onclick="switchTab('tab-reporte', this)">Reporte</button>
   </nav>
 
-  <!-- ===================== Área de impresión (solo se ve en Ctrl+P) ===================== -->
+  <!-- ===================== Área de impresión ===================== -->
   <div id="printArea">
     <h2>SHOTCRETE CALC - REPORTE DEL DÍA</h2>
     <div id="printMeta"></div>
@@ -706,7 +688,6 @@
       document.querySelectorAll('section.tab').forEach(sec=>{
         sec.classList.toggle('active', sec.id === targetId);
       });
-
       if (targetId === 'tab-reporte'){
         renderDayReport();
         renderHistDB();
@@ -734,7 +715,6 @@
       return (H * A) / 11.5;
     }
     function togglePane(chk, pane){ pane.classList.toggle('hidden', !chk.checked); }
-
     function sumBandas3From(a1,h1,l1,a2,h2,l2,a3,h3,l3){
       let sum = 0;
       const bands = [
@@ -751,9 +731,9 @@
       return sum;
     }
 
-    // =================== BD separadas ===================
-    const LS_DB  = 'sc_db_registros';   // Base completa (Historial BD)  (existía) [1](https://volcanperu-my.sharepoint.com/personal/claura_volcan_com_pe/Documents/Archivos%20de%20Microsoft%C2%A0Copilot%20Chat/index.html)
-    const LS_DAY = 'sc_day_registros';  // Reporte del día (por fecha)   (existía) [1](https://volcanperu-my.sharepoint.com/personal/claura_volcan_com_pe/Documents/Archivos%20de%20Microsoft%C2%A0Copilot%20Chat/index.html)
+    // =================== BD offline (localStorage) ===================
+    const LS_DB  = 'sc_db_registros';
+    const LS_DAY = 'sc_day_registros';
 
     function safeJSONParse(key, fallback){
       try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
@@ -786,7 +766,28 @@
     window.__editingId = null;
     window.__editingOriginalFecha = null;
 
-    // ================= CALCULO m3 (pestaña cálculo) =================
+    // ✅ Eliminar en ambas BD (día + historial)
+    function deleteRecordEverywhere(id, fecha){
+      // 1) historial
+      const db = getDB();
+      setDB(db.filter(r => r.id !== id));
+
+      // 2) día
+      const dayDB = getDayDB();
+      const arr = dayDB[fecha] ?? [];
+      removeById(arr, id);
+      dayDB[fecha] = arr;
+      setDayDB(dayDB);
+
+      // si estabas editando ese id
+      if (window.__editingId === id) limpiarFormularioRegistros();
+
+      renderHistDB();
+      renderDayReport();
+      renderDayInRegistros();
+    }
+
+    // ================= CALCULO m3 =================
     const chkAvance = document.getElementById('chkAvance');
     const chkBandas = document.getElementById('chkBandas');
     const chkResane = document.getElementById('chkResane');
@@ -803,7 +804,6 @@
     const b1A = document.getElementById('b1A'), b1H = document.getElementById('b1H'), b1L = document.getElementById('b1L');
     const b2A = document.getElementById('b2A'), b2H = document.getElementById('b2H'), b2L = document.getElementById('b2L');
     const b3A = document.getElementById('b3A'), b3H = document.getElementById('b3H'), b3L = document.getElementById('b3L');
-
     const sA = document.getElementById('sA');
     const sH = document.getElementById('sH');
 
@@ -862,13 +862,12 @@
     });
     onCheckChangeCalculo();
 
-    // ================= REGISTROS (pestaña registros) =================
+    // ================= REGISTROS =================
     const regFecha=document.getElementById('regFecha');
     const regGuardia=document.getElementById('regGuardia');
     const regLabor=document.getElementById('regLabor');
     const regNivel=document.getElementById('regNivel');
     const regEjecutor=document.getElementById('regEjecutor');
-
     regFecha.value = todayStr();
 
     const rChkAvance=document.getElementById('rChkAvance');
@@ -918,18 +917,13 @@
           total += partAv;
           lines.push(`Avance + Frente: ${fmt1(partAv)} m³`);
           det.avance = {A,H,L,C,Sac:Number(sac.toFixed(2))};
-        } else {
-          rASac.value='';
-        }
-      } else {
-        rASac.value='';
-      }
+        } else rASac.value='';
+      } else rASac.value='';
 
       if(rChkBandas.checked){
         partBa = sumBandas3From(rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L);
         total += partBa;
         lines.push(`Bandas: ${fmt1(partBa)} m³`);
-
         const bands = [
           {A:rb1A.value,H:rb1H.value,L:rb1L.value},
           {A:rb2A.value,H:rb2H.value,L:rb2L.value},
@@ -957,7 +951,6 @@
       rOutDetail.textContent = lines.join('\n');
 
       const currentId = (window.__editingId) ? window.__editingId : makeId();
-
       return {
         id: currentId,
         fecha: regFecha.value || todayStr(),
@@ -993,46 +986,23 @@
     function limpiarFormularioRegistros(){
       window.__editingId = null;
       window.__editingOriginalFecha = null;
-
       regFecha.value = todayStr();
       regGuardia.value = '';
       regLabor.value = '';
       regNivel.value = '';
       regEjecutor.value = '';
-
       rChkAvance.checked = false;
       rChkBandas.checked = false;
       rChkResane.checked = false;
-
       [rAA, rAH, rAL, rb1A, rb1H, rb1L, rb2A, rb2H, rb2L, rb3A, rb3H, rb3L, rsA, rsH].forEach(i => i.value = '');
       rAConst.value = '11.5';
       rASac.value = '';
-
       onCheckChangeReg();
       rOutH2.textContent = '—';
       rOutDetail.textContent = '';
       renderDayInRegistros();
     }
 
-    // ✅ Eliminar un registro en ambas BD (día + historial)
-    function deleteRecordEverywhere(id, fecha){
-      const db = getDB();
-      setDB(db.filter(r => r.id !== id));
-
-      const dayDB = getDayDB();
-      const arr = dayDB[fecha] ?? [];
-      removeById(arr, id);
-      dayDB[fecha] = arr;
-      setDayDB(dayDB);
-
-      if (window.__editingId === id) limpiarFormularioRegistros();
-
-      renderHistDB();
-      renderDayReport();
-      renderDayInRegistros();
-    }
-
-    // ✅ Botones principales del formulario (solo 2)
     document.getElementById('rLimpiar').addEventListener('click', limpiarFormularioRegistros);
 
     document.getElementById('rGuardar').addEventListener('click', ()=>{
@@ -1053,29 +1023,24 @@
         return;
       }
 
-      // 1) Guardar/Actualizar en BD completa
+      // 1) BD completa
       const db = getDB();
       upsertById(db, obj);
       setDB(db);
 
-      // 2) Guardar/Actualizar en BD del día
+      // 2) BD por día
       const dayDB = getDayDB();
-
-      // Si editas y cambias la fecha, quita del día original
       if (window.__editingId && window.__editingOriginalFecha && window.__editingOriginalFecha !== obj.fecha){
         const oldArr = dayDB[window.__editingOriginalFecha] ?? [];
         removeById(oldArr, obj.id);
         dayDB[window.__editingOriginalFecha] = oldArr;
       }
-
       const dayArr = dayDB[obj.fecha] ?? [];
       upsertById(dayArr, obj);
       dayDB[obj.fecha] = dayArr;
       setDayDB(dayDB);
 
       alert('Guardado ✅');
-
-      // refrescar vistas
       renderDayInRegistros();
       if (document.getElementById('tab-reporte')?.classList.contains('active')){
         renderDayReport();
@@ -1085,7 +1050,7 @@
 
     onCheckChangeReg();
 
-    // ======= Cuadro del día en pestaña Registros =======
+    // ======= Cuadro del día en Registros =======
     const regDayBody = document.getElementById('regDayBody');
     const regSumTotal = document.getElementById('regSumTotal');
     const regSumAvance = document.getElementById('regSumAvance');
@@ -1093,8 +1058,6 @@
     const regSumResanes = document.getElementById('regSumResanes');
 
     function renderDayInRegistros(){
-      if(!regDayBody) return;
-
       const day = regFecha.value || todayStr();
       const dayDB = getDayDB();
       const arr = dayDB[day] ?? [];
@@ -1119,10 +1082,7 @@
           <td>${fmt1(r.m3_bandas ?? 0)}</td>
           <td>${fmt1(r.m3_resanes ?? 0)}</td>
           <td class="no-print">
-            <button class="btn ghost" type="button"
-              data-act="del-day" data-id="${r.id}" data-fecha="${r.fecha}">
-              Eliminar
-            </button>
+            <button class="btn ghost" type="button" data-act="del-regday" data-id="${r.id}" data-fecha="${r.fecha}">Eliminar</button>
           </td>
         `;
         regDayBody.appendChild(tr);
@@ -1134,23 +1094,20 @@
       regSumResanes.textContent = arr.length ? fmt1(sRe) : '—';
     }
 
-    document.getElementById('regRefrescarDia')?.addEventListener('click', renderDayInRegistros);
+    document.getElementById('regRefrescarDia').addEventListener('click', renderDayInRegistros);
     regFecha.addEventListener('change', renderDayInRegistros);
 
-    // Delegación: Eliminar por fila (Registros)
-    regDayBody?.addEventListener('click', (e)=>{
-      const btn = e.target.closest('button[data-act="del-day"]');
+    regDayBody.addEventListener('click', (e)=>{
+      const btn = e.target.closest('button[data-act="del-regday"]');
       if(!btn) return;
       const id = btn.dataset.id;
       const fecha = btn.dataset.fecha;
-      if(!id || !fecha) return;
-
       if(confirm('¿Eliminar este registro? Esta acción no se puede deshacer.')){
         deleteRecordEverywhere(id, fecha);
       }
     });
 
-    // ================= REPORTE (del día + historial BD) =================
+    // ================= REPORTE (Cuadro del día + Historial) =================
     const repFecha = document.getElementById('repFecha');
     const repDayBody = document.getElementById('repDayBody');
     const repSumTotal = document.getElementById('repSumTotal');
@@ -1161,6 +1118,7 @@
     repFecha.value = todayStr();
     repFecha.addEventListener('change', renderDayReport);
 
+    // ✅ Aquí está tu pedido: botón Eliminar por cada registro del cuadro del día (REPORTE)
     function renderDayReport(){
       const day = repFecha.value || todayStr();
       const dayDB = getDayDB();
@@ -1186,10 +1144,7 @@
           <td>${fmt1(r.m3_bandas ?? 0)}</td>
           <td>${fmt1(r.m3_resanes ?? 0)}</td>
           <td class="no-print">
-            <button class="btn ghost" type="button"
-              data-act="del-rep" data-id="${r.id}" data-fecha="${r.fecha}">
-              Eliminar
-            </button>
+            <button class="btn ghost" type="button" data-act="del-repday" data-id="${r.id}" data-fecha="${r.fecha}">Eliminar</button>
           </td>
         `;
         repDayBody.appendChild(tr);
@@ -1201,9 +1156,8 @@
       repSumResanes.textContent= arr.length ? fmt1(sRe) : '—';
     }
 
-    // Delegación: Eliminar por fila (Reporte)
-    repDayBody?.addEventListener('click', (e)=>{
-      const btn = e.target.closest('button[data-act="del-rep"]');
+    repDayBody.addEventListener('click', (e)=>{
+      const btn = e.target.closest('button[data-act="del-repday"]');
       if(!btn) return;
       const id = btn.dataset.id;
       const fecha = btn.dataset.fecha;
@@ -1212,7 +1166,7 @@
       }
     });
 
-    // ================= HISTORIAL BD (base completa) =================
+    // ================= HISTORIAL BD =================
     const histBody = document.querySelector('#tblHist tbody');
 
     function renderHistDB(){
@@ -1234,7 +1188,7 @@
           <td>${(r.m3_resanes!=null)?fmt1(r.m3_resanes):''}</td>
           <td class="no-print">
             <button class="btn ghost" type="button" data-act="edit" data-i="${i}">Editar</button>
-            <button class="btn ghost" type="button" data-act="del"  data-i="${i}">Eliminar</button>
+            <button class="btn ghost" type="button" data-act="del" data-i="${i}">Eliminar</button>
           </td>
         `;
         histBody.appendChild(tr);
@@ -1250,10 +1204,10 @@
 
           if(act === 'del'){
             if(!confirm('¿Eliminar este registro del historial?')) return;
-
+            // eliminar en historial
             regs.splice(i,1);
             setDB(regs);
-
+            // eliminar también en día
             const dayDB = getDayDB();
             const dayArr = dayDB[r.fecha] ?? [];
             removeById(dayArr, r.id);
@@ -1316,7 +1270,7 @@
       });
     }
 
-    // Export CSV de la BD completa
+    // Export CSV BD completa (se mantiene)
     function toCSV(regs){
       const headers=['N','id','Fecha','Guardia','Labor','Nivel','Ejecutor','m3_total','m3_avance','m3_bandas','m3_resanes'];
       const esc=(v)=>{ const s=(v==null)?'':String(v); return '"' + s.replace(/"/g,'""') + '"'; };
@@ -1359,7 +1313,7 @@
       }
     });
 
-    // ================= Gráfico barras (Labor vs m³_total) =================
+    // ================= Gráfico barras =================
     function aggregateByLabor(dayRecords){
       const map = new Map();
       for(const r of dayRecords){
@@ -1374,7 +1328,6 @@
       const canvas = document.createElement('canvas');
       const width = 900, height = 420;
       canvas.width = width; canvas.height = height;
-
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0,0,width,height);
@@ -1458,9 +1411,7 @@
       return canvas;
     }
 
-    // ================= Impresión / Guardar PDF =================
-
-    // 1) PDF desde REPORTE (ya existía, lo mejoré con Avance)
+    // ================= Guardar PDF (Impresión) =================
     document.getElementById('repPrint').addEventListener('click', ()=>{
       const day = repFecha.value || todayStr();
       const dayDB = getDayDB();
@@ -1475,7 +1426,7 @@
       });
 
       document.getElementById('printMeta').textContent =
-        `Fecha: ${day}\nGenerado: ${new Date().toLocaleString()}\nOrigen: Pestaña Reporte`;
+        `Fecha: ${day}\nGenerado: ${new Date().toLocaleString()}`;
 
       document.getElementById('printSums').innerHTML =
         `<b>Σ m³_total:</b> ${fmt1(sTotal)} 
@@ -1526,73 +1477,8 @@
       window.print();
     });
 
-    // 2) PDF desde REGISTROS (cuadro del día)
-    function printDayFromRegistros(){
-      const day = regFecha.value || todayStr();
-      const dayDB = getDayDB();
-      const records = dayDB[day] ?? [];
-
-      let sTotal=0, sAv=0, sBa=0, sRe=0;
-      records.forEach(r=>{
-        sTotal += Number(r.m3_total ?? 0);
-        sAv += Number(r.m3_avance ?? 0);
-        sBa += Number(r.m3_bandas ?? 0);
-        sRe += Number(r.m3_resanes ?? 0);
-      });
-
-      document.getElementById('printMeta').textContent =
-        `Fecha: ${day}\nGenerado: ${new Date().toLocaleString()}\nOrigen: Pestaña Registros`;
-
-      document.getElementById('printSums').innerHTML =
-        `<b>Σ m³_total:</b> ${fmt1(sTotal)} 
-         <b>Σ Avance:</b> ${fmt1(sAv)} 
-         <b>Σ Bandas:</b> ${fmt1(sBa)} 
-         <b>Σ Resanes:</b> ${fmt1(sRe)}`;
-
-      const agg = aggregateByLabor(records);
-      const canvas = drawBarChartToCanvas(agg, day);
-      const chartWrap = document.getElementById('printChartWrap');
-      chartWrap.innerHTML = '';
-      chartWrap.appendChild(canvas);
-
-      const rowsHtml = records.map(r => `
-        <tr>
-          <td>${r.fecha ?? ''}</td>
-          <td>${r.guardia ?? ''}</td>
-          <td>${(r.labor ?? '')} / ${(r.nivel ?? '')}</td>
-          <td>${r.ejecutor ?? ''}</td>
-          <td>${fmt1(r.m3_total ?? 0)}</td>
-          <td>${fmt1(r.m3_avance ?? 0)}</td>
-          <td>${fmt1(r.m3_bandas ?? 0)}</td>
-          <td>${fmt1(r.m3_resanes ?? 0)}</td>
-        </tr>
-      `).join('');
-
-      document.getElementById('printTableWrap').innerHTML = `
-        <table>
-          <thead>
-            <tr>
-              <th>Fecha</th><th>Guardia</th><th>Labor / Nivel</th><th>Ejecutor</th>
-              <th>m³ Total</th><th>Avance</th><th>Bandas</th><th>Resanes</th>
-            </tr>
-          </thead>
-          <tbody>${rowsHtml}</tbody>
-          <tfoot>
-            <tr>
-              <th colspan="4">TOTAL DÍA</th>
-              <th>${fmt1(sTotal)}</th>
-              <th>${fmt1(sAv)}</th>
-              <th>${fmt1(sBa)}</th>
-              <th>${fmt1(sRe)}</th>
-            </tr>
-          </tfoot>
-        </table>
-      `;
-
-      window.print();
-    }
-
-    document.getElementById('regExportDiaPDF')?.addEventListener('click', ()=>{
+    // PDF del cuadro del día desde Registros
+    document.getElementById('regExportDiaPDF').addEventListener('click', ()=>{
       const day = regFecha.value || todayStr();
       const dayDB = getDayDB();
       const records = dayDB[day] ?? [];
@@ -1600,7 +1486,10 @@
         alert('No hay registros para esa fecha. Guarda al menos uno antes de exportar.');
         return;
       }
-      printDayFromRegistros();
+      // Reusa el mismo print del reporte cambiando fecha a la del formulario
+      repFecha.value = day;
+      renderDayReport();
+      document.getElementById('repPrint').click();
     });
 
     // Inicial
