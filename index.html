@@ -7,6 +7,7 @@
 
   <!-- ✅ Canonical -->
   <link rel="canonical" href="https://clauramarcelo.github.io/shotcrete-calc/" />
+
   <!-- ✅ Manifest PWA -->
   <link rel="manifest" href="/shotcrete-calc/manifest.json" />
   <meta name="theme-color" content="#ff6a00" />
@@ -22,6 +23,7 @@
       --brand-2:#ff821a;
       --bg:#ffffff; --fg:#0b0b0b; --muted:#667085; --card:#f6f8fa; --border:#d0d5dd;
       color-scheme: light dark;
+
       --plomo-avance-bg: #f3f4f6;
       --plomo-avance-br: #d0d5dd;
       --plomo-bandas-bg: #f1f5f9;
@@ -92,22 +94,33 @@
     @media (prefers-color-scheme: dark){
       input,select{background:#0e0e10;color:var(--fg)}
     }
+
+    /* ✅ Móvil primero: 2 columnas compactas, colapsa a 1 en pantallas pequeñas */
+    .row2c{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+    @media (max-width:360px){ .row2c{grid-template-columns:1fr;} }
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
     .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
     @media (max-width:820px){ .row3{grid-template-columns:1fr 1fr} }
     @media (max-width:560px){ .row3{grid-template-columns:1fr} .row2{grid-template-columns:1fr} }
-    .row2c{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
-    @media (max-width:360px){ .row2c{grid-template-columns:1fr;} }
     .span2{ grid-column: 1 / -1; }
-    .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem;align-items:center}
+
+    .actions{
+      display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem;align-items:center
+    }
+    /* ✅ Botones amigables en celular */
     .btn{
-      border:none;border-radius:.6rem;padding:.7rem 1rem;font-size:1rem;
-      display:inline-flex;align-items:center;gap:.5rem;cursor:pointer
+      border:none;border-radius:.7rem;padding:.85rem 1rem;font-size:1rem;
+      display:inline-flex;align-items:center;justify-content:center;gap:.5rem;cursor:pointer;
+      min-width: 140px;
+    }
+    @media (max-width:420px){
+      .btn{flex:1; min-width: 0;}
     }
     .btn.primary{background:var(--brand);color:#fff}
     .btn.secondary{background:#f28c2a;color:#fff}
     .btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
     .no-print{}
+
     .result{
       margin-top:.9rem;padding:1rem;border-radius:.8rem;background:#fff;
       border:1px dashed var(--border);
@@ -115,8 +128,9 @@
       flex-direction:column; gap:.35rem;
     }
     @media (prefers-color-scheme: dark){ .result{background:#0e0e10} }
-    .result h2{margin:0;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:var(--brand)}
+    .result h2{margin:0;font-size:clamp(1.4rem,4vw,2.1rem);font-weight:800;color:var(--brand)}
     .result small{display:block;color:var(--muted);margin-top:.15rem;white-space:pre-line}
+
     table{width:100%;border-collapse:collapse}
     th,td{border:1px solid var(--border);padding:.55rem;text-align:left;vertical-align:top}
     thead th{background:#fff3e8}
@@ -124,6 +138,7 @@
       thead th{background:#24170a;color:#fed8b4}
     }
     .mini-table th,.mini-table td{padding:.45rem;font-size:.95rem}
+
     .tabbar{
       position:fixed;left:0;right:0;bottom:0;z-index:9999;
       background:var(--bg);
@@ -138,9 +153,11 @@
     }
     .tabbar button.active{color:var(--brand);font-weight:700;background:#fff7ef}
     @media (prefers-color-scheme: dark){ .tabbar button.active{background:#1b140c} }
+
     section.tab{display:none}
     section.tab.active{display:block}
     .hidden{display:none !important}
+
     .checkline{
       display:inline-flex; align-items:center; gap:.45rem;
       user-select:none;
@@ -151,6 +168,7 @@
     }
     @media (prefers-color-scheme: dark){ .checkline{background:rgba(0,0,0,0.18)} }
     .checkline input{width:auto;margin:0;transform:scale(1.05)}
+
     .pane{
       margin-top:.75rem;
       padding:.75rem;
@@ -185,6 +203,7 @@
     .subpane.sub-b1{ background: var(--plomo-b1-bg); }
     .subpane.sub-b2{ background: var(--plomo-b2-bg); }
     .subpane.sub-b3{ background: var(--plomo-b3-bg); }
+
     .bandsGrid{
       display:grid;
       grid-template-columns:1fr 1fr;
@@ -192,6 +211,7 @@
       margin-top:.6rem;
     }
     @media (max-width:360px){ .bandsGrid{grid-template-columns:1fr;} }
+
     .muted{color:var(--muted);font-size:.95rem}
 
     /* Loader */
@@ -245,7 +265,7 @@
     }
     @media (prefers-color-scheme: dark){ .loader-text{ color:#d8d8d8; } }
 
-    /* ===================== MODO IMPRESIÓN (Ctrl+P) ===================== */
+    /* ===================== MODO IMPRESIÓN ===================== */
     #printArea { display:none; }
     @media print {
       header, .tabbar, #appLoader { display:none !important; }
@@ -294,6 +314,7 @@
     }
   </style>
 </head>
+
 <body>
   <header>
     <div class="left">
@@ -387,7 +408,7 @@
       </fieldset>
     </section>
 
-    <!-- ================= REGISTROS ================= -->
+    <!-- ================= REGISTROS (LIMPIO + RESPONSIVO) ================= -->
     <section id="tab-registros" class="tab" aria-labelledby="btn-registros">
       <fieldset>
         <legend>Registros</legend>
@@ -428,9 +449,9 @@
         </div>
 
         <div class="actions" style="margin-top:.8rem">
-          <label class="checkline"><input id="rChkAvance" type="checkbox" />Avance + Frente de sacrificio</label>
-          <label class="checkline"><input id="rChkBandas" type="checkbox" />Calc. Bandas</label>
-          <label class="checkline"><input id="rChkResane" type="checkbox" />Calc. Resanes</label>
+          <label class="checkline"><input id="rChkAvance" type="checkbox" />Avance + Frente</label>
+          <label class="checkline"><input id="rChkBandas" type="checkbox" />Bandas</label>
+          <label class="checkline"><input id="rChkResane" type="checkbox" />Resanes</label>
         </div>
 
         <!-- Avance -->
@@ -502,7 +523,7 @@
           </div>
         </div>
 
-        <!-- ✅ SOLO 2 BOTONES (FORMULARIO) -->
+        <!-- ✅ SOLO 2 BOTONES -->
         <div class="actions">
           <button class="btn primary" id="rGuardar" type="button">Guardar</button>
           <button class="btn ghost" id="rLimpiar" type="button">Limpiar</button>
@@ -511,43 +532,6 @@
         <div id="rOut" class="result" aria-live="polite">
           <h2>—</h2><small id="rOutDetail"></small>
         </div>
-
-        <!-- Cuadro del día en Registros (con PDF y eliminar) -->
-        <fieldset style="margin-top:1rem">
-          <legend>Cuadro de registro (del día)</legend>
-
-          <div class="actions">
-            <button class="btn secondary" id="regExportDiaPDF" type="button">Guardar PDF (cuadro del día)</button>
-            <button class="btn ghost" id="regRefrescarDia" type="button">Refrescar</button>
-          </div>
-
-          <table class="mini-table" id="regCuadroDia">
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Guardia</th>
-                <th>Labor / Nivel</th>
-                <th>Ejecutor</th>
-                <th>m³ (Total)</th>
-                <th>Avance + frente</th>
-                <th>Bandas</th>
-                <th>Resanes</th>
-                <th class="no-print">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="regDayBody"></tbody>
-            <tfoot>
-              <tr>
-                <th colspan="4">SUMAS DEL DÍA</th>
-                <th id="regSumTotal">—</th>
-                <th id="regSumAvance">—</th>
-                <th id="regSumBandas">—</th>
-                <th id="regSumResanes">—</th>
-                <th class="no-print">—</th>
-              </tr>
-            </tfoot>
-          </table>
-        </fieldset>
       </fieldset>
     </section>
 
@@ -598,10 +582,6 @@
 
           <div class="actions no-print">
             <button class="btn ghost" id="repPrint" type="button">Imprimir / Guardar PDF (Ctrl+P)</button>
-          </div>
-
-          <div class="muted no-print" style="margin-top:.6rem">
-            Tip: En el celular, elige “Guardar como PDF” y luego lo envías por WhatsApp cuando tengas señal.
           </div>
         </fieldset>
 
@@ -692,9 +672,6 @@
         renderDayReport();
         renderHistDB();
       }
-      if (targetId === 'tab-registros'){
-        renderDayInRegistros();
-      }
     }
 
     // --- Fórmulas ---
@@ -715,6 +692,7 @@
       return (H * A) / 11.5;
     }
     function togglePane(chk, pane){ pane.classList.toggle('hidden', !chk.checked); }
+
     function sumBandas3From(a1,h1,l1,a2,h2,l2,a3,h3,l3){
       let sum = 0;
       const bands = [
@@ -766,25 +744,21 @@
     window.__editingId = null;
     window.__editingOriginalFecha = null;
 
-    // ✅ Eliminar en ambas BD (día + historial)
+    // ✅ Eliminar en ambas BD (día + historial) para consistencia
     function deleteRecordEverywhere(id, fecha){
-      // 1) historial
       const db = getDB();
       setDB(db.filter(r => r.id !== id));
 
-      // 2) día
       const dayDB = getDayDB();
       const arr = dayDB[fecha] ?? [];
       removeById(arr, id);
       dayDB[fecha] = arr;
       setDayDB(dayDB);
 
-      // si estabas editando ese id
       if (window.__editingId === id) limpiarFormularioRegistros();
 
       renderHistDB();
       renderDayReport();
-      renderDayInRegistros();
     }
 
     // ================= CALCULO m3 =================
@@ -804,6 +778,7 @@
     const b1A = document.getElementById('b1A'), b1H = document.getElementById('b1H'), b1L = document.getElementById('b1L');
     const b2A = document.getElementById('b2A'), b2H = document.getElementById('b2H'), b2L = document.getElementById('b2L');
     const b3A = document.getElementById('b3A'), b3H = document.getElementById('b3H'), b3L = document.getElementById('b3L');
+
     const sA = document.getElementById('sA');
     const sH = document.getElementById('sH');
 
@@ -897,7 +872,6 @@
     function calcTotalReg(){
       let total=0, partAv=0, partBa=0, partRe=0;
       const lines=[];
-
       if(!rChkAvance.checked && !rChkBandas.checked && !rChkResane.checked){
         rOutH2.textContent='—';
         rOutDetail.textContent='';
@@ -924,17 +898,6 @@
         partBa = sumBandas3From(rb1A,rb1H,rb1L,rb2A,rb2H,rb2L,rb3A,rb3H,rb3L);
         total += partBa;
         lines.push(`Bandas: ${fmt1(partBa)} m³`);
-        const bands = [
-          {A:rb1A.value,H:rb1H.value,L:rb1L.value},
-          {A:rb2A.value,H:rb2H.value,L:rb2L.value},
-          {A:rb3A.value,H:rb3H.value,L:rb3L.value},
-        ];
-        bands.forEach((b,i)=>{
-          const any = isFilled(b.A) || isFilled(b.H) || isFilled(b.L);
-          if(!any) return;
-          const A=parseDec(b.A), H=parseDec(b.H), L=parseDec(b.L);
-          if(isFinite(A)&&isFinite(H)&&isFinite(L)) det.bandas[i] = {A,H,L};
-        });
       }
 
       if(rChkResane.checked){
@@ -951,6 +914,7 @@
       rOutDetail.textContent = lines.join('\n');
 
       const currentId = (window.__editingId) ? window.__editingId : makeId();
+
       return {
         id: currentId,
         fecha: regFecha.value || todayStr(),
@@ -1000,7 +964,6 @@
       onCheckChangeReg();
       rOutH2.textContent = '—';
       rOutDetail.textContent = '';
-      renderDayInRegistros();
     }
 
     document.getElementById('rLimpiar').addEventListener('click', limpiarFormularioRegistros);
@@ -1019,7 +982,7 @@
 
       const obj = calcTotalReg();
       if(!obj || !isFinite(obj.m3_total) || obj.m3_total <= 0){
-        alert('Completa los datos de cálculo (Avance/Bandas/Resanes) para obtener un m³ total > 0.');
+        alert('Completa el cálculo (Avance/Bandas/Resanes) para obtener m³ total > 0.');
         return;
       }
 
@@ -1030,84 +993,24 @@
 
       // 2) BD por día
       const dayDB = getDayDB();
+
       if (window.__editingId && window.__editingOriginalFecha && window.__editingOriginalFecha !== obj.fecha){
         const oldArr = dayDB[window.__editingOriginalFecha] ?? [];
         removeById(oldArr, obj.id);
         dayDB[window.__editingOriginalFecha] = oldArr;
       }
+
       const dayArr = dayDB[obj.fecha] ?? [];
       upsertById(dayArr, obj);
       dayDB[obj.fecha] = dayArr;
       setDayDB(dayDB);
 
       alert('Guardado ✅');
-      renderDayInRegistros();
-      if (document.getElementById('tab-reporte')?.classList.contains('active')){
-        renderDayReport();
-        renderHistDB();
-      }
     });
 
     onCheckChangeReg();
 
-    // ======= Cuadro del día en Registros =======
-    const regDayBody = document.getElementById('regDayBody');
-    const regSumTotal = document.getElementById('regSumTotal');
-    const regSumAvance = document.getElementById('regSumAvance');
-    const regSumBandas = document.getElementById('regSumBandas');
-    const regSumResanes = document.getElementById('regSumResanes');
-
-    function renderDayInRegistros(){
-      const day = regFecha.value || todayStr();
-      const dayDB = getDayDB();
-      const arr = dayDB[day] ?? [];
-
-      regDayBody.innerHTML = '';
-      let sTotal=0, sAv=0, sBa=0, sRe=0;
-
-      arr.forEach((r)=>{
-        sTotal += Number(r.m3_total ?? 0);
-        sAv += Number(r.m3_avance ?? 0);
-        sBa += Number(r.m3_bandas ?? 0);
-        sRe += Number(r.m3_resanes ?? 0);
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${r.fecha ?? ''}</td>
-          <td>${r.guardia ?? ''}</td>
-          <td>${(r.labor ?? '')} / ${(r.nivel ?? '')}</td>
-          <td>${r.ejecutor ?? ''}</td>
-          <td>${fmt1(r.m3_total ?? 0)}</td>
-          <td>${fmt1(r.m3_avance ?? 0)}</td>
-          <td>${fmt1(r.m3_bandas ?? 0)}</td>
-          <td>${fmt1(r.m3_resanes ?? 0)}</td>
-          <td class="no-print">
-            <button class="btn ghost" type="button" data-act="del-regday" data-id="${r.id}" data-fecha="${r.fecha}">Eliminar</button>
-          </td>
-        `;
-        regDayBody.appendChild(tr);
-      });
-
-      regSumTotal.textContent = arr.length ? fmt1(sTotal) : '—';
-      regSumAvance.textContent = arr.length ? fmt1(sAv) : '—';
-      regSumBandas.textContent = arr.length ? fmt1(sBa) : '—';
-      regSumResanes.textContent = arr.length ? fmt1(sRe) : '—';
-    }
-
-    document.getElementById('regRefrescarDia').addEventListener('click', renderDayInRegistros);
-    regFecha.addEventListener('change', renderDayInRegistros);
-
-    regDayBody.addEventListener('click', (e)=>{
-      const btn = e.target.closest('button[data-act="del-regday"]');
-      if(!btn) return;
-      const id = btn.dataset.id;
-      const fecha = btn.dataset.fecha;
-      if(confirm('¿Eliminar este registro? Esta acción no se puede deshacer.')){
-        deleteRecordEverywhere(id, fecha);
-      }
-    });
-
-    // ================= REPORTE (Cuadro del día + Historial) =================
+    // ================= REPORTE =================
     const repFecha = document.getElementById('repFecha');
     const repDayBody = document.getElementById('repDayBody');
     const repSumTotal = document.getElementById('repSumTotal');
@@ -1118,7 +1021,6 @@
     repFecha.value = todayStr();
     repFecha.addEventListener('change', renderDayReport);
 
-    // ✅ Aquí está tu pedido: botón Eliminar por cada registro del cuadro del día (REPORTE)
     function renderDayReport(){
       const day = repFecha.value || todayStr();
       const dayDB = getDayDB();
@@ -1144,7 +1046,10 @@
           <td>${fmt1(r.m3_bandas ?? 0)}</td>
           <td>${fmt1(r.m3_resanes ?? 0)}</td>
           <td class="no-print">
-            <button class="btn ghost" type="button" data-act="del-repday" data-id="${r.id}" data-fecha="${r.fecha}">Eliminar</button>
+            <button class="btn ghost" type="button"
+              data-act="del-repday" data-id="${r.id}" data-fecha="${r.fecha}">
+              Eliminar
+            </button>
           </td>
         `;
         repDayBody.appendChild(tr);
@@ -1156,6 +1061,7 @@
       repSumResanes.textContent= arr.length ? fmt1(sRe) : '—';
     }
 
+    // Eliminar por fila (Reporte - cuadro del día)
     repDayBody.addEventListener('click', (e)=>{
       const btn = e.target.closest('button[data-act="del-repday"]');
       if(!btn) return;
@@ -1188,7 +1094,7 @@
           <td>${(r.m3_resanes!=null)?fmt1(r.m3_resanes):''}</td>
           <td class="no-print">
             <button class="btn ghost" type="button" data-act="edit" data-i="${i}">Editar</button>
-            <button class="btn ghost" type="button" data-act="del" data-i="${i}">Eliminar</button>
+            <button class="btn ghost" type="button" data-act="del"  data-i="${i}">Eliminar</button>
           </td>
         `;
         histBody.appendChild(tr);
@@ -1204,10 +1110,10 @@
 
           if(act === 'del'){
             if(!confirm('¿Eliminar este registro del historial?')) return;
-            // eliminar en historial
             regs.splice(i,1);
             setDB(regs);
-            // eliminar también en día
+
+            // también del día
             const dayDB = getDayDB();
             const dayArr = dayDB[r.fecha] ?? [];
             removeById(dayArr, r.id);
@@ -1216,7 +1122,6 @@
 
             renderHistDB();
             renderDayReport();
-            renderDayInRegistros();
             return;
           }
 
@@ -1270,7 +1175,7 @@
       });
     }
 
-    // Export CSV BD completa (se mantiene)
+    // Export CSV BD completa
     function toCSV(regs){
       const headers=['N','id','Fecha','Guardia','Labor','Nivel','Ejecutor','m3_total','m3_avance','m3_bandas','m3_resanes'];
       const esc=(v)=>{ const s=(v==null)?'':String(v); return '"' + s.replace(/"/g,'""') + '"'; };
@@ -1300,7 +1205,6 @@
     document.getElementById('tblRefrescar').addEventListener('click', ()=>{
       renderHistDB();
       renderDayReport();
-      renderDayInRegistros();
     });
 
     document.getElementById('tblBorrarTodo').addEventListener('click', ()=>{
@@ -1309,11 +1213,10 @@
         localStorage.removeItem(LS_DAY);
         renderHistDB();
         renderDayReport();
-        renderDayInRegistros();
       }
     });
 
-    // ================= Gráfico barras =================
+    // ================= Gráfico barras (Labor vs m³_total) =================
     function aggregateByLabor(dayRecords){
       const map = new Map();
       for(const r of dayRecords){
@@ -1328,6 +1231,7 @@
       const canvas = document.createElement('canvas');
       const width = 900, height = 420;
       canvas.width = width; canvas.height = height;
+
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0,0,width,height);
@@ -1355,7 +1259,6 @@
       const gap = Math.max(10, Math.floor(chartW * 0.02));
       const barW = Math.max(18, Math.floor((chartW - gap*(n-1)) / n));
 
-      // ejes
       ctx.strokeStyle = '#333';
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -1364,7 +1267,6 @@
       ctx.lineTo(padL + chartW, padT + chartH);
       ctx.stroke();
 
-      // grid / ticks
       ctx.font = '12px Arial';
       ctx.fillStyle = '#444';
       ctx.strokeStyle = '#e5e7eb';
@@ -1380,7 +1282,6 @@
         ctx.fillText(v.toFixed(1), 20, y + 4);
       }
 
-      // barras
       for(let i=0;i<n;i++){
         const [lab, val] = data[i];
         const h = (val / maxVal) * chartH;
@@ -1411,7 +1312,7 @@
       return canvas;
     }
 
-    // ================= Guardar PDF (Impresión) =================
+    // ================= Guardar PDF (Reporte) =================
     document.getElementById('repPrint').addEventListener('click', ()=>{
       const day = repFecha.value || todayStr();
       const dayDB = getDayDB();
@@ -1477,25 +1378,9 @@
       window.print();
     });
 
-    // PDF del cuadro del día desde Registros
-    document.getElementById('regExportDiaPDF').addEventListener('click', ()=>{
-      const day = regFecha.value || todayStr();
-      const dayDB = getDayDB();
-      const records = dayDB[day] ?? [];
-      if(!records.length){
-        alert('No hay registros para esa fecha. Guarda al menos uno antes de exportar.');
-        return;
-      }
-      // Reusa el mismo print del reporte cambiando fecha a la del formulario
-      repFecha.value = day;
-      renderDayReport();
-      document.getElementById('repPrint').click();
-    });
-
     // Inicial
     renderDayReport();
     renderHistDB();
-    renderDayInRegistros();
 
     // --- Service Worker ---
     (function(){
