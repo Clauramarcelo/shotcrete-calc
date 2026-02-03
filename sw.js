@@ -1,6 +1,6 @@
 // --- Service Worker para GitHub Pages (sub-path /shotcrete-calc/) ---
 const REPO = '/shotcrete-calc';
-const CACHE_NAME = 'sc-v66';
+const CACHE_NAME = 'sc-v67';
 
 const ASSETS = [
   `${REPO}/`,
